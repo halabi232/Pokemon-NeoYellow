@@ -2150,11 +2150,7 @@ static void sub_8086988(u32 a1)
     ResetAllPicSprites();
     ResetCameraUpdateInfo();
     InstallCameraPanAheadCallback();
-    if (!a1)
-        InitEventObjectPalettes(0);
-    else
-        InitEventObjectPalettes(1);
-
+    FreeAllSpritePalettes();
     FieldEffectActiveListClear();
     sub_80AAFA4();
     sub_80AEE84();

@@ -80,7 +80,6 @@ struct LockedAnimEventObjects
 };
 
 extern const struct SpriteFrameImage gEventObjectPicTable_PechaBerryTree[];
-extern const u8 gReflectionEffectPaletteMap[];
 
 void sub_808D438(void);
 u8 GetMoveDirectionAnimNum(u8);
@@ -90,8 +89,6 @@ u8 GetEventObjectIdByXY(s16, s16);
 void SetEventObjectDirection(struct EventObject *, u8);
 u8 GetFirstInactiveEventObjectId(void);
 void RemoveEventObjectByLocalIdAndMap(u8, u8, u8);
-void LoadPlayerObjectReflectionPalette(u16, u8);
-void LoadSpecialObjectReflectionPalette(u16, u8);
 void sub_808EBA8(u8, u8, u8, s16, s16);
 void PatchObjectPalette(u16, u8);
 void sub_808E16C(s16, s16);
@@ -213,6 +210,7 @@ void UpdateEventObjectSpriteVisibility(struct Sprite *sprite, bool8 invisible);
 s16 sub_809773C(s16 a1);
 s16 sub_8097728(s16 a1);
 void CameraObjectReset2(void);
+void sub_808E894(u16 paletteTag);
 
 void MovementType_None(struct Sprite *);
 void MovementType_LookAround(struct Sprite *);
