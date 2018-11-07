@@ -294,6 +294,7 @@ SECTIONS {
         src/unk_transition.o(.text);
         src/international_string_util.o(.text);
         asm/international_string_util.o(.text);
+        src/surfable_pokemon.o(.text);
     } =0
 
     script_data :
@@ -599,6 +600,7 @@ SECTIONS {
         data/mystery_event_msg.o(.rodata);
         src/m4a_tables.o(.rodata);
         data/sound_data.o(.rodata);
+        src/surfable_pokemon.o(.rodata);
     } =0
 
     song_data :
