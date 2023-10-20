@@ -1,56 +1,75 @@
-name: CI
+name: Build ROM
 
 on:
   push:
     branches:
       - master
+      - followers
       - upcoming
   pull_request:
 
 jobs:
-  build:
+  build_rom:
+    name: Build ROM
     runs-on: ubuntu-latest
-    container: devkitpro/devkitarm
     env:
       GAME_VERSION: EMERALD
       GAME_REVISION: 0
       GAME_LANGUAGE: ENGLISH
       MODERN: 0
-      COMPARE: 0
+      COMPARE: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
+
+      - name: Checkout syms
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/checkout@master
+        with:
+          path: symbols
+          ref: symbols
 
       - name: Checkout agbcc
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
         with:
           path: agbcc
           repository: pret/agbcc
 
       - name: Install binutils
-        run: sudo apt install -y build-essential libpng-dev libelf-dev
+        run: sudo apt install gcc-arm-none-eabi binutils-arm-none-eabi
         # build-essential, git, and libpng-dev are already installed
         # gcc-arm-none-eabi is only needed for the modern build
         # as an alternative to dkP
 
       - name: Install agbcc
         run: |
+          cd ..
+          git clone --depth 1 https://github.com/pret/agbcc
+          cd agbcc
           ./build.sh
           ./install.sh ../
         working-directory: agbcc
 
-      - name: Agbcc
-        run: make -j${nproc} -O all
+      - name: Compare
+        run: make -j${nproc} all syms
 
       - name: Modern
         env:
           MODERN: 1
           COMPARE: 0
-        run: make -j${nproc} -O all
+        run: make -j${nproc} all
 
-      - name: Test
-        env:
-          TEST: 1
+      - name: Move symfiles
+        if: ${{ github.event_name == 'push' }}
         run: |
-          make -j${nproc} -O pokeemerald-test.elf
-          make -j${nproc} check
+          cp -v *.sym symbols/
+          echo "SYMBOLS_COMMIT_MSG=$( git log --format=%s ${GITHUB_SHA} )" >> $GITHUB_ENV
+
+      - name: Update symfiles
+        if: ${{ github.event_name == 'push' }}
+        uses: EndBug/add-and-commit@v7
+        with:
+          branch: symbols
+          cwd: "./symbols"
+          add: "*.sym"
+          message: ${{ env.SYMBOLS_COMMIT_MSG }}

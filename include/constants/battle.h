@@ -426,6 +426,12 @@
 #define B_WAIT_TIME_SHORT       (B_WAIT_TIME_MULTIPLIER * 2)
 #define B_WAIT_TIME_SHORTEST    (B_WAIT_TIME_MULTIPLIER)
 
+#define CASTFORM_NORMAL     0
+#define CASTFORM_FIRE       1
+#define CASTFORM_WATER      2
+#define CASTFORM_ICE        3
+#define NUM_CASTFORM_FORMS  4
+
 #define FLEE_ITEM    1
 #define FLEE_ABILITY 2
 

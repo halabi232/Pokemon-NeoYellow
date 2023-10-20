@@ -35,8 +35,17 @@ prefabs.json
 .vscode/
 *.a
 .fuse_hidden*
+.ccls-cache/*
+.ropeproject/
+/overworld/
+/icons/
 *.sna
 *.diff
 *.sym
 *.js
+<<<<<<< HEAD
 src/data/map_group_count.h
+=======
+agbcc/
+/*.zip
+>>>>>>> f8ca559378b31c9ee661cdf7ce4c9bbf788fc55e

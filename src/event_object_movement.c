@@ -2,6 +2,7 @@
 #include "malloc.h"
 #include "battle_pyramid.h"
 #include "battle_script_commands.h"
+#include "battle_util.h"
 #include "berry.h"
 #include "debug.h"
 #include "data.h"
@@ -2111,10 +2112,13 @@ bool8 ScrFunc_getfolloweraction(struct ScriptContext *ctx) // Essentially a big 
         multi = NUMBER_OF_MON_TYPES;
     }
     if (multi < NUMBER_OF_MON_TYPES) {
-        multi = GetTypeEffectiveness(mon, multi);
-        if (multi & (MOVE_RESULT_NOT_VERY_EFFECTIVE | MOVE_RESULT_DOESNT_AFFECT_FOE | MOVE_RESULT_NO_EFFECT))
+        u16 species = GetMonData(mon, MON_DATA_SPECIES);
+        u8 type1 = gSpeciesInfo[species].types[0];
+        u8 type2 = gSpeciesInfo[species].types[1];
+        u32 typeEffectiveness = UQ_4_12_TO_INT(GetTypeModifier(multi, type1)) * UQ_4_12_TO_INT(GetTypeModifier(multi, type2));
+        if (typeEffectiveness < 2)
             cond_emotes[n_choices++] = (struct SpecialEmote) {.emotion=FOLLOWER_EMOTION_HAPPY, .index=32};
-        else if (multi & MOVE_RESULT_SUPER_EFFECTIVE)
+        else if (multi > 2)
             cond_emotes[n_choices++] = (struct SpecialEmote) {.emotion=FOLLOWER_EMOTION_SAD, .index=7};
     }
   }

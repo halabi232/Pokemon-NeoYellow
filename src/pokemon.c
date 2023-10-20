@@ -53,14 +53,6 @@
 #include "constants/union_room.h"
 #include "constants/weather.h"
 
-#define DAY_EVO_HOUR_BEGIN       12
-#define DAY_EVO_HOUR_END         HOURS_PER_DAY
-
-#define DUSK_EVO_HOUR_BEGIN      17
-#define DUSK_EVO_HOUR_END        18
-
-#define NIGHT_EVO_HOUR_BEGIN     0
-#define NIGHT_EVO_HOUR_END       12
 
 #define FRIENDSHIP_EVO_THRESHOLD 220
 
@@ -5369,9 +5361,51 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             EncryptBoxMon(boxMon);
             return;
         }
+        }
 
         switch (field)
         {
+        case MON_DATA_PERSONALITY:
+            SET32(boxMon->personality);
+            break;
+        case MON_DATA_OT_ID:
+            SET32(boxMon->otId);
+            break;
+        case MON_DATA_NICKNAME:
+        {
+            s32 i;
+            for (i = 0; i < POKEMON_NAME_LENGTH; i++)
+                boxMon->nickname[i] = data[i];
+            break;
+        }
+        case MON_DATA_LANGUAGE:
+            SET8(boxMon->language);
+            break;
+        case MON_DATA_SANITY_IS_BAD_EGG:
+            SET8(boxMon->isBadEgg);
+            break;
+        case MON_DATA_SANITY_HAS_SPECIES:
+            SET8(boxMon->hasSpecies);
+            break;
+        case MON_DATA_SANITY_IS_EGG:
+            SET8(boxMon->isEgg);
+            break;
+        case MON_DATA_OT_NAME:
+        {
+            s32 i;
+            for (i = 0; i < PLAYER_NAME_LENGTH; i++)
+                boxMon->otName[i] = data[i];
+            break;
+        }
+        case MON_DATA_MARKINGS:
+            SET8(boxMon->markings);
+            break;
+        case MON_DATA_CHECKSUM:
+            SET16(boxMon->checksum);
+            break;
+        case MON_DATA_ENCRYPT_SEPARATOR:
+            SET16(boxMon->unknown);
+            break;
         case MON_DATA_SPECIES:
         {
             SET16(substruct0->species);
@@ -5561,56 +5595,83 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             substruct3->spDefenseIV = (ivs >> 25) & MAX_IV_MASK;
             break;
         }
+        case MON_DATA_NATURE:
+        {
+          u32 pid = boxMon->personality;
+          u32 otId = boxMon->otId;
+          s8 diff = (data[0] % 25) - (pid % 25); // difference between new nature and current nature, [-24,24]
+          bool8 preserveShiny = FALSE;
+          bool8 preserveLetter = FALSE;
+          u16 shinyValue = HIHALF(pid) ^ LOHALF(pid);
+          s32 tweak;
+          u32 pidTemp;
+          // See https://bulbapedia.bulbagarden.net/wiki/Personality_value#Nature
+          // Goal here is to preserve as much of the PID as possible
+          // To preserve gender & substruct order, we add/subtract multiples of 5376 that is 0 % 256, 0 % 24, 1 % 25
+          // i.e, to increase the nature by n % 25, we add n*5376 % 19200 (LCM of 24, 25, 256) to the pid
+          // Ability number is determined by parity and so adding multiples of 5376 preserves it
+          // TODO: For genderless pokemon, 576/600 can be used instead of 5376/19200
+          if (diff == 0) // No change
+            break;
+          else if (diff < 0)
+            diff = 25+diff;
+          tweak = (diff*5376) % 19200;
+          pidTemp = pid + tweak;
+          // If the pokemon is shiny or if changing the PID would make it shiny, preserve its shiny value
+          if (IsShinyOtIdPersonality(otId, pid) || IsShinyOtIdPersonality(otId, pidTemp))
+            preserveShiny = TRUE;
+          if (substruct0->species == SPECIES_UNOWN) // Preserve Unown letter
+            preserveLetter = TRUE;
+          if (preserveShiny && preserveLetter) { // honestly though, how many shiny Unown are out there ?
+            while (pidTemp > pid) {
+              if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                  break;
+              pidTemp += 19200;
+            }
+          } else if (preserveShiny) {
+            while (pidTemp > pid) {
+              if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                break;
+              pidTemp += 19200;
+            }
+          } else if (preserveLetter) {
+            while (pidTemp > pid) {
+              if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                break;
+              pidTemp += 19200;
+            }
+          }
+          if (pidTemp < pid) { // overflow; search backwards
+            tweak -= 19200;
+            pidTemp = pid + tweak;
+            if (preserveShiny && preserveLetter) {
+              while (pidTemp < pid) {
+                if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                  if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                    break;
+                pidTemp -= 19200;
+              }
+            } else if (preserveShiny) {
+              while (pidTemp < pid) {
+                if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                  break;
+                pidTemp -= 19200;
+              }
+            } else if (preserveLetter) {
+              while (pidTemp < pid) {
+                if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                  break;
+                pidTemp -= 19200;
+              }
+            }
+          }
+          if (pid % 24 == pidTemp % 24 || pid % 256 == pidTemp % 256)
+            boxMon->personality = pidTemp;
+          break;
+        }
         default:
             break;
-        }
-    }
-    else
-    {
-        switch (field)
-        {
-        case MON_DATA_PERSONALITY:
-            SET32(boxMon->personality);
-            break;
-        case MON_DATA_OT_ID:
-            SET32(boxMon->otId);
-            break;
-        case MON_DATA_NICKNAME:
-        {
-            s32 i;
-            for (i = 0; i < POKEMON_NAME_LENGTH; i++)
-                boxMon->nickname[i] = data[i];
-            break;
-        }
-        case MON_DATA_LANGUAGE:
-            SET8(boxMon->language);
-            break;
-        case MON_DATA_SANITY_IS_BAD_EGG:
-            SET8(boxMon->isBadEgg);
-            break;
-        case MON_DATA_SANITY_HAS_SPECIES:
-            SET8(boxMon->hasSpecies);
-            break;
-        case MON_DATA_SANITY_IS_EGG:
-            SET8(boxMon->isEgg);
-            break;
-        case MON_DATA_OT_NAME:
-        {
-            s32 i;
-            for (i = 0; i < PLAYER_NAME_LENGTH; i++)
-                boxMon->otName[i] = data[i];
-            break;
-        }
-        case MON_DATA_MARKINGS:
-            SET8(boxMon->markings);
-            break;
-        case MON_DATA_CHECKSUM:
-            SET16(boxMon->checksum);
-            break;
-        case MON_DATA_ENCRYPT_SEPARATOR:
-            SET16(boxMon->unknown);
-            break;
-        }
     }
 
     if (field > MON_DATA_ENCRYPT_SEPARATOR)
@@ -6668,28 +6729,28 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && friendship >= FRIENDSHIP_EVO_THRESHOLD)
+                UpdateTimeOfDay();
+                if (gTimeOfDay != TIME_OF_DAY_NIGHT && friendship >= FRIENDSHIP_EVO_THRESHOLD)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && gEvolutionTable[species][i].param <= level)
+                UpdateTimeOfDay();
+                if (gTimeOfDay != TIME_OF_DAY_NIGHT && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && friendship >= FRIENDSHIP_EVO_THRESHOLD)
+                UpdateTimeOfDay();
+                if (gTimeOfDay == TIME_OF_DAY_NIGHT && friendship >= FRIENDSHIP_EVO_THRESHOLD)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && gEvolutionTable[species][i].param <= level)
+                UpdateTimeOfDay();
+                if (gTimeOfDay == TIME_OF_DAY_NIGHT && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_HOLD_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && heldItem == gEvolutionTable[species][i].param)
+                UpdateTimeOfDay();
+                if (gTimeOfDay == TIME_OF_DAY_NIGHT && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = ITEM_NONE;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -6697,8 +6758,8 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 }
                 break;
             case EVO_ITEM_HOLD_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && heldItem == gEvolutionTable[species][i].param)
+                UpdateTimeOfDay();
+                if (gTimeOfDay != TIME_OF_DAY_NIGHT && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = ITEM_NONE;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -6706,8 +6767,8 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 }
                 break;
             case EVO_LEVEL_DUSK:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DUSK_EVO_HOUR_BEGIN && gLocalTime.hours < DUSK_EVO_HOUR_END && gEvolutionTable[species][i].param <= level)
+                UpdateTimeOfDay();
+                if (gTimeOfDay == TIME_OF_DAY_TWILIGHT && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL:
@@ -6916,13 +6977,13 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && gEvolutionTable[species][i].param == evolutionItem)
+                UpdateTimeOfDay();
+                if (gTimeOfDay == TIME_OF_DAY_NIGHT && gEvolutionTable[species][i].param == evolutionItem)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && gEvolutionTable[species][i].param == evolutionItem)
+                UpdateTimeOfDay();
+                if (gTimeOfDay != TIME_OF_DAY_NIGHT && gEvolutionTable[species][i].param == evolutionItem)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             }
@@ -8644,13 +8705,13 @@ u16 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, u16 method, u32 
                         switch (formChanges[i].param2)
                         {
                         case DAY:
-                            RtcCalcLocalTime();
-                            if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END)
+                            UpdateTimeOfDay();
+                            if (gTimeOfDay != TIME_OF_DAY_NIGHT)
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         case NIGHT:
-                            RtcCalcLocalTime();
-                            if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END)
+                            UpdateTimeOfDay();
+                            if (gTimeOfDay == TIME_OF_DAY_NIGHT)
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         default:
