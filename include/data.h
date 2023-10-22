@@ -4,6 +4,8 @@
 #include "constants/moves.h"
 
 #define SPECIES_SHINY_TAG 5000
+#define FOLLOWER_PAL_TAG 10000
+#define FOLLOWER_SHINY_TAG 15000
 #define N_FOLLOWER_HAPPY_MESSAGES 31
 #define N_FOLLOWER_NEUTRAL_MESSAGES 14
 #define N_FOLLOWER_SAD_MESSAGES 3
@@ -120,6 +122,7 @@ extern const struct MonCoords gMonBackPicCoords[];
 extern const struct CompressedSpriteSheet gMonBackPicTable[];
 extern const struct CompressedSpriteSheet gMonBackPicTableFemale[];
 extern const struct CompressedSpritePalette gMonPaletteTable[];
+extern const struct CompressedSpritePalette gMonFollowerPaletteTable[];
 extern const struct CompressedSpritePalette gMonPaletteTableFemale[];
 extern const struct CompressedSpritePalette gMonShinyPaletteTable[];
 extern const struct CompressedSpritePalette gMonShinyPaletteTableFemale[];
