@@ -2591,6 +2591,7 @@ static void SetBerryTreeGraphics(struct ObjectEvent *objectEvent, u8 berryId, u8
   {
       CameraObjectReset1();
   }
+  UpdateSpritePaletteWithTime(sprite->oam.paletteNum);
 }
 
 static void get_berry_tree_graphics(struct ObjectEvent *objectEvent, struct Sprite *sprite)
