@@ -7022,3 +7022,428 @@ void IsLastMonThatKnowsSurf(void)
             gSpecialVar_Result = TRUE;
     }
 }
+
+
+// Nature Mints
+#define tState          data[0]
+#define tSpecies        data[1]
+#define tCurrNature     data[2]
+#define tMonId          data[3]
+#define tOldFunc        4
+#define tNewNature      data[6]
+
+static const u8 sText_AskMint[] = _("Give {STR_VAR_1} the {STR_VAR_2} Mint?");
+static const u8 sText_MintDone[] = _("{STR_VAR_1}'s started to feel more {STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
+static void Task_Mints(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    switch (tState)
+    {
+    case 0:
+        // Can't use.
+        if (tCurrNature == tNewNature)
+        {
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gText_WontHaveEffect, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+            return;
+        }
+
+        gPartyMenuUseExitCallback = TRUE;
+        GetMonNickname(&gPlayerParty[tMonId], gStringVar1);
+        StringCopy(gStringVar2, gNatureNamePointers[tNewNature]);
+        StringExpandPlaceholders(gStringVar4, sText_AskMint);
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gStringVar4, 1);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 1:
+        if (!IsPartyMenuTextPrinterActive())
+        {
+            PartyMenuDisplayYesNoMenu();
+            tState++;
+        }
+        break;
+    case 2:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+        case 0:
+            tState++;
+            break;
+        case 1:
+        case MENU_B_PRESSED:
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            ScheduleBgCopyTilemapToVram(2);
+
+            // Don't exit party selections screen, return to choosing a mon.
+            ClearStdWindowAndFrameToTransparent(6, 0);
+            ClearWindowTilemap(6);
+            DisplayPartyMenuStdMessage(PARTY_MSG_USE_ON_WHICH_MON);
+            gTasks[taskId].func = (TaskFunc)GetWordTaskArg(taskId, tOldFunc);
+            return;
+        }
+        break;
+    case 3:
+        PlaySE(SE_USE_ITEM);
+        StringExpandPlaceholders(gStringVar4, sText_MintDone);
+        DisplayPartyMenuMessage(gStringVar4, 1);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 4:
+        if (!IsPartyMenuTextPrinterActive())
+            tState++;
+        break;
+    case 5:
+        SetMonData(&gPlayerParty[tMonId], MON_DATA_NATURE, &tNewNature);
+        CalculateMonStats(&gPlayerParty[tMonId]);
+
+        RemoveBagItem(gSpecialVar_ItemId, 1);
+        gTasks[taskId].func = Task_ClosePartyMenu;
+        break;
+    }
+}
+
+void ItemUseCB_Mints(u8 taskId, TaskFunc task)
+{
+    s16 *data = gTasks[taskId].data;
+
+    tState = 0;
+    tMonId = gPartyMenu.slotId;
+    tSpecies = GetMonData(&gPlayerParty[tMonId], MON_DATA_SPECIES, NULL);
+    tCurrNature = GetNature(&gPlayerParty[tMonId]);
+    tNewNature = ItemId_GetSecondaryId(gSpecialVar_ItemId);
+    SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
+    gTasks[taskId].func = Task_Mints;
+}
+#undef tState          
+#undef tSpecies        
+#undef tCurrNature     
+#undef tMonId          
+#undef tOldFunc        
+#undef tNewNature      
+
+//IV Items
+void ItemUseCB_ReduceIV(u8 taskId, TaskFunc task)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    u16 item = gSpecialVar_ItemId;
+    u8 modifier;
+    u8 health = GetMonData(mon, MON_DATA_HP_IV);
+    u8 attack = GetMonData(mon, MON_DATA_ATK_IV);
+    u8 defense = GetMonData(mon, MON_DATA_DEF_IV);
+    u8 speed = GetMonData(mon, MON_DATA_SPEED_IV);
+    u8 spAttack = GetMonData(mon, MON_DATA_SPATK_IV);
+    u8 spDefense = GetMonData(mon, MON_DATA_SPDEF_IV);
+    bool8 didActivate = FALSE;
+
+    switch (ItemId_GetSecondaryId(item))
+    {
+    case NUM_STATS:
+        if (health != 0)
+        {
+            modifier = (health >= 31) ? (health - 31) : 0;
+            SetMonData(mon, MON_DATA_HP_IV, &modifier);
+            StringCopy(gStringVar2, gText_HP3);
+            didActivate = TRUE;
+        }
+        if (attack != 0)
+        {
+            modifier = (attack >= 31) ? (attack - 31) : 0;
+            SetMonData(mon, MON_DATA_ATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_Attack3);
+            didActivate = TRUE;
+        }
+        if (defense != 0)
+        {
+            modifier = (defense >= 31) ? (defense - 31) : 0;
+            SetMonData(mon, MON_DATA_DEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_Defense3);
+            didActivate = TRUE;
+        }
+        if (speed != 0)
+        {
+            modifier = (speed >= 31) ? (speed - 31) : 0;
+            SetMonData(mon, MON_DATA_SPEED_IV, &modifier);
+            StringCopy(gStringVar2, gText_Speed2);
+            didActivate = TRUE;
+        }
+        if (spAttack != 0)
+        {
+            modifier = (spAttack >= 31) ? (spAttack - 31) : 0;
+            SetMonData(mon, MON_DATA_SPATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpAtk3);
+            didActivate = TRUE;
+        }
+        if (spDefense != 0)
+        {
+            modifier = (spDefense >= 31) ? (spDefense - 31) : 0;
+            SetMonData(mon, MON_DATA_SPDEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpDef3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_HP:
+        if (health != 0)
+        {
+            modifier = (health >= 31) ? (health - 31) : 0;
+            SetMonData(mon, MON_DATA_HP_IV, &modifier);
+            StringCopy(gStringVar2, gText_HP3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_ATK:
+        if (attack != 0)
+        {
+            modifier = (attack >= 31) ? (attack - 31) : 0;
+            SetMonData(mon, MON_DATA_ATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_Attack3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_DEF:
+        if (defense != 0)
+        {
+            modifier = (defense >= 31) ? (defense - 31) : 0;
+            SetMonData(mon, MON_DATA_DEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_Defense3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_SPEED:
+        if (speed != 0)
+        {
+            modifier = (speed >= 31) ? (speed - 31) : 0;
+            SetMonData(mon, MON_DATA_SPEED_IV, &modifier);
+            StringCopy(gStringVar2, gText_Speed2);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_SPATK:
+        if (spAttack != 0)
+        {
+            modifier = (spAttack >= 31) ? (spAttack - 31) : 0;
+            SetMonData(mon, MON_DATA_SPATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpAtk3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_SPDEF:
+        if (spDefense != 0)
+        {
+            modifier = (spDefense >= 31) ? (spDefense - 31) : 0;
+            SetMonData(mon, MON_DATA_SPDEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpDef3);
+            didActivate = TRUE;
+        }
+        break;
+    }
+
+    if (didActivate)
+    {
+        gPartyMenuUseExitCallback = TRUE;
+        PlaySE(SE_USE_ITEM);
+        RemoveBagItem(item, 1);
+        AdjustFriendship(mon, FRIENDSHIP_EVENT_EFFORT_BERRIES);
+        GetMonNickname(mon, gStringVar1);
+        if (ItemId_GetSecondaryId(item) == NUM_STATS)
+        {
+            StringExpandPlaceholders(gStringVar4, gText_PkmnFriendlyCoreNeutralized);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
+        }
+        else
+        {
+            StringExpandPlaceholders(gStringVar4, gText_PkmnFriendlyBaseVar2Fell);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
+        }
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+    else
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+}
+
+void ItemUseCB_IncreaseIV(u8 taskId, TaskFunc task)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    u16 item = gSpecialVar_ItemId;
+    u8 modifier;
+    u8 health = GetMonData(mon, MON_DATA_HP_IV);
+    u8 attack = GetMonData(mon, MON_DATA_ATK_IV);
+    u8 defense = GetMonData(mon, MON_DATA_DEF_IV);
+    u8 speed = GetMonData(mon, MON_DATA_SPEED_IV);
+    u8 spAttack = GetMonData(mon, MON_DATA_SPATK_IV);
+    u8 spDefense = GetMonData(mon, MON_DATA_SPDEF_IV);
+    bool8 didActivate = FALSE;
+
+    switch (ItemId_GetSecondaryId(item))
+    {
+    case NUM_STATS:
+        if (health != MAX_PER_STAT_IVS)
+        {
+            modifier = (health <= (MAX_PER_STAT_IVS - 31)) ? (health + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_HP_IV, &modifier);
+            StringCopy(gStringVar2, gText_HP3);
+            didActivate = TRUE;
+        }
+        if (attack != MAX_PER_STAT_IVS)
+        {
+            modifier = (attack <= (MAX_PER_STAT_IVS - 31)) ? (attack + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_ATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_Attack3);
+            didActivate = TRUE;
+        }
+        if (defense != MAX_PER_STAT_IVS)
+        {
+            modifier = (defense <= (MAX_PER_STAT_IVS - 31)) ? (defense + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_DEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_Defense3);
+            didActivate = TRUE;
+        }
+        if (speed != MAX_PER_STAT_IVS)
+        {
+            modifier = (speed <= (MAX_PER_STAT_IVS - 31)) ? (speed + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_SPEED_IV, &modifier);
+            StringCopy(gStringVar2, gText_Speed2);
+            didActivate = TRUE;
+        }
+        if (spAttack != MAX_PER_STAT_IVS)
+        {
+            modifier = (spAttack <= (MAX_PER_STAT_IVS - 31)) ? (spAttack + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_SPATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpAtk3);
+            didActivate = TRUE;
+        }
+        if (spDefense != MAX_PER_STAT_IVS)
+        {
+            modifier = (spDefense <= (MAX_PER_STAT_IVS - 31)) ? (spDefense + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_SPDEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpDef3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_HP:
+        if (health != MAX_PER_STAT_IVS)
+        {
+            modifier = (health <= (MAX_PER_STAT_IVS - 31)) ? (health + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_HP_IV, &modifier);
+            StringCopy(gStringVar2, gText_HP3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_ATK:
+        if (attack != MAX_PER_STAT_IVS)
+        {
+            modifier = (attack <= (MAX_PER_STAT_IVS - 31)) ? (attack + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_ATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_Attack3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_DEF:
+        if (defense != MAX_PER_STAT_IVS)
+        {
+            modifier = (defense <= (MAX_PER_STAT_IVS - 31)) ? (defense + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_DEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_Defense3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_SPEED:
+        if (speed != MAX_PER_STAT_IVS)
+        {
+            modifier = (speed <= (MAX_PER_STAT_IVS - 31)) ? (speed + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_SPEED_IV, &modifier);
+            StringCopy(gStringVar2, gText_Speed2);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_SPATK:
+        if (spAttack != MAX_PER_STAT_IVS)
+        {
+            modifier = (spAttack <= (MAX_PER_STAT_IVS - 31)) ? (spAttack + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_SPATK_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpAtk3);
+            didActivate = TRUE;
+        }
+        break;
+    case STAT_SPDEF:
+        if (spDefense != MAX_PER_STAT_IVS)
+        {
+            modifier = (spDefense <= (MAX_PER_STAT_IVS - 31)) ? (spDefense + 31) : MAX_PER_STAT_IVS;
+            SetMonData(mon, MON_DATA_SPDEF_IV, &modifier);
+            StringCopy(gStringVar2, gText_SpDef3);
+            didActivate = TRUE;
+        }
+        break;
+    }
+
+    if (didActivate)
+    {
+        gPartyMenuUseExitCallback = TRUE;
+        PlaySE(SE_USE_ITEM);
+        RemoveBagItem(item, 1);
+        AdjustFriendship(mon, FRIENDSHIP_EVENT_IV_CANDY);
+        GetMonNickname(mon, gStringVar1);
+        if (ItemId_GetSecondaryId(item) == NUM_STATS)
+        {
+            StringExpandPlaceholders(gStringVar4, gText_PkmnCoreStatsIncreased);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
+        }
+        else
+        {
+            StringExpandPlaceholders(gStringVar4, gText_PkmnBaseVar2StatIncreased);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
+        }
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+    else
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+}
+
+void ItemUseCB_PokeBall(u8 taskId, TaskFunc task)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    u16 currBall = GetMonData(mon, MON_DATA_POKEBALL);
+    u16 newBall = gSpecialVar_ItemId;
+    static const u8 sText_MonBallWasChanged[] = _("{STR_VAR_1} was put in the {STR_VAR_2}.{PAUSE_UNTIL_PRESS}");
+
+    if (currBall == newBall)
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+    else
+    {
+        GetMonNickname(mon, gStringVar1);
+        CopyItemName(newBall, gStringVar2);
+        PlaySE(SE_SELECT);
+        gPartyMenuUseExitCallback = TRUE;
+        SetMonData(mon, MON_DATA_POKEBALL, &newBall);
+        StringExpandPlaceholders(gStringVar4, sText_MonBallWasChanged);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+        RemoveBagItem(newBall, 1);
+    }
+}

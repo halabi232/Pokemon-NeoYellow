@@ -43,6 +43,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_POKE_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_GREAT_BALL] =
@@ -54,6 +55,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_GREAT_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_ULTRA_BALL] =
@@ -65,6 +67,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_ULTRA_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_MASTER_BALL] =
@@ -76,6 +79,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_MASTER_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_PREMIER_BALL] =
@@ -87,6 +91,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_PREMIER_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_HEAL_BALL] =
@@ -98,6 +103,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_HEAL_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_NET_BALL] =
@@ -109,6 +115,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_NET_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_NEST_BALL] =
@@ -120,6 +127,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_NEST_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_DIVE_BALL] =
@@ -131,6 +139,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_DIVE_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_DUSK_BALL] =
@@ -142,6 +151,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_DUSK_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_TIMER_BALL] =
@@ -153,6 +163,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_TIMER_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_QUICK_BALL] =
@@ -164,6 +175,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_QUICK_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_REPEAT_BALL] =
@@ -175,6 +187,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_REPEAT_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_LUXURY_BALL] =
@@ -186,6 +199,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_LUXURY_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_LEVEL_BALL] =
@@ -197,6 +211,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_LEVEL_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_LURE_BALL] =
@@ -208,6 +223,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_LURE_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_MOON_BALL] =
@@ -219,6 +235,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_MOON_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_FRIEND_BALL] =
@@ -230,6 +247,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_FRIEND_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_LOVE_BALL] =
@@ -241,6 +259,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_LOVE_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_FAST_BALL] =
@@ -252,6 +271,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_FAST_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_HEAVY_BALL] =
@@ -263,6 +283,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_HEAVY_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_DREAM_BALL] =
@@ -274,6 +295,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_DREAM_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_SAFARI_BALL] =
@@ -285,6 +307,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_SAFARI_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_SPORT_BALL] =
@@ -296,6 +319,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_SPORT_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_PARK_BALL] =
@@ -307,6 +331,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_PARK_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_BEAST_BALL] =
@@ -318,6 +343,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_BEAST_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
     [ITEM_CHERISH_BALL] =
@@ -329,6 +355,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .battleUsage = EFFECT_ITEM_THROW_BALL,
         .secondaryId = ITEM_CHERISH_BALL - FIRST_BALL,
+        .fieldUseFunc = ItemUseOutOfBattle_PokeBall,
     },
 
 // Medicine
@@ -976,239 +1003,259 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_AbilityPatch,
     },
 
-// Mints
-
-    [ITEM_LONELY_MINT] =
-    {
-        .name = _("Lonely Mint"),
-        .price = 20,
-        .description = sLonelyMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_ADAMANT_MINT] =
+//Nature Mints
+    [ITEM_ADAMANT_MINT] = 
     {
         .name = _("Adamant Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sAdamantMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_ADAMANT,
+        .flingPower = 30,
     },
 
-    [ITEM_NAUGHTY_MINT] =
-    {
-        .name = _("Naughty Mint"),
-        .price = 20,
-        .description = sNaughtyMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_BRAVE_MINT] =
-    {
-        .name = _("Brave Mint"),
-        .price = 20,
-        .description = sBraveMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_BOLD_MINT] =
+    [ITEM_BOLD_MINT] = 
     {
         .name = _("Bold Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sBoldMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_BOLD,
+        .flingPower = 30,
     },
 
-    [ITEM_IMPISH_MINT] =
+    [ITEM_BRAVE_MINT] = 
     {
-        .name = _("Impish Mint"),
-        .price = 20,
-        .description = sImpishMintDesc,
+        .name = _("Brave Mint"),
+        .price = 20000,
+        .description = sBraveMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_BRAVE,
+        .flingPower = 30,
     },
 
-    [ITEM_LAX_MINT] =
-    {
-        .name = _("Lax Mint"),
-        .price = 20,
-        .description = sLaxMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_RELAXED_MINT] =
-    {
-        .name = _("Relaxed Mint"),
-        .price = 20,
-        .description = sRelaxedMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_MODEST_MINT] =
-    {
-        .name = _("Modest Mint"),
-        .price = 20,
-        .description = sModestMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_MILD_MINT] =
-    {
-        .name = _("Mild Mint"),
-        .price = 20,
-        .description = sMildMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_RASH_MINT] =
-    {
-        .name = _("Rash Mint"),
-        .price = 20,
-        .description = sRashMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_QUIET_MINT] =
-    {
-        .name = _("Quiet Mint"),
-        .price = 20,
-        .description = sQuietMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_CALM_MINT] =
+    [ITEM_CALM_MINT] = 
     {
         .name = _("Calm Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sCalmMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_CALM,
+        .flingPower = 30,
     },
 
-    [ITEM_GENTLE_MINT] =
-    {
-        .name = _("Gentle Mint"),
-        .price = 20,
-        .description = sGentleMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_CAREFUL_MINT] =
+    [ITEM_CAREFUL_MINT] = 
     {
         .name = _("Careful Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sCarefulMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_CAREFUL,
+        .flingPower = 30,
     },
 
-    [ITEM_SASSY_MINT] =
+    [ITEM_GENTLE_MINT] = 
     {
-        .name = _("Sassy Mint"),
-        .price = 20,
-        .description = sSassyMintDesc,
+        .name = _("Gentle Mint"),
+        .price = 20000,
+        .description = sGentleMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_GENTLE,
+        .flingPower = 30,
     },
 
-    [ITEM_TIMID_MINT] =
-    {
-        .name = _("Timid Mint"),
-        .price = 20,
-        .description = sTimidMintDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
-    },
-
-    [ITEM_HASTY_MINT] =
+    [ITEM_HASTY_MINT] = 
     {
         .name = _("Hasty Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sHastyMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_HASTY,
+        .flingPower = 30,
     },
 
-    [ITEM_JOLLY_MINT] =
+    [ITEM_IMPISH_MINT] = 
+    {
+        .name = _("Impish Mint"),
+        .price = 20000,
+        .description = sImpishMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_IMPISH,
+        .flingPower = 30,
+    },
+
+    [ITEM_JOLLY_MINT] = 
     {
         .name = _("Jolly Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sJollyMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_JOLLY,
+        .flingPower = 30,
     },
 
-    [ITEM_NAIVE_MINT] =
+    [ITEM_LAX_MINT] = 
+    {
+        .name = _("Lax Mint"),
+        .price = 20000,
+        .description = sLaxMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_LAX,
+        .flingPower = 30,
+    },
+
+    [ITEM_LONELY_MINT] = 
+    {
+        .name = _("Lonely Mint"),
+        .price = 20000,
+        .description = sLonelyMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_LONELY,
+        .flingPower = 30,
+    },
+
+    [ITEM_MILD_MINT] = 
+    {
+        .name = _("Mild Mint"),
+        .price = 20000,
+        .description = sMildMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_MILD,
+        .flingPower = 30,
+    },
+
+    [ITEM_MODEST_MINT] = 
+    {
+        .name = _("Modest Mint"),
+        .price = 20000,
+        .description = sModestMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_MODEST,
+        .flingPower = 30,
+    },
+
+    [ITEM_NAIVE_MINT] = 
     {
         .name = _("Naive Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sNaiveMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_NAIVE,
+        .flingPower = 30,
     },
 
-    [ITEM_SERIOUS_MINT] =
+    [ITEM_NAUGHTY_MINT] = 
+    {
+        .name = _("Naughty Mint"),
+        .price = 20000,
+        .description = sNaughtyMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_NAUGHTY,
+        .flingPower = 30,
+    },
+
+    [ITEM_QUIET_MINT] = 
+    {
+        .name = _("Quiet Mint"),
+        .price = 20000,
+        .description = sQuietMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_QUIET,
+        .flingPower = 30,
+    },
+
+    [ITEM_RASH_MINT] = 
+    {
+        .name = _("Rash Mint"),
+        .price = 20000,
+        .description = sRashMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_RASH,
+        .flingPower = 30,
+    },
+
+    [ITEM_RELAXED_MINT] = 
+    {
+        .name = _("Relaxed Mint"),
+        .price = 20000,
+        .description = sRelaxedMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_RELAXED,
+        .flingPower = 30,
+    },
+
+    [ITEM_SASSY_MINT] = 
+    {
+        .name = _("Sassy Mint"),
+        .price = 20000,
+        .description = sSassyMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_SASSY,
+        .flingPower = 30,
+    },
+
+    [ITEM_SERIOUS_MINT] = 
     {
         .name = _("Serious Mint"),
-        .price = 20,
+        .price = 20000,
         .description = sSeriousMintDesc,
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
-        .flingPower = 10,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_SERIOUS,
+        .flingPower = 30,
     },
 
+    [ITEM_TIMID_MINT] = 
+    {
+        .name = _("Timid Mint"),
+        .price = 20000,
+        .description = sTimidMintDesc,
+        .pocket = POCKET_ITEMS,
+        .type = 1,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
+        .secondaryId = NATURE_TIMID,
+        .flingPower = 10,
+    },
+    
 // Candy
 
     [ITEM_RARE_CANDY] =

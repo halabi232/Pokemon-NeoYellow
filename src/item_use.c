@@ -1326,4 +1326,31 @@ void ItemUseOutOfBattle_CannotUse(u8 taskId)
     DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
 }
 
+void ItemUseOutOfBattle_Mints(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_Mints;
+    SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_ReduceIV(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_ReduceIV;
+    gBagMenu->newScreenCallback = CB2_ShowPartyMenuForItemUse;
+    SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_IncreaseIV(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_IncreaseIV;
+     gBagMenu->newScreenCallback = CB2_ShowPartyMenuForItemUse;
+    SetUpItemUseCallback(taskId);
+}
+
 #undef tUsingRegisteredKeyItem
+
+void ItemUseOutOfBattle_PokeBall(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_PokeBall;
+    gBagMenu->newScreenCallback = CB2_ShowPartyMenuForItemUse;
+    Task_FadeAndCloseBagMenu(taskId);
+}
