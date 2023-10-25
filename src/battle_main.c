@@ -5790,3 +5790,42 @@ bool32 IsWildMonSmart(void)
     return FALSE;
 #endif
 }
+
+enum LevelCap {
+    LEVEL_CAP_NO_BADGES,
+    LEVEL_CAP_BADGE_1,
+    LEVEL_CAP_BADGE_2,
+    LEVEL_CAP_BADGE_3,
+    LEVEL_CAP_BADGE_4,
+    LEVEL_CAP_BADGE_5,
+    LEVEL_CAP_BADGE_6,
+    LEVEL_CAP_BADGE_7,
+    LEVEL_CAP_BADGE_8
+};
+static const u8 sLevelCapTable[] = 
+{
+    [LEVEL_CAP_NO_BADGES]   = 20,
+    [LEVEL_CAP_BADGE_1]     = 30,
+    [LEVEL_CAP_BADGE_2]     = 40,
+    [LEVEL_CAP_BADGE_3]     = 45,
+    [LEVEL_CAP_BADGE_4]     = 50,
+    [LEVEL_CAP_BADGE_5]     = 55,
+    [LEVEL_CAP_BADGE_6]     = 60,
+    [LEVEL_CAP_BADGE_7]     = 70,
+    [LEVEL_CAP_BADGE_8]     = 80,
+};
+
+u8 GetCurrentPartyLevelCap(void)
+{
+    u16 i, badgeCount = 0;
+    for (i = FLAG_BADGE01_GET; i < FLAG_BADGE01_GET + NUM_BADGES; i++) //count badges
+    {
+        if (FlagGet(i))
+            badgeCount++;
+    }
+
+    if (FlagGet(FLAG_IS_CHAMPION)) //after beating the E4 remove the cap
+        return MAX_LEVEL;
+    else
+        return sLevelCapTable[badgeCount];
+}
