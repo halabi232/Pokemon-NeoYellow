@@ -1108,8 +1108,28 @@ struct SaveBlock1
     /*0x3D64*/ struct TrainerHillSave trainerHill;  //12 bytes
     #endif
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
-               u8 dexNavSearchLevels[NUM_SPECIES];
-               u8 dexNavChain;
+        #if P_GEN_8_POKEMON
+            u8 dexNavSearchLevels[NUM_SPECIES];
+        #else
+            #if P_GEN_7_POKEMON
+                u8 dexNavSearchLevels[SPECIES_MELMETAL + 305];
+            #else
+                #if P_GEN_6_POKEMON
+                    u8 dexNavSearchLevels[SPECIES_VOLCANION + 263];
+                #else
+                    #if P_GEN_5_POKEMON
+                        u8 dexNavSearchLevels[SPECIES_GENESECT + 206];
+                    #else
+                        #if P_GEN_4_POKEMON
+                            u8 dexNavSearchLevels[SPECIES_ARCEUS + 184];
+                        #else
+                                u8 dexNavSearchLevels[SPECIES_DEOXYS + 151];
+                        #endif
+                    #endif
+                #endif
+            #endif
+        #endif
+            u8 dexNavChain;
     // sizeof: 0x3D8C
 };
 
