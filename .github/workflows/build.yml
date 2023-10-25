@@ -50,8 +50,11 @@ jobs:
           ./install.sh ../
         working-directory: agbcc
 
-      - name: Compare
-        run: make -j${nproc} all syms
+      - name: Agbcc
+        env:
+          MODERN: 0
+          COMPARE: 0
+        run: make -j${nproc} -O all
 
       - name: Modern
         env:
@@ -59,8 +62,10 @@ jobs:
           COMPARE: 0
         run: make -j${nproc} all
 
-      - name: Move symfiles
-        if: ${{ github.event_name == 'push' }}
+      - name: Test
+        env:
+          MODERN: 1
+          TEST: 1
         run: |
           cp -v *.sym symbols/
           echo "SYMBOLS_COMMIT_MSG=$( git log --format=%s ${GITHUB_SHA} )" >> $GITHUB_ENV
