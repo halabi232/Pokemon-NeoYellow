@@ -62,8 +62,11 @@
 #define MAX_POCKET_ITEMS  ((max(BAG_TMHM_COUNT,              \
                             max(BAG_BERRIES_COUNT,           \
                             max(BAG_ITEMS_COUNT,             \
+                            max(BAG_BATTLEITEMS_COUNT,       \
+                            max(BAG_TREASURES_COUNT,         \
+                            max(BAG_MEDICINE_COUNT,          \
                             max(BAG_KEYITEMS_COUNT,          \
-                                BAG_POKEBALLS_COUNT))))) + 1)
+                                BAG_POKEBALLS_COUNT)))))))) + 1)
 
 // Up to 8 item slots can be visible at a time
 #define MAX_ITEMS_SHOWN 8
@@ -77,13 +80,15 @@ enum {
 enum {
     ACTION_USE,
     ACTION_TOSS,
-    ACTION_REGISTER,
+    ACTION_REGISTER_L,
+    ACTION_REGISTER_R,
     ACTION_GIVE,
     ACTION_CANCEL,
     ACTION_BATTLE_USE,
     ACTION_CHECK,
     ACTION_WALK,
-    ACTION_DESELECT,
+    ACTION_DESELECT_L,
+    ACTION_DESELECT_R,
     ACTION_CHECK_TAG,
     ACTION_CONFIRM,
     ACTION_SHOW,
@@ -113,7 +118,7 @@ struct ListBuffer2 {
 };
 
 struct TempWallyBag {
-    struct ItemSlot bagPocket_Items[BAG_ITEMS_COUNT];
+    struct ItemSlot bagPocket_Medicine[BAG_MEDICINE_COUNT];
     struct ItemSlot bagPocket_PokeBalls[BAG_POKEBALLS_COUNT];
     u16 cursorPosition[POCKETS_COUNT];
     u16 scrollPosition[POCKETS_COUNT];
@@ -193,7 +198,9 @@ static void BagMenu_MoveCursorCallback(s32, bool8, struct ListMenu *);
 static void BagMenu_ItemPrintCallback(u8, u32, u8);
 static void ItemMenu_UseOutOfBattle(u8);
 static void ItemMenu_Toss(u8);
-static void ItemMenu_Register(u8);
+static void ItemMenu_RegisterL(u8);
+static void ItemMenu_RegisterR(u8);
+static void ItemMenu_Deselect(u8);
 static void ItemMenu_Give(u8);
 static void ItemMenu_Cancel(u8);
 static void ItemMenu_UseInBattle(u8);
@@ -265,21 +272,23 @@ static const struct ListMenuTemplate sItemListMenu =
 };
 
 static const struct MenuAction sItemMenuActions[] = {
-    [ACTION_USE]               = {gMenuText_Use,      {ItemMenu_UseOutOfBattle}},
-    [ACTION_TOSS]              = {gMenuText_Toss,     {ItemMenu_Toss}},
-    [ACTION_REGISTER]          = {gMenuText_Register, {ItemMenu_Register}},
-    [ACTION_GIVE]              = {gMenuText_Give,     {ItemMenu_Give}},
-    [ACTION_CANCEL]            = {gText_Cancel2,      {ItemMenu_Cancel}},
-    [ACTION_BATTLE_USE]        = {gMenuText_Use,      {ItemMenu_UseInBattle}},
-    [ACTION_CHECK]             = {gMenuText_Check,    {ItemMenu_UseOutOfBattle}},
-    [ACTION_WALK]              = {gMenuText_Walk,     {ItemMenu_UseOutOfBattle}},
-    [ACTION_DESELECT]          = {gMenuText_Deselect, {ItemMenu_Register}},
-    [ACTION_CHECK_TAG]         = {gMenuText_CheckTag, {ItemMenu_CheckTag}},
-    [ACTION_CONFIRM]           = {gMenuText_Confirm,  {Task_FadeAndCloseBagMenu}},
-    [ACTION_SHOW]              = {gMenuText_Show,     {ItemMenu_Show}},
-    [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,    {ItemMenu_GiveFavorLady}},
-    [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,  {ItemMenu_ConfirmQuizLady}},
-    [ACTION_DUMMY]             = {gText_EmptyString2, {NULL}}
+    [ACTION_USE]               = {gMenuText_Use,      ItemMenu_UseOutOfBattle},
+    [ACTION_TOSS]              = {gMenuText_Toss,     ItemMenu_Toss},
+    [ACTION_REGISTER_L]        = {gMenuText_RegisterL, ItemMenu_RegisterL},
+    [ACTION_REGISTER_R]        = {gMenuText_RegisterR, ItemMenu_RegisterR},
+    [ACTION_GIVE]              = {gMenuText_Give,     ItemMenu_Give},
+    [ACTION_CANCEL]            = {gText_Cancel2,      ItemMenu_Cancel},
+    [ACTION_BATTLE_USE]        = {gMenuText_Use,      ItemMenu_UseInBattle},
+    [ACTION_CHECK]             = {gMenuText_Check,    ItemMenu_UseOutOfBattle},
+    [ACTION_WALK]              = {gMenuText_Walk,     ItemMenu_UseOutOfBattle},
+    [ACTION_DESELECT_L]        = {gMenuText_Deselect, ItemMenu_RegisterL},
+    [ACTION_DESELECT_R]        = {gMenuText_Deselect, ItemMenu_RegisterR},
+    [ACTION_CHECK_TAG]         = {gMenuText_CheckTag, ItemMenu_CheckTag},
+    [ACTION_CONFIRM]           = {gMenuText_Confirm,  Task_FadeAndCloseBagMenu},
+    [ACTION_SHOW]              = {gMenuText_Show,     ItemMenu_Show},
+    [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,    ItemMenu_GiveFavorLady},
+    [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,  ItemMenu_ConfirmQuizLady},
+    [ACTION_DUMMY]             = {gText_EmptyString2, NULL}
 };
 
 // these are all 2D arrays with a width of 2 but are represented as 1D arrays
@@ -290,12 +299,12 @@ static const u8 sContextMenuItems_ItemsPocket[] = {
 };
 
 static const u8 sContextMenuItems_KeyItemsPocket[] = {
-    ACTION_USE,         ACTION_REGISTER,
-    ACTION_DUMMY,       ACTION_CANCEL
+    ACTION_USE,         ACTION_REGISTER_L,
+    ACTION_REGISTER_R,       ACTION_CANCEL
 };
 
 static const u8 sContextMenuItems_BallsPocket[] = {
-    ACTION_GIVE,        ACTION_DUMMY,
+    ACTION_USE,         ACTION_GIVE,
     ACTION_TOSS,        ACTION_CANCEL
 };
 
@@ -372,7 +381,8 @@ static const struct ScrollArrowsTemplate sBagScrollArrowsTemplate = {
     .palNum = 0,
 };
 
-static const u8 sRegisteredSelect_Gfx[] = INCBIN_U8("graphics/bag/select_button.4bpp");
+static const u8 sRegisteredL_Gfx[] = INCBIN_U8("graphics/bag/L_button.4bpp");
+static const u8 sRegisteredR_Gfx[] = INCBIN_U8("graphics/bag/R_button.4bpp");
 
 enum {
     COLORID_NORMAL,
@@ -740,6 +750,10 @@ static bool8 SetupBagMenu(void)
     case 13:
         PrintPocketNames(gPocketNamesStringsTable[gBagPosition.pocket], 0);
         CopyPocketNameToWindow(0);
+        DrawPocketIndicatorSquare(0, FALSE);
+        DrawPocketIndicatorSquare(5, FALSE);
+        DrawPocketIndicatorSquare(6, FALSE);
+        DrawPocketIndicatorSquare(7, FALSE);
         DrawPocketIndicatorSquare(gBagPosition.pocket, TRUE);
         gMain.state++;
         break;
@@ -908,9 +922,18 @@ static void GetItemName(u8 *dest, u16 itemId)
         }
         else
         {
+            if (itemId < ITEM_TM100)
+            {
             // Get TM number
             ConvertIntToDecimalStringN(gStringVar1, itemId - ITEM_TM01 + 1, STR_CONV_MODE_LEADING_ZEROS, 2);
             StringExpandPlaceholders(dest, gText_NumberItem_TMBerry);
+            }
+            else
+            {
+            // Get TM number
+            ConvertIntToDecimalStringN(gStringVar1, itemId - ITEM_TM01 + 1, STR_CONV_MODE_LEADING_ZEROS, 3);
+            StringExpandPlaceholders(dest, gText_NumberItem_TMBerry);
+            }
         }
         break;
     case BERRIES_POCKET:
@@ -928,7 +951,7 @@ static void BagMenu_MoveCursorCallback(s32 itemIndex, bool8 onInit, struct ListM
 {
     if (onInit != TRUE)
     {
-        PlaySE(SE_SELECT);
+        PlaySE(SE_RG_BAG_POCKET);
         ShakeBagSprite();
     }
     if (gBagMenu->toSwapPos == NOT_SWAPPING)
@@ -987,8 +1010,10 @@ static void BagMenu_ItemPrintCallback(u8 windowId, u32 itemIndex, u8 y)
         else
         {
             // Print registered icon
-            if (gSaveBlock1Ptr->registeredItem != ITEM_NONE && gSaveBlock1Ptr->registeredItem == itemId)
-                BlitBitmapToWindow(windowId, sRegisteredSelect_Gfx, 96, y - 1, 24, 16);
+            if (gSaveBlock1Ptr->registeredItemL && gSaveBlock1Ptr->registeredItemL == itemId)
+                BlitBitmapToWindow(windowId, sRegisteredL_Gfx, 96, y - 1, 24, 16);
+            if (gSaveBlock1Ptr->registeredItemR && gSaveBlock1Ptr->registeredItemR == itemId)
+                BlitBitmapToWindow(windowId, sRegisteredR_Gfx, 96, y - 1, 24, 16);
         }
     }
 }
@@ -1290,12 +1315,12 @@ static u8 GetSwitchBagPocketDirection(void)
     LRKeys = GetLRKeysPressed();
     if (JOY_NEW(DPAD_LEFT) || LRKeys == MENU_L_PRESSED)
     {
-        PlaySE(SE_SELECT);
+        PlaySE(SE_RG_BAG_POCKET);
         return SWITCH_POCKET_LEFT;
     }
     if (JOY_NEW(DPAD_RIGHT) || LRKeys == MENU_R_PRESSED)
     {
-        PlaySE(SE_SELECT);
+        PlaySE(SE_RG_BAG_POCKET);
         return SWITCH_POCKET_RIGHT;
     }
     return SWITCH_POCKET_NONE;
@@ -1408,9 +1433,9 @@ static void DrawItemListBgRow(u8 y)
 static void DrawPocketIndicatorSquare(u8 x, bool8 isCurrentPocket)
 {
     if (!isCurrentPocket)
-        FillBgTilemapBufferRect_Palette0(2, 0x1017, x + 5, 3, 1, 1);
+        FillBgTilemapBufferRect_Palette0(2, 0x1017, x + 4, 3, 1, 1);
     else
-        FillBgTilemapBufferRect_Palette0(2, 0x102B, x + 5, 3, 1, 1);
+        FillBgTilemapBufferRect_Palette0(2, 0x102B, x + 4, 3, 1, 1);
     ScheduleBgCopyTilemapToVram(2);
 }
 
@@ -1617,8 +1642,10 @@ static void OpenContextMenu(u8 taskId)
                 gBagMenu->contextMenuItemsPtr = gBagMenu->contextMenuItemsBuffer;
                 gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_KeyItemsPocket);
                 memcpy(&gBagMenu->contextMenuItemsBuffer, &sContextMenuItems_KeyItemsPocket, sizeof(sContextMenuItems_KeyItemsPocket));
-                if (gSaveBlock1Ptr->registeredItem == gSpecialVar_ItemId)
-                    gBagMenu->contextMenuItemsBuffer[1] = ACTION_DESELECT;
+                if (gSaveBlock1Ptr->registeredItemL == gSpecialVar_ItemId)
+                    gBagMenu->contextMenuItemsBuffer[1] = ACTION_DESELECT_L;
+                if (gSaveBlock1Ptr->registeredItemR == gSpecialVar_ItemId)
+                    gBagMenu->contextMenuItemsBuffer[2] = ACTION_DESELECT_R;
                 if (gSpecialVar_ItemId == ITEM_MACH_BIKE || gSpecialVar_ItemId == ITEM_ACRO_BIKE)
                 {
                     if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE))
@@ -1636,6 +1663,18 @@ static void OpenContextMenu(u8 taskId)
             case BERRIES_POCKET:
                 gBagMenu->contextMenuItemsPtr = sContextMenuItems_BerriesPocket;
                 gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_BerriesPocket);
+                break;
+            case MEDICINE_POCKET:
+                gBagMenu->contextMenuItemsPtr = sContextMenuItems_ItemsPocket;
+                gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_ItemsPocket);
+                break;
+            case BATTLEITEMS_POCKET:
+                gBagMenu->contextMenuItemsPtr = sContextMenuItems_ItemsPocket;
+                gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_ItemsPocket);
+                break;
+            case TREASURES_POCKET:
+                gBagMenu->contextMenuItemsPtr = sContextMenuItems_ItemsPocket;
+                gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_ItemsPocket);
                 break;
             }
         }
@@ -1902,16 +1941,43 @@ static void Task_RemoveItemFromBag(u8 taskId)
     }
 }
 
-static void ItemMenu_Register(u8 taskId)
+static void ItemMenu_RegisterL(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
     u16 *scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
     u16 *cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
 
-    if (gSaveBlock1Ptr->registeredItem == gSpecialVar_ItemId)
-        gSaveBlock1Ptr->registeredItem = ITEM_NONE;
+    if (gSaveBlock1Ptr->registeredItemL == gSpecialVar_ItemId)
+        gSaveBlock1Ptr->registeredItemL = ITEM_NONE;
     else
-        gSaveBlock1Ptr->registeredItem = gSpecialVar_ItemId;
+    {
+        gSaveBlock1Ptr->registeredItemL = gSpecialVar_ItemId;
+        if (gSaveBlock1Ptr->registeredItemL == gSaveBlock1Ptr->registeredItemR)
+            gSaveBlock1Ptr->registeredItemR = ITEM_NONE;
+
+    }
+    DestroyListMenuTask(tListTaskId, scrollPos, cursorPos);
+    LoadBagItemListBuffers(gBagPosition.pocket);
+    tListTaskId = ListMenuInit(&gMultiuseListMenuTemplate, *scrollPos, *cursorPos);
+    ScheduleBgCopyTilemapToVram(0);
+    ItemMenu_Cancel(taskId);
+}
+
+static void ItemMenu_RegisterR(u8 taskId)
+{
+    s16* data = gTasks[taskId].data;
+    u16* scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
+    u16* cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
+
+    if (gSaveBlock1Ptr->registeredItemR == gSpecialVar_ItemId)
+        gSaveBlock1Ptr->registeredItemR = ITEM_NONE;
+    else
+    {
+        gSaveBlock1Ptr->registeredItemR = gSpecialVar_ItemId;
+        if (gSaveBlock1Ptr->registeredItemR == gSaveBlock1Ptr->registeredItemL)
+            gSaveBlock1Ptr->registeredItemL = ITEM_NONE;
+
+    }
     DestroyListMenuTask(tListTaskId, scrollPos, cursorPos);
     LoadBagItemListBuffers(gBagPosition.pocket);
     tListTaskId = ListMenuInit(&gMultiuseListMenuTemplate, *scrollPos, *cursorPos);
@@ -2039,34 +2105,63 @@ static void Task_ItemContext_GiveToPC(u8 taskId)
 
 #define tUsingRegisteredKeyItem data[3] // See usage in item_use.c
 
-bool8 UseRegisteredKeyItemOnField(void)
+bool8 UseRegisteredKeyItemOnField(u8 button)
 {
     u8 taskId;
+    u16 registeredItem;
 
     if (InUnionRoom() == TRUE || InBattlePyramid() || InBattlePike() || InMultiPartnerRoom() == TRUE)
         return FALSE;
     HideMapNamePopUpWindow();
     ChangeBgY_ScreenOff(0, 0, BG_COORD_SET);
-    if (gSaveBlock1Ptr->registeredItem != ITEM_NONE)
+
+    switch (button)
     {
-        if (CheckBagHasItem(gSaveBlock1Ptr->registeredItem, 1) == TRUE)
+    case 0:
+        registeredItem = gSaveBlock1Ptr->registeredItemL;
+        break;
+    case 1:
+        registeredItem = gSaveBlock1Ptr->registeredItemR;
+        break;
+    default:
+        return FALSE;
+    }
+
+    if (registeredItem != ITEM_NONE)
+    {
+        if (CheckBagHasItem(registeredItem, 1) == TRUE)
         {
             LockPlayerFieldControls();
             FreezeObjectEvents();
             PlayerFreeze();
             StopPlayerAvatar();
-            gSpecialVar_ItemId = gSaveBlock1Ptr->registeredItem;
-            taskId = CreateTask(ItemId_GetFieldFunc(gSaveBlock1Ptr->registeredItem), 8);
+            gSpecialVar_ItemId = registeredItem;
+            taskId = CreateTask(ItemId_GetFieldFunc(registeredItem), 8);
             gTasks[taskId].tUsingRegisteredKeyItem = TRUE;
             return TRUE;
         }
         else
         {
-            gSaveBlock1Ptr->registeredItem = ITEM_NONE;
+            switch (button)
+            {
+            case 0:
+                gSaveBlock1Ptr->registeredItemL = ITEM_NONE;
+                break;
+            case 1:
+                gSaveBlock1Ptr->registeredItemR = ITEM_NONE;
+                break;
+            }
         }
     }
-    ScriptContext_SetupScript(EventScript_SelectWithoutRegisteredItem);
-    return TRUE;
+    switch (button)
+    {
+        case 0:
+            ScriptContext_SetupScript(EventScript_LWithoutRegisteredItem);
+            return TRUE;
+        case 1:
+            ScriptContext_SetupScript(EventScript_RWithoutRegisteredItem);
+            return TRUE;
+    }
 }
 
 #undef tUsingRegisteredKeyItem
@@ -2299,7 +2394,7 @@ static void PrepareBagForWallyTutorial(void)
     u32 i;
 
     sTempWallyBag = AllocZeroed(sizeof(*sTempWallyBag));
-    memcpy(sTempWallyBag->bagPocket_Items, gSaveBlock1Ptr->bagPocket_Items, sizeof(gSaveBlock1Ptr->bagPocket_Items));
+    memcpy(sTempWallyBag->bagPocket_Medicine, gSaveBlock1Ptr->bagPocket_Medicine, sizeof(gSaveBlock1Ptr->bagPocket_Medicine));
     memcpy(sTempWallyBag->bagPocket_PokeBalls, gSaveBlock1Ptr->bagPocket_PokeBalls, sizeof(gSaveBlock1Ptr->bagPocket_PokeBalls));
     sTempWallyBag->pocket = gBagPosition.pocket;
     for (i = 0; i < POCKETS_COUNT; i++)
@@ -2307,7 +2402,7 @@ static void PrepareBagForWallyTutorial(void)
         sTempWallyBag->cursorPosition[i] = gBagPosition.cursorPosition[i];
         sTempWallyBag->scrollPosition[i] = gBagPosition.scrollPosition[i];
     }
-    ClearItemSlots(gSaveBlock1Ptr->bagPocket_Items, BAG_ITEMS_COUNT);
+    ClearItemSlots(gSaveBlock1Ptr->bagPocket_Medicine, BAG_MEDICINE_COUNT);
     ClearItemSlots(gSaveBlock1Ptr->bagPocket_PokeBalls, BAG_POKEBALLS_COUNT);
     ResetBagScrollPositions();
 }
@@ -2316,7 +2411,7 @@ static void RestoreBagAfterWallyTutorial(void)
 {
     u32 i;
 
-    memcpy(gSaveBlock1Ptr->bagPocket_Items, sTempWallyBag->bagPocket_Items, sizeof(sTempWallyBag->bagPocket_Items));
+    memcpy(gSaveBlock1Ptr->bagPocket_Medicine, sTempWallyBag->bagPocket_Medicine, sizeof(sTempWallyBag->bagPocket_Medicine));
     memcpy(gSaveBlock1Ptr->bagPocket_PokeBalls, sTempWallyBag->bagPocket_PokeBalls, sizeof(sTempWallyBag->bagPocket_PokeBalls));
     gBagPosition.pocket = sTempWallyBag->pocket;
     for (i = 0; i < POCKETS_COUNT; i++)
@@ -2332,7 +2427,7 @@ void DoWallyTutorialBagMenu(void)
     PrepareBagForWallyTutorial();
     AddBagItem(ITEM_POTION, 1);
     AddBagItem(ITEM_POKE_BALL, 1);
-    GoToBagMenu(ITEMMENULOCATION_WALLY, ITEMS_POCKET, CB2_SetUpReshowBattleScreenAfterMenu2);
+    GoToBagMenu(ITEMMENULOCATION_WALLY, MEDICINE_POCKET, CB2_SetUpReshowBattleScreenAfterMenu2);
 }
 
 #define tTimer data[8]

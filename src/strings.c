@@ -180,7 +180,9 @@ const u8 gText_Pokemon4[] = _("POKéMON"); // Unused
 const u8 gText_FlyToWhere[] = _("FLY to where?");
 const u8 gMenuText_Use[] = _("USE");
 const u8 gMenuText_Toss[] = _("TOSS");
-const u8 gMenuText_Register[] = _("REGISTER");
+const u8 gMenuText_Register[] = _("Register");
+const u8 gMenuText_RegisterL[] = _("Register L");
+const u8 gMenuText_RegisterR[] = _("Register R");
 const u8 gMenuText_Give[] = _("GIVE");
 const u8 gMenuText_CheckTag[] = _("CHECK TAG");
 const u8 gMenuText_Confirm[] = _("CONFIRM");
@@ -280,18 +282,24 @@ const u8 *const gPyramidBagMenu_ReturnToStrings[] =
 };
 
 const u8 gText_ReturnToVar1[] = _("Return to\n{STR_VAR_1}.");
-const u8 gText_ItemsPocket[] = _("ITEMS");
-const u8 gText_PokeBallsPocket[] = _("POKé BALLS");
+const u8 gText_ItemsPocket[] = _("Items");
+const u8 gText_PokeBallsPocket[] = _("Poké Balls");
 const u8 gText_TMHMPocket[] = _("TMs & HMs");
-const u8 gText_BerriesPocket[] = _("BERRIES");
-const u8 gText_KeyItemsPocket[] = _("KEY ITEMS");
+const u8 gText_BerriesPocket[] = _("Berries");
+const u8 gText_KeyItemsPocket[] = _("Key Items");
+const u8 gText_MedicinePocket[] = _("Medicine");
+const u8 gText_BattleItemsPocket[] = _("Battle Item");
+const u8 gText_TreasuresPocket[] = _("Treasures");
 
 const u8 *const gPocketNamesStringsTable[] =
 {
     [ITEMS_POCKET] = gText_ItemsPocket,
+    [MEDICINE_POCKET] = gText_MedicinePocket,
     [BALLS_POCKET] = gText_PokeBallsPocket,
-    [TMHM_POCKET]  = gText_TMHMPocket,
+    [BATTLEITEMS_POCKET] = gText_BattleItemsPocket,
     [BERRIES_POCKET] = gText_BerriesPocket,
+    [TREASURES_POCKET] = gText_TreasuresPocket,
+    [TMHM_POCKET]  = gText_TMHMPocket,
     [KEYITEMS_POCKET] = gText_KeyItemsPocket
 };
 
@@ -711,6 +719,9 @@ const u8 gText_Key_Items[] = _("KEY ITEMS");
 const u8 gText_Poke_Balls[] = _("POKé BALLS");
 const u8 gText_TMs_Hms[] = _("TMs & HMs");
 const u8 gText_Berries2[] = _("BERRIES");
+const u8 gText_Medicine[] = _("Medicine");
+const u8 gText_BattleItems[] = _("Battle Item");
+const u8 gText_Treasures[] = _("Treasures");
 const u8 gText_SomeonesPC[] = _("SOMEONE'S PC");
 const u8 gText_LanettesPC[] = _("LANETTE'S PC");
 const u8 gText_PlayersPC[] = _("{PLAYER}'s PC");
@@ -1233,6 +1244,7 @@ const u8 gText_BattleFactory[] = _("BATTLE FACTORY");
 const u8 gText_BattleArena[] = _("BATTLE ARENA");
 const u8 gText_BattlePike[] = _("BATTLE PIKE");
 const u8 gText_BattlePyramid[] = _("BATTLE PYRAMID");
+
 
 ALIGNED(4) const u8 gText_FacilitySingle[] = _("{STR_VAR_1} SINGLE");
 ALIGNED(4) const u8 gText_FacilityDouble[] = _("{STR_VAR_1} DOUBLE");

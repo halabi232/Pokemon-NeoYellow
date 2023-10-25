@@ -183,7 +183,7 @@ void NewGameInitData(void)
     ResetPokemonStorageSystem();
     ClearRoamerData();
     ClearRoamerLocationData();
-    gSaveBlock1Ptr->registeredItem = ITEM_NONE;
+    //gSaveBlock1Ptr->registeredItem = 0;
     ClearBag();
     NewGameInitPCItems();
     ClearPokeblocks();
@@ -207,6 +207,9 @@ void NewGameInitData(void)
     ResetContestLinkResults();
     memset(gSaveBlock1Ptr->dexNavSearchLevels, 0, sizeof(gSaveBlock1Ptr->dexNavSearchLevels));
     gSaveBlock1Ptr->dexNavChain = 0;
+    
+    gSaveBlock1Ptr->registeredItemL = 0;
+    gSaveBlock1Ptr->registeredItemR = 0;
 }
 
 static void ResetMiniGamesRecords(void)

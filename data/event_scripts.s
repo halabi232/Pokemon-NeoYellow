@@ -860,7 +860,15 @@ gText_SandstormIsVicious::
 
 gText_SelectWithoutRegisteredItem::
 	.string "An item in the BAG can be\n"
-	.string "registered to SELECT for easy use.$"
+	.string "registered for easy use.$"
+
+gText_LWithoutRegisteredItem::
+	.string "An item in the Bag can be\n"
+	.string "registered to L for easy use.$"
+
+gText_RWithoutRegisteredItem::
+	.string "An item in the Bag can be\n"
+	.string "registered to R for easy use.$"
 
 gText_PokemonTrainerSchoolEmail::
 	.string "There's an e-mail from POKéMON TRAINER\n"
@@ -961,6 +969,14 @@ gText_LegendaryFlewAway::
 
 EventScript_SelectWithoutRegisteredItem::
 	msgbox gText_SelectWithoutRegisteredItem, MSGBOX_SIGN
+	end
+
+EventScript_LWithoutRegisteredItem::
+	msgbox gText_LWithoutRegisteredItem, MSGBOX_SIGN
+	end
+
+EventScript_RWithoutRegisteredItem::
+	msgbox gText_RWithoutRegisteredItem, MSGBOX_SIGN
 	end
 
 	.include "data/scripts/field_poison.inc"

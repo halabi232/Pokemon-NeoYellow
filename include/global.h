@@ -1011,13 +1011,17 @@ struct SaveBlock1
     /*0x238*/ struct Pokemon playerParty[PARTY_SIZE];
     /*0x490*/ u32 money;
     /*0x494*/ u16 coins;
-    /*0x496*/ u16 registeredItem; // registered for use with SELECT button
+    /*0x496*/ u16 registeredItemL; // registered for use with L button
+              u16 registeredItemR; // registered for use with R button
     /*0x498*/ struct ItemSlot pcItems[PC_ITEMS_COUNT];
     /*0x560*/ struct ItemSlot bagPocket_Items[BAG_ITEMS_COUNT];
     /*0x5D8*/ struct ItemSlot bagPocket_KeyItems[BAG_KEYITEMS_COUNT];
     /*0x650*/ struct ItemSlot bagPocket_PokeBalls[BAG_POKEBALLS_COUNT];
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
+              struct ItemSlot bagPocket_Medicine[BAG_MEDICINE_COUNT];
+              struct ItemSlot bagPocket_BattleItems[BAG_BATTLEITEMS_COUNT];
+              struct ItemSlot bagPocket_Treasures[BAG_TREASURES_COUNT];
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
     #ifndef FREE_EXTRA_SEEN_FLAGS
     /*0x988*/ u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
@@ -1089,7 +1093,9 @@ struct SaveBlock1
     #ifndef FREE_TRAINER_HILL
     /*0x3718*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES]; //16 bytes
     #endif
+    #ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3728*/ struct RamScript ramScript;
+    #endif
     /*0x3B14*/ struct RecordMixingGift recordMixingGift;
     /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];
     /*0x3B58*/ LilycoveLady lilycoveLady;
@@ -1104,7 +1110,7 @@ struct SaveBlock1
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
                u8 dexNavSearchLevels[NUM_SPECIES];
                u8 dexNavChain;
-    // sizeof: 0x3D88
+    // sizeof: 0x3D8C
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;
