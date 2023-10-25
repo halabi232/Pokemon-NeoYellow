@@ -5538,17 +5538,22 @@ bool8 MovementType_FollowPlayer_Moving(struct ObjectEvent *objectEvent, struct S
 {
     #ifdef MB_SIDEWAYS_STAIRS_RIGHT_SIDE
     // Copied from ObjectEventExecSingleMovementAction
-    if (gMovementActionFuncs[objectEvent->movementActionId][sprite->sActionFuncId](objectEvent, sprite)) {
+    if (gMovementActionFuncs[objectEvent->movementActionId][sprite->sActionFuncId](objectEvent, sprite)) 
+    {
         objectEvent->movementActionId = MOVEMENT_ACTION_NONE;
         sprite->sActionFuncId = 0;
     #else
-    if (ObjectEventExecSingleMovementAction(objectEvent, sprite)) {
+    if (ObjectEventExecSingleMovementAction(objectEvent, sprite)) 
+    {
     #endif
         objectEvent->singleMovementActive = 0;
-        if (sprite->sTypeFuncId) { // restore nonzero state
+        if (sprite->sTypeFuncId) 
+        { // restore nonzero state
             sprite->sTypeFuncId = 1;
         }
-    } else if (objectEvent->movementActionId < MOVEMENT_ACTION_EXIT_POKEBALL) {
+    } 
+    else if (objectEvent->movementActionId < MOVEMENT_ACTION_EXIT_POKEBALL) 
+    {
         UpdateFollowerTransformEffect(objectEvent, sprite);
         #if OW_MON_BOBBING == TRUE
         if ((sprite->data[5] & 7) == 2)

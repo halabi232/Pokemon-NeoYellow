@@ -710,11 +710,10 @@ static bool8 LightenSpritePaletteInFog(u8 paletteIndex)
 {
     u16 i;
 
-    if (paletteIndex >= 16 && (GetSpritePaletteTagByPaletteNum(i - 16) >> 15)) // don't blend specialpalette tags
-        return FALSE;
-
     for (i = 0; i < gWeatherPtr->lightenedFogSpritePalsCount; i++)
     {
+        if (paletteIndex >= 16 && (GetSpritePaletteTagByPaletteNum(i - 16) >> 15)) // don't blend specialpalette tags
+            return FALSE;
         if (gWeatherPtr->lightenedFogSpritePals[i] == paletteIndex)
             return TRUE;
     }
