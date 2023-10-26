@@ -522,6 +522,7 @@ struct SaveBlock2
     /*0x14*/ u16 optionsTextSpeed:3; // OPTIONS_TEXT_SPEED_[SLOW/MID/FAST]
              u16 optionsWindowFrameType:5; // Specifies one of the 20 decorative borders for text boxes
              u16 optionsSound:1; // OPTIONS_SOUND_[MONO/STEREO]
+             //bool8 optionsAutorun; //OPTIONS_AUTORUN
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
              u16 optionsBattleSceneOff:1; // whether battle animations are disabled
              u16 regionMapZoom:1; // whether the map is zoomed in
@@ -546,8 +547,11 @@ struct SaveBlock2
     #endif
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
+    /*0xF2C*/ //u8 rivalName[PLAYER_NAME_LENGTH + 1];
+              //u8 costumeId;
+              //u16 optionsFollowerType:3; //Follower Type: 0= Pikachu, 1=Any, 2=Off
+              u16 surfMon;
 }; // sizeof=0xF2C
-
 extern struct SaveBlock2 *gSaveBlock2Ptr;
 
 extern u8 UpdateSpritePaletteWithTime(u8);
