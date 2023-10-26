@@ -1999,13 +1999,14 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
             {
                 const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[partyData[i].species];
                 u32 maxAbilities = ARRAY_COUNT(speciesInfo->abilities);
-                for (j = 0; j < maxAbilities; ++j)
-                {
-                    if (speciesInfo->abilities[j] == partyData[i].ability)
-                        break;
-                }
-                if (j < maxAbilities)
-                    SetMonData(&party[i], MON_DATA_ABILITY_NUM, &j);
+                //for (j = 0; j < maxAbilities; ++j)
+                //{
+                //    if (speciesInfo->abilities[j] == partyData[i].ability)
+                //        break;
+                //}
+                if (partyData[i].ability < maxAbilities)
+                    if (speciesInfo->abilities[partyData[i].ability] != ABILITY_NONE)
+                        SetMonData(&party[i], MON_DATA_ABILITY_NUM, &speciesInfo->abilities[partyData[i].ability]);
             }
             SetMonData(&party[i], MON_DATA_FRIENDSHIP, &(partyData[i].friendship));
             if (partyData[i].ball != ITEM_NONE)
