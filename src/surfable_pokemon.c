@@ -35,8 +35,6 @@ static EWRAM_DATA u16 sCurrentSurfMon = {0};
 
 static u16 GetSurfMonSpecies(void)
 {
-    if (gSaveBlock2Ptr->surfMon == SPECIES_NONE)
-    {
         u8 i;
 
         for (i = 0; i < 6; i++)
@@ -48,11 +46,6 @@ static u16 GetSurfMonSpecies(void)
             }
         }
         return 0xFFFF;
-    }
-    else
-    {
-        return gSaveBlock2Ptr->surfMon;
-    }
 }
 
 static u16 GetSurfablePokemonSprite(void)
