@@ -53,6 +53,7 @@
 #include "constants/trainers.h"
 #include "constants/union_room.h"
 #include "constants/weather.h"
+#include "daycare.h"
 
 
 #if P_FRIENDSHIP_EVO_THRESHOLD >= GEN_9
@@ -7811,6 +7812,110 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
                     moves[numMoves++] = gLevelUpLearnsets[species][i].move;
             }
         }
+    }
+
+    return numMoves;
+}
+
+u8 GetEggMoveTutorMoves(struct Pokemon *mon, u16 *moves)
+{   
+    u16 baseSpecies = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u16 learnedMoves[MAX_MON_MOVES]; 
+    u16 eggMoveBuffer[EGG_MOVES_ARRAY_COUNT];
+    u8 numEggMoves;
+    u8 numMoves = 0;
+    bool8 found = FALSE;
+    int i, j, k;
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+        learnedMoves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, 0);
+
+    for (i = 0; i < EVOS_PER_MON; i++)
+    {
+        found = FALSE;
+        for (j = 1; j < NUM_SPECIES; j++)
+        {
+            for (k = 0; k < EVOS_PER_MON; k++)
+            {
+                if (gEvolutionTable[j][k].targetSpecies == baseSpecies)
+                {
+                    baseSpecies = j;
+                    found = TRUE;
+                    break;
+                }
+            }
+
+            if (found)
+                break;
+        }
+
+        if (j == NUM_SPECIES)
+            break;
+    }
+
+    numEggMoves = GetEggMoves2(baseSpecies, eggMoveBuffer);
+    if(numEggMoves != 0)
+    {
+        for (i = 0; i < EGG_MOVES_ARRAY_COUNT; i++)
+            if (learnedMoves[0] != eggMoveBuffer[i]
+                && learnedMoves[1] != eggMoveBuffer[i]
+                && learnedMoves[2] != eggMoveBuffer[i]
+                && learnedMoves[3] != eggMoveBuffer[i])
+                moves[numMoves++] = eggMoveBuffer[i];
+    }
+
+    return numMoves;
+}
+
+u8 GetNumberOfEggMoves(struct Pokemon *mon)
+{
+
+    u16 baseSpecies = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u16 learnedMoves[MAX_MON_MOVES]; 
+    u16 eggMoveBuffer[EGG_MOVES_ARRAY_COUNT];
+    u16 moves[EGG_MOVES_ARRAY_COUNT];
+    u8 numEggMoves;
+    u8 numMoves = 0;
+    bool8 found = FALSE;
+    int i, j, k;
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+        learnedMoves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, 0);
+
+    for (i = 0; i < EVOS_PER_MON; i++)
+    {
+        found = FALSE;
+        for (j = 1; j < NUM_SPECIES; j++)
+        {
+            for (k = 0; k < EVOS_PER_MON; k++)
+            {
+                if (gEvolutionTable[j][k].targetSpecies == baseSpecies)
+                {
+                    baseSpecies = j;
+                    found = TRUE;
+                    break;
+                }
+            }
+
+            if (found)
+                break;
+        }
+
+        if (j == NUM_SPECIES)
+            break;
+    }
+
+    numEggMoves = GetEggMoves2(baseSpecies, eggMoveBuffer);
+    if(numEggMoves != 0)
+    {
+        for (i = 0; i < numEggMoves; i++)
+            if (eggMoveBuffer[i] == MOVE_STRUGGLE)
+                break;
+            else if (learnedMoves[0] != eggMoveBuffer[i]
+                && learnedMoves[1] != eggMoveBuffer[i]
+                && learnedMoves[2] != eggMoveBuffer[i]
+                && learnedMoves[3] != eggMoveBuffer[i])
+                moves[numMoves++] = eggMoveBuffer[i];
     }
 
     return numMoves;
