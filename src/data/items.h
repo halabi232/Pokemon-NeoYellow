@@ -8545,6 +8545,96 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
+    //IV Items
+    [ITEM_HP_CANDY] =
+    {
+        .name = _("HP Candy"),
+        .price = 0,
+        .description = sHPCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_IncreaseIV,
+        .secondaryId = STAT_HP,
+        .flingPower = 30,
+    },
+    [ITEM_ATK_CANDY] =
+    {
+        .name = _("Attack Candy"),
+        .price = 0,
+        .description = sAtkCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_IncreaseIV,
+        .secondaryId = STAT_ATK,
+        .flingPower = 30,
+    },
+    [ITEM_DEF_CANDY] =
+    {
+        .name = _("Defense Candy"),
+        .price = 0,
+        .description = sDefCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_IncreaseIV,
+        .secondaryId = STAT_DEF,
+        .flingPower = 30,
+    },
+    [ITEM_SPATK_CANDY] =
+    {
+        .name = _("Sp.Atk Candy"),
+        .price = 0,
+        .description = sSpAtkCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_IncreaseIV,
+        .secondaryId = STAT_SPATK,
+        .flingPower = 30,
+    },
+    [ITEM_SPDEF_CANDY] =
+    {
+        .name = _("Sp.Def Candy"),
+        .price = 0,
+        .description = sSpDefCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_IncreaseIV,
+        .secondaryId = STAT_SPDEF,
+        .flingPower = 30,
+    },
+    [ITEM_SPEED_CANDY] =
+    {
+        .name = _("Speed Candy"),
+        .price = 0,
+        .description = sSpeedCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_IncreaseIV,
+        .secondaryId = STAT_SPEED,
+        .flingPower = 30,
+    },
+    [ITEM_MAX_CANDY] =
+    {
+        .name = _("Max Candy"),
+        .price = 0,
+        .description = sMaxCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_IncreaseIV,
+        .secondaryId = NUM_STATS,
+        .flingPower = 30,
+    },
+    [ITEM_RESET_CANDY] =
+    {
+        .name = _("Reset Candy"),
+        .price = 0,
+        .description = sResetCandyDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_ReduceIV,
+        .secondaryId = NUM_STATS,
+        .flingPower = 30,
+    },
+
 // Form-changing Key Items
 
     [ITEM_ROTOM_CATALOG] =

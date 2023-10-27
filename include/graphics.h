@@ -9423,6 +9423,19 @@ extern const u32 gItemIcon_CatchingCharm[];
 extern const u32 gItemIconPalette_CatchingCharm[];
 extern const u32 gItemIcon_ExpCharm[];
 extern const u32 gItemIconPalette_ExpCharm[];
+
+//IV Items
+extern const u32 gItemIcon_IVCandy[];
+extern const u32 gItemIconPalette_HPCandy[];
+extern const u32 gItemIconPalette_AtkCandy[];
+extern const u32 gItemIconPalette_DefCandy[];
+extern const u32 gItemIconPalette_SpAtkCandy[];
+extern const u32 gItemIconPalette_SpDefCandy[];
+extern const u32 gItemIconPalette_SpeedCandy[];
+extern const u32 gItemIcon_MaxCandy[];
+extern const u32 gItemIconPalette_MaxCandy[];
+extern const u32 gItemIconPalette_ResetCandy[];
+
 // Form-changing Key Items
 extern const u32 gItemIcon_RotomCatalog[];
 extern const u32 gItemIconPalette_RotomCatalog[];
