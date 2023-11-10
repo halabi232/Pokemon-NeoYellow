@@ -16,6 +16,7 @@
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "in_connection": false,
       "x": 8,
       "y": 12,
       "elevation": 3,
@@ -29,6 +30,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_AZURILL",
+      "in_connection": false,
       "x": 3,
       "y": 5,
       "elevation": 0,
@@ -42,6 +44,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_KIRLIA",
+      "in_connection": false,
       "x": 12,
       "y": 6,
       "elevation": 0,
@@ -55,6 +58,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
+      "in_connection": false,
       "x": 15,
       "y": 5,
       "elevation": 0,
@@ -68,6 +72,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ZIGZAGOON_2",
+      "in_connection": false,
       "x": 4,
       "y": 9,
       "elevation": 0,
@@ -81,6 +86,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_AZUMARILL",
+      "in_connection": false,
       "x": 13,
       "y": 9,
       "elevation": 0,
@@ -94,6 +100,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WINGULL",
+      "in_connection": false,
       "x": 3,
       "y": 10,
       "elevation": 0,
@@ -112,28 +119,28 @@
       "y": 13,
       "elevation": 3,
       "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY",
-      "dest_warp_id": "2"
+      "dest_warp_id": 2
     },
     {
       "x": 9,
       "y": 13,
       "elevation": 3,
       "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY",
-      "dest_warp_id": "2"
+      "dest_warp_id": 2
     },
     {
       "x": 6,
       "y": 3,
       "elevation": 3,
       "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_PALACE_BATTLE_ROOM",
-      "dest_warp_id": "0"
+      "dest_warp_id": 0
     },
     {
       "x": 10,
       "y": 3,
       "elevation": 3,
       "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_PALACE_BATTLE_ROOM",
-      "dest_warp_id": "0"
+      "dest_warp_id": 0
     }
   ],
   "coord_events": [],

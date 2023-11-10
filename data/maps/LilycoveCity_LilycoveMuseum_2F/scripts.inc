@@ -93,7 +93,7 @@ LilycoveCity_LilycoveMuseum_2F_Movement_FaceExhibitHall:
 
 LilycoveCity_LilycoveMuseum_2F_EventScript_Curator::
 	lockall
-	goto_if_set FLAG_RECEIVED_GLASS_ORNAMENT, LilycoveCity_LilycoveMuseum_2F_EventScript_ReceivedGlassOrnament
+	goto_if_set FLAG_RECEIVED_EXHIBIT_GIFT, LilycoveCity_LilycoveMuseum_2F_EventScript_ReceivedGlassOrnament
 	specialvar VAR_0x8004, CountPlayerMuseumPaintings
 	switch VAR_0x8004
 	case 1, LilycoveCity_LilycoveMuseum_2F_EventScript_AddedPainting
@@ -120,9 +120,8 @@ LilycoveCity_LilycoveMuseum_2F_EventScript_ThankPlayer::
 LilycoveCity_LilycoveMuseum_2F_EventScript_GiveGlassOrnament::
 	applymovement LOCALID_CURATOR, Common_Movement_FacePlayer
 	msgbox LilycoveCity_LilycoveMuseum_2F_Text_TokenOfGratitude, MSGBOX_DEFAULT
-	givedecoration DECOR_GLASS_ORNAMENT
-	goto_if_eq VAR_RESULT, FALSE, LilycoveCity_LilycoveMuseum_2F_EventScript_NoRoomForGlassOrnament
-	setflag FLAG_RECEIVED_GLASS_ORNAMENT
+	giveitem ITEM_CHERISH_BALL, 30
+	setflag FLAG_RECEIVED_EXHIBIT_GIFT
 	closemessage
 	releaseall
 	end
@@ -181,6 +180,22 @@ LilycoveCity_LilycoveMuseum_2F_EventScript_RichBoy::
 	msgbox LilycoveCity_LilycoveMuseum_2F_Text_ThesePaintingsOfYourPokemon, MSGBOX_NPC
 	end
 
+LilycoveCity_LilycoveMuseum_2F_EventScript_Boy::
+	msgbox LilycoveCity_LilycoveMuseum_2F_Text_NicePainting, MSGBOX_NPC
+	end
+
+LilycoveCity_LilycoveMuseum_2F_EventScript_Lady::
+	msgbox LilycoveCity_LilycoveMuseum_2F_Text_BeautifulEvent, MSGBOX_NPC
+	end
+
+LilycoveCity_LilycoveMuseum_2F_EventScript_Expert2::
+	msgbox LilycoveCity_LilycoveMuseum_2F_Text_RemindMe, MSGBOX_NPC
+	end
+
+LilycoveCity_LilycoveMuseum_2F_EventScript_Woman::
+	msgbox LilycoveCity_LilycoveMuseum_2F_Text_SoCute, MSGBOX_NPC
+	end
+
 LilycoveCity_LilycoveMuseum_2F_EventScript_ShowCoolPainting::
 	msgbox LilycoveCity_LilycoveMuseum_2F_Text_ItsPaintingOfPokemon, MSGBOX_SIGN
 	fadescreen FADE_TO_BLACK
@@ -216,6 +231,33 @@ LilycoveCity_LilycoveMuseum_2F_EventScript_ShowToughPainting::
 	releaseall
 	end
 
+LilycoveCity_LilycoveMuseum_2F_Text_NicePainting:
+	.string "Wow! Nice paintings!\p"
+	.string "… … … …\p"
+	.string "Ok, I don't understand much of art,\n"
+	.string "I'm here just so my mom don't yell at me\l"
+	.string "for missing the Contests.\p"
+	.string "It's not my fault my bed was so comfy…\l"
+	.string "Please don't tell her I'm here!$" 
+
+LilycoveCity_LilycoveMuseum_2F_Text_RemindMe:
+	.string "Oh… Seeing this paintings reminds me\n"
+	.string "of my youth!\p"
+	.string "Everything back then was beautiful\n"
+	.string "and glamorous like these scenes!\p"
+	.string "Good old times…$"
+
+LilycoveCity_LilycoveMuseum_2F_Text_SoCute:
+	.string "These Pokémon are so cute!\n"
+	.string "and majestic!\p"
+	.string "I wish I could cuddle with them…$"
+
+LilycoveCity_LilycoveMuseum_2F_Text_BeautifulEvent:
+	.string "Amazing! When I watched the Contests\n"
+	.string "I didn't think it could be translated\l"
+	.string "to a painting so beautifully like this!\p"
+	.string "The paintings are astounding!$"
+ 
 LilycoveCity_LilycoveMuseum_2F_Text_ThisIsExhibitHall:
 	.string "This is our special exhibit hall.$"
 
@@ -248,16 +290,31 @@ LilycoveCity_LilycoveMuseum_2F_Text_PleaseObtainPaintingsForExhibit:
 	.string "it here?$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_WishToFillExhibit:
-	.string "I wish to fill this exhibit hall with\n"
-	.string "modern and vibrant paintings of\l"
-	.string "POKéMON.$"
+	.string "Wellcome!\n"
+	.string "This is the Contes Hall Exhibit!\p"
+	.string "We set this place to exhibit art\n"
+	.string "depicting the wonderful contests\l"
+	.string "that occur in the Contest Hall!\p"
+	.string "Since we just recently opened, we still\n"
+	.string "have not yet received any paintings\l"
+	.string "from the talented Contest Artists.\p"
+	.string "If you come across any paiting\n"
+	.string "showing the Contests beauty\l"
+	.string "please send it here!$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_ThanksAddedNewPainting:
-	.string "Thanks to you, we've added a new\n"
-	.string "painting to our collection!\p"
-	.string "I've heard it depicts your POKéMON.\n"
-	.string "Truly magnificent!\p"
-	.string "Thank you so very, very much!$"
+	.string "Hello there! We've added a new\n"
+	.string "painting to our exhibit!\p"
+	.string "I've heard it depicts your Pokémon.\n"
+	.string "Truly magnificent! I'm sure that\l"
+	.string "altough very amusing, this painting\l"
+	.string "could not possibly capture the sheer\l"
+	.string "beauty that happened in the Contest!\p"
+	.string "But it is still a marvelous, wonderous\n"
+	.string "beautiful masterpiece of a paiting!\p"
+	.string "It really makes justice to the purpose\n"
+	.string "of this Exhibit!\p"
+	.string "Thank you very much!$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_ItsYouPlayer:
 	.string "Ah! It's you!\n"
@@ -265,16 +322,18 @@ LilycoveCity_LilycoveMuseum_2F_Text_ItsYouPlayer:
 
 LilycoveCity_LilycoveMuseum_2F_Text_PaintingsAttractedMoreGuests:
 	.string "Isn't this marvelous?\n"
-	.string "This collection of paintings!\p"
-	.string "Each one of them flawless!\n"
-	.string "None better than another!\p"
-	.string "These paintings have attracted\n"
-	.string "more guests to our ART MUSEUM.\p"
-	.string "Sincerely, I thank you, {PLAYER}.\n"
-	.string "This is my dream come true!$"
+	.string "This Exhibit is full!\p"
+	.string "So many beautiful and wondorous\n"
+	.string "Contests happened since we oppened!\p"
+	.string "It is truly blissing to have been\n"
+	.string "witness to the flourishing of this\l"
+	.string "Contest Hall and this Exhibit!\p"
+	.string "Of course that without you\n"
+	.string "we couldn't have achievied all this\p"
 
 LilycoveCity_LilycoveMuseum_2F_Text_TokenOfGratitude:
-	.string "This is merely a token of my gratitude.$"
+	.string "As a token of our gratitude, please\n"
+	.string "take this!$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_KeepThisForYou:
 	.string "I will keep this for you until we\n"
@@ -308,23 +367,30 @@ LilycoveCity_LilycoveMuseum_2F_Text_ItsGreenPictureFrame:
 	.string "green-colored adornments.$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_ItsPaintingOfPokemon:
-	.string "It's a painting of POKéMON.$"
+	.string "It's a painting of Pokémon.$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_NewPaintingsSurprisedMe:
 	.string "I've been away awhile, so the new\n"
 	.string "paintings up here surprised me.\p"
-	.string "I wish someone would paint my POKéMON\n"
+	.string "I wish someone would paint my Pokémon\n"
 	.string "this pretty.$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_NewPaintingsRatherAmusing:
 	.string "Well… So this is where they show\n"
-	.string "the topical POKéMON paintings.\p"
+	.string "the topical Pokémon paintings.\p"
 	.string "I see, these new paintings are indeed\n"
 	.string "rather amusing.$"
 
 LilycoveCity_LilycoveMuseum_2F_Text_ThesePaintingsOfYourPokemon:
 	.string "Wow, is that right?\n"
-	.string "These paintings are of your POKéMON.\p"
+	.string "These paintings are of your Pokémon!\p"
 	.string "Isn't that just the ultimate joy for\n"
-	.string "a TRAINER?$"
+	.string "a Trainer?$"
 
+LilycoveCity_LilycoveMuseum_EventScript_BirdSculpture::
+	msgbox LilycoveCity_LilycoveMuseum_Text_BirdPokemonSculptureReplica, MSGBOX_SIGN
+	end
+
+LilycoveCity_LilycoveMuseum_Text_BirdPokemonSculptureReplica:
+	.string "It's a replica of a famous sculpture.\p"
+	.string "It depicts an ancient Bird Pokémon.$"

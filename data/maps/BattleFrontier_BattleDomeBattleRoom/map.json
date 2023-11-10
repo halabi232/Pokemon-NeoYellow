@@ -12,10 +12,11 @@
   "allow_running": false,
   "show_map_name": false,
   "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
-  "connections": 0,
+  "connections": null,
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_GFX_REPORTER_M",
+      "in_connection": false,
       "x": 5,
       "y": 4,
       "elevation": 0,
@@ -29,6 +30,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "in_connection": false,
       "x": 7,
       "y": 2,
       "elevation": 0,
@@ -42,6 +44,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BOY_1",
+      "in_connection": false,
       "x": 9,
       "y": 2,
       "elevation": 0,
@@ -55,6 +58,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BOY_2",
+      "in_connection": false,
       "x": 11,
       "y": 2,
       "elevation": 0,
@@ -68,6 +72,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "in_connection": false,
       "x": 16,
       "y": 2,
       "elevation": 0,
@@ -81,6 +86,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_1",
+      "in_connection": false,
       "x": 4,
       "y": 2,
       "elevation": 0,
@@ -94,6 +100,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "in_connection": false,
       "x": 16,
       "y": 1,
       "elevation": 0,
@@ -107,6 +114,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "in_connection": false,
       "x": 8,
       "y": 1,
       "elevation": 0,
@@ -120,6 +128,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_2",
+      "in_connection": false,
       "x": 0,
       "y": 4,
       "elevation": 0,
@@ -133,6 +142,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "in_connection": false,
       "x": 12,
       "y": 1,
       "elevation": 0,
@@ -146,6 +156,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_2",
+      "in_connection": false,
       "x": 13,
       "y": 2,
       "elevation": 0,
@@ -159,6 +170,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "in_connection": false,
       "x": 10,
       "y": 2,
       "elevation": 0,
@@ -172,6 +184,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_VAR_1",
+      "in_connection": false,
       "x": 4,
       "y": 9,
       "elevation": 4,
@@ -185,6 +198,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "in_connection": false,
       "x": 14,
       "y": 2,
       "elevation": 0,
@@ -198,6 +212,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "in_connection": false,
       "x": 11,
       "y": 6,
       "elevation": 0,
@@ -210,13 +225,7 @@
       "flag": "0"
     }
   ],
-  "warp_events": [
-
-  ],
-  "coord_events": [
-
-  ],
-  "bg_events": [
-
-  ]
+  "warp_events": [],
+  "coord_events": [],
+  "bg_events": []
 }

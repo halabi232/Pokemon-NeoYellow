@@ -55,7 +55,7 @@ BattleFrontier_BattleTowerElevator_EventScript_WarpToPartnerRoom::
 
 BattleFrontier_BattleTowerElevator_Movement_AttendantEnter:
 	walk_up
-	walk_right
+	walk_left
 	face_down
 	step_end
 
@@ -67,14 +67,17 @@ BattleFrontier_BattleTowerElevator_Movement_PlayerEnter:
 
 BattleFrontier_BattleTowerElevator_Movement_AttendantExit:
 	walk_down
+	walk_right
 	walk_down
 	set_invisible
 	step_end
 
 BattleFrontier_BattleTowerElevator_Movement_PlayerExit:
-	walk_right
+	delay_16
+	delay_8
 	walk_down
 	walk_down
+	set_invisible
 	step_end
 
 BattleFrontier_BattleTowerElevator_OnWarp:

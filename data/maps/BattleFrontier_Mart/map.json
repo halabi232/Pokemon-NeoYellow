@@ -16,6 +16,7 @@
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_GFX_MART_EMPLOYEE",
+      "in_connection": false,
       "x": 1,
       "y": 3,
       "elevation": 3,
@@ -29,6 +30,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "in_connection": false,
       "x": 5,
       "y": 4,
       "elevation": 3,
@@ -42,6 +44,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_OLD_MAN",
+      "in_connection": false,
       "x": 5,
       "y": 5,
       "elevation": 3,
@@ -55,6 +58,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BOY_2",
+      "in_connection": false,
       "x": 8,
       "y": 4,
       "elevation": 3,
@@ -73,14 +77,14 @@
       "y": 7,
       "elevation": 0,
       "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
-      "dest_warp_id": "4"
+      "dest_warp_id": 4
     },
     {
       "x": 4,
       "y": 7,
       "elevation": 0,
       "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
-      "dest_warp_id": "4"
+      "dest_warp_id": 4
     }
   ],
   "coord_events": [],

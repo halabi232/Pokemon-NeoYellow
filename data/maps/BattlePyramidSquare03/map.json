@@ -17,6 +17,7 @@
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_GFX_BOY_1",
+      "in_connection": false,
       "x": 2,
       "y": 1,
       "elevation": 4,
@@ -30,6 +31,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "in_connection": false,
       "x": 6,
       "y": 1,
       "elevation": 4,
@@ -43,6 +45,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
+      "in_connection": false,
       "x": 6,
       "y": 4,
       "elevation": 4,
@@ -56,6 +59,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_3",
+      "in_connection": false,
       "x": 3,
       "y": 4,
       "elevation": 4,
@@ -69,6 +73,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "in_connection": false,
       "x": 4,
       "y": 2,
       "elevation": 4,
@@ -82,6 +87,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "in_connection": false,
       "x": 0,
       "y": 3,
       "elevation": 4,
@@ -95,6 +101,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "in_connection": false,
       "x": 2,
       "y": 7,
       "elevation": 4,

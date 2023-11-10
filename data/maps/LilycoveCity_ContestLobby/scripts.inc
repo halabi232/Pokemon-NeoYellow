@@ -1,18 +1,16 @@
 @ Note: data/scripts/berry_blender.inc is for the same map, so shares local IDs
 .set LOCALID_RECEPTIONIST, 1
-.set LOCALID_LINK_RECEPTIONIST, 2
-.set LOCALID_ARTIST, 4
-.set LOCALID_ARTIST_LINK, 11
+.set LOCALID_ARTIST, 3
 
 LilycoveCity_ContestLobby_MapScripts::
-	map_script MAP_SCRIPT_ON_TRANSITION, LilycoveCity_ContestLobby_OnTransition
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, LilycoveCity_ContestLobby_OnFrame
 	.byte 0
 
-@ Some scripts for this room are split into data/scripts/contest_hall and data/scripts/berry_blender
+LilycoveCity_ContestLobby_OnFrame:
+	map_script_2 VAR_LILYCOVE_CONTEST_LOBBY_STATE, 1, LilycoveCity_ContestLobby_EventScript_TryDoContestArtist
+	.2byte 0
 
 LilycoveCity_ContestLobby_OnTransition:
-	call LilycoveCity_ContestLobby_EventScript_TryShowContestReporter
 	call LilycoveCity_ContestLobby_EventScript_TryShowBlendMaster
 	end
 
@@ -28,14 +26,11 @@ LilycoveCity_ContestLobby_EventScript_ShowBlendMaster::
 	clearflag FLAG_HIDE_LILYCOVE_CONTEST_HALL_BLEND_MASTER
 	return
 
-LilycoveCity_ContestLobby_OnFrame:
-	map_script_2 VAR_LILYCOVE_CONTEST_LOBBY_STATE, 1, LilycoveCity_ContestLobby_EventScript_TryDoContestArtist
-	map_script_2 VAR_LILYCOVE_CONTEST_LOBBY_STATE, 2, LilycoveCity_ContestLobby_EventScript_TryDoLinkContestArtist
-	.2byte 0
-
 LilycoveCity_ContestLobby_EventScript_TryDoContestArtist::
 	goto_if_set FLAG_HIDE_LILYCOVE_MUSEUM_CURATOR, LilycoveCity_ContestLobby_EventScript_ContestArtist
 	setvar VAR_LILYCOVE_CONTEST_LOBBY_STATE, 0
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
 	end
 
 LilycoveCity_ContestLobby_EventScript_ContestArtist::
@@ -53,6 +48,8 @@ LilycoveCity_ContestLobby_EventScript_ContestArtist::
 	msgbox LilycoveCity_ContestLobby_Text_ShouldITakePaintingToMuseum, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, LilycoveCity_ContestLobby_EventScript_TakePaintingToMuseum
 	goto_if_eq VAR_RESULT, NO, LilycoveCity_ContestLobby_EventScript_ConfirmDontTakePainting
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
 	releaseall
 	end
 
@@ -68,6 +65,8 @@ LilycoveCity_ContestLobby_EventScript_TakePaintingToMuseum::
 	removeobject LOCALID_ARTIST
 	call LilycoveCity_ContestLobby_EventScript_UpdateMuseumPatrons
 	call LilycoveCity_ContestLobby_EventScript_SetPaintingFlag
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
 	releaseall
 	end
 
@@ -80,6 +79,8 @@ LilycoveCity_ContestLobby_EventScript_ConfirmDontTakePainting::
 	waitmovement 0
 	setvar VAR_LILYCOVE_CONTEST_LOBBY_STATE, 0
 	removeobject LOCALID_ARTIST
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
 	releaseall
 	end
 
@@ -99,6 +100,8 @@ LilycoveCity_ContestLobby_EventScript_ReceivedArtistRibbon::
 	waitfanfare
 	msgbox LilycoveCity_ContestLobby_Text_PutTheRibbonOnMon, MSGBOX_DEFAULT
 	msgbox LilycoveCity_ContestLobby_Text_OkaySeeYou, MSGBOX_DEFAULT
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
 	closemessage
 	return
 
@@ -203,122 +206,206 @@ LilycoveCity_ContestLobby_Movement_ArtistReturnToPlayer:
 	walk_in_place_faster_right
 	step_end
 
-LilycoveCity_ContestLobby_EventScript_TryDoLinkContestArtist::
-	goto_if_set FLAG_HIDE_LILYCOVE_MUSEUM_CURATOR, LilycoveCity_ContestLobby_EventScript_LinkContestArtist
-	setvar VAR_LILYCOVE_CONTEST_LOBBY_STATE, 0
+@ Either ends or returns to EventScript_ContestReceptionist after submitting a contest entry
+LilycoveCity_ContestLobby_EventScript_SpeakToContestReceptionist::
+	lock
+	faceplayer
+	goto_if_ne VAR_CONTEST_PRIZE_PICKUP, 0, LilycoveCity_ContestLobby_EventScript_PickUpPrize
+	call_if_set FLAG_RECEIVED_CONTEST_PASS, LilycoveCity_ContestLobby_EventScript_ReceptionWelcome
+	call_if_unset FLAG_RECEIVED_CONTEST_PASS, LilycoveCity_ContestLobby_EventScript_NoContestPass
+	goto LilycoveCity_ContestLobby_EventScript_AskEnterContest
 	end
 
-LilycoveCity_ContestLobby_EventScript_LinkContestArtist::
-	lockall
-	addobject LOCALID_ARTIST_LINK
-	applymovement LOCALID_ARTIST_LINK, LilycoveCity_ContestLobby_Movement_LinkArtistApproachPlayer
-	waitmovement LOCALID_ARTIST_LINK
-	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerFaceLinkArtist
-	waitmovement 0
-	msgbox LilycoveCity_ContestLobby_Text_YourPokemonSpurredMeToPaint, MSGBOX_DEFAULT
-	lockall
-	fadescreen FADE_TO_BLACK
-	showcontestpainting CONTEST_WINNER_ARTIST
-	msgbox LilycoveCity_ContestLobby_Text_ShouldITakePaintingToMuseum, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, LilycoveCity_ContestLobby_EventScript_TakePaintingToMuseumLink
-	goto_if_eq VAR_RESULT, NO, LilycoveCity_ContestLobby_EventScript_ConfirmDontTakePaintingLink
-	end
-
-LilycoveCity_ContestLobby_EventScript_TakePaintingToMuseumLink::
-	msgbox LilycoveCity_ContestLobby_Text_IllTakePaintingToMuseum, MSGBOX_DEFAULT
-	closemessage
-	special SaveMuseumContestPainting
-	setvar VAR_LILYCOVE_CONTEST_LOBBY_STATE, 0
-	specialvar VAR_RESULT, GiveMonArtistRibbon
-	call_if_eq VAR_RESULT, TRUE, LilycoveCity_ContestLobby_EventScript_ReceivedLinkArtistRibbon
-	applymovement LOCALID_ARTIST_LINK, LilycoveCity_ContestLobby_Movement_LinkArtistExit
-	waitmovement 0
-	removeobject LOCALID_ARTIST_LINK
-	call LilycoveCity_ContestLobby_EventScript_UpdateMuseumPatrons
-	call LilycoveCity_ContestLobby_EventScript_SetPaintingFlag
-	releaseall
-	end
-
-LilycoveCity_ContestLobby_EventScript_ConfirmDontTakePaintingLink::
-	msgbox LilycoveCity_ContestLobby_Text_TakeHomeButIdLikeToTakeToMuseum, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, LilycoveCity_ContestLobby_EventScript_TakePaintingToMuseumLink
-	msgbox LilycoveCity_ContestLobby_Text_FineThatsTheWayItIs, MSGBOX_DEFAULT
-	closemessage
-	applymovement LOCALID_ARTIST_LINK, LilycoveCity_ContestLobby_Movement_LinkArtistExit
-	waitmovement 0
-	setvar VAR_LILYCOVE_CONTEST_LOBBY_STATE, 0
-	removeobject LOCALID_ARTIST_LINK
-	releaseall
-	end
-
-LilycoveCity_ContestLobby_EventScript_ReceivedLinkArtistRibbon::
-	incrementgamestat GAME_STAT_RECEIVED_RIBBONS
-	setflag FLAG_SYS_RIBBON_GET
-	special BufferContestWinnerMonName
-	applymovement LOCALID_ARTIST_LINK, LilycoveCity_ContestLobby_Movement_LinkArtistBeginExit
-	waitmovement 0
-	playse SE_PIN
-	applymovement LOCALID_ARTIST_LINK, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement LOCALID_ARTIST_LINK, LilycoveCity_ContestLobby_Movement_LinkArtistReturnToPlayer
-	waitmovement 0
-	msgbox LilycoveCity_ContestLobby_Text_TakeMementoOfPainting, MSGBOX_DEFAULT
-	playfanfare MUS_OBTAIN_ITEM
-	msgbox LilycoveCity_ContestLobby_Text_ReceivedARibbon, MSGBOX_DEFAULT
-	waitfanfare
-	msgbox LilycoveCity_ContestLobby_Text_PutTheRibbonOnMon, MSGBOX_DEFAULT
-	msgbox LilycoveCity_ContestLobby_Text_OkaySeeYou, MSGBOX_DEFAULT
-	closemessage
+LilycoveCity_ContestLobby_EventScript_ReceptionWelcome::
+	msgbox LilycoveCity_ContestLobby_Text_ContestReception, MSGBOX_DEFAULT
 	return
 
-LilycoveCity_ContestLobby_Movement_LinkArtistApproachPlayer:
-	walk_down
-	walk_down
-	walk_down
-	walk_left
-	walk_left
-	walk_left
-	walk_left
-	walk_left
-	step_end
+LilycoveCity_ContestLobby_EventScript_NoContestPass::
+	msgbox LilycoveCity_ContestLobby_Text_NoContestPass, MSGBOX_DEFAULT
+	closemessage
+	releaseall
+	end
 
-LilycoveCity_ContestLobby_Movement_LinkArtistExit:
-	walk_down
-	walk_down
-	walk_down
-	walk_down
-	walk_down
-	walk_down
-	walk_down
-	walk_down
-	step_end
+LilycoveCity_ContestLobby_EventScript_PickUpPrize::
+	msgbox LilycoveCity_ContestLobby_Text_PokemonWonWeHavePrize, MSGBOX_DEFAULT
+	switch VAR_CONTEST_PRIZE_PICKUP
+	case 4, LilycoveCity_ContestLobby_EventScript_GiveLuxuryBallAtCounter
+	end
 
-LilycoveCity_ContestLobby_Movement_PlayerFaceLinkArtist:
-	walk_in_place_faster_right
-	step_end
+LilycoveCity_ContestLobby_EventScript_GiveLuxuryBallAtCounter::
+	giveitem ITEM_LUXURY_BALL
+	goto_if_eq VAR_RESULT, FALSE, LilycoveCity_ContestLobby_EventScript_NoRoomForLuxuryBallAtCounter
+	setvar VAR_CONTEST_PRIZE_PICKUP, 0
+	closemessage
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
+	releaseall
+	end
 
-LilycoveCity_ContestLobby_Movement_LinkArtistBeginExit:
-	walk_down
-	walk_down
-	walk_down
-	step_end
+LilycoveCity_ContestLobby_EventScript_NoRoomForLuxuryBallAtCounter::
+	call Common_EventScript_BagIsFull
+	msgbox LilycoveCity_ContestLobby_Text_ComeBackForPrizeLater, MSGBOX_DEFAULT
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
+	releaseall
+	end
 
-LilycoveCity_ContestLobby_Movement_LinkArtistReturnToPlayer:
-	delay_16
-	delay_16
-	delay_16
-	delay_16
-	walk_fast_up
-	walk_fast_up
-	walk_fast_up
-	walk_in_place_faster_left
-	step_end
+LilycoveCity_ContestLobby_EventScript_AskEnterContest::
+	applymovement LOCALID_RECEPTIONIST, Common_Movement_FaceOriginalDirection
+	waitmovement 1
+	message LilycoveCity_ContestLobby_Text_EnterContest1
+	waitmessage
+	multichoice 0, 0, MULTI_ENTERINFO, FALSE
+	switch VAR_RESULT
+	case 0, LilycoveCity_ContestLobby_EventScript_ChooseContestRank
+	case 1, LilycoveCity_ContestLobby_EventScript_ContestInfo
+	case 2, LilycoveCity_ContestLobby_EventScript_CancelEnterContest
+	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_CancelEnterContest
+	end
+
+LilycoveCity_ContestLobby_EventScript_ContestInfo::
+	message LilycoveCity_ContestLobby_Text_WhichTopic1
+	waitmessage
+	multichoice 0, 0, MULTI_CONTEST_INFO, FALSE
+	switch VAR_RESULT
+	case 0, LilycoveCity_ContestLobby_EventScript_ExplainContests
+	case 1, LilycoveCity_ContestLobby_EventScript_ExplainContestTypes
+	case 2, LilycoveCity_ContestLobby_EventScript_ExplainContestRanks
+	case 3, LilycoveCity_ContestLobby_EventScript_AskEnterContest
+	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_AskEnterContest
+	end
+
+LilycoveCity_ContestLobby_EventScript_ExplainContests::
+	msgbox LilycoveCity_ContestLobby_Text_ExplainContests, MSGBOX_DEFAULT
+	goto LilycoveCity_ContestLobby_EventScript_ContestInfo
+	end
+
+LilycoveCity_ContestLobby_EventScript_ExplainContestTypes::
+	msgbox LilycoveCity_ContestLobby_Text_ExplainContestTypes, MSGBOX_DEFAULT
+	goto LilycoveCity_ContestLobby_EventScript_ContestInfo
+	end
+
+LilycoveCity_ContestLobby_EventScript_ExplainContestRanks::
+	msgbox LilycoveCity_ContestLobby_Text_ExplainContestRanks, MSGBOX_DEFAULT
+	goto LilycoveCity_ContestLobby_EventScript_ContestInfo
+	end
+
+LilycoveCity_ContestLobby_EventScript_CancelEnterContest::
+	msgbox LilycoveCity_ContestLobby_Text_ParticipateAnotherTime, MSGBOX_DEFAULT
+	setvar VAR_FOLLOWER_VISIBILITY, 0
+	clearflag FLAG_HIDE_FOLLOWER
+	releaseall
+	end
+
+LilycoveCity_ContestLobby_EventScript_ChooseContestMon::
+	msgbox LilycoveCity_ContestLobby_Text_EnterWhichPokemon1, MSGBOX_DEFAULT
+	choosecontestmon
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, LilycoveCity_ContestLobby_EventScript_CancelEnterContest
+	special TryEnterContestMon
+	goto_if_eq VAR_RESULT, CANT_ENTER_CONTEST, LilycoveCity_ContestLobby_EventScript_CantEnterLowRank
+	goto_if_eq VAR_RESULT, CAN_ENTER_CONTEST_EQUAL_RANK, LilycoveCity_ContestLobby_EventScript_EnterMon
+	goto_if_eq VAR_RESULT, CAN_ENTER_CONTEST_HIGH_RANK, LilycoveCity_ContestLobby_EventScript_ConfirmEntryAlreadyWon
+	goto_if_eq VAR_RESULT, CANT_ENTER_CONTEST_EGG, LilycoveCity_ContestLobby_EventScript_CantEnterEgg
+	goto_if_eq VAR_RESULT, CANT_ENTER_CONTEST_FAINTED, LilycoveCity_ContestLobby_EventScript_CantEnterFainted
+	end
+
+LilycoveCity_ContestLobby_EventScript_ChooseContestRank::
+	message LilycoveCity_ContestLobby_Text_EnterWhichRank
+	waitmessage
+	multichoice 0, 0, MULTI_CONTEST_RANK, FALSE
+	switch VAR_RESULT
+	case 0, LilycoveCity_ContestLobby_EventScript_EnterNormalRank
+	case 1, LilycoveCity_ContestLobby_EventScript_EnterSuperRank
+	case 2, LilycoveCity_ContestLobby_EventScript_EnterHyperRank
+	case 3, LilycoveCity_ContestLobby_EventScript_EnterMasterRank
+	case 4, LilycoveCity_ContestLobby_EventScript_CancelEnterContest
+	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_CancelEnterContest
+	end
+
+LilycoveCity_ContestLobby_EventScript_EnterNormalRank::
+	setvar VAR_CONTEST_RANK, CONTEST_RANK_NORMAL
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestType
+	end
+
+LilycoveCity_ContestLobby_EventScript_EnterSuperRank::
+	setvar VAR_CONTEST_RANK, CONTEST_RANK_SUPER
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestType
+	end
+
+LilycoveCity_ContestLobby_EventScript_EnterHyperRank::
+	setvar VAR_CONTEST_RANK, CONTEST_RANK_HYPER
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestType
+	end
+
+LilycoveCity_ContestLobby_EventScript_EnterMasterRank::
+	setvar VAR_CONTEST_RANK, CONTEST_RANK_MASTER
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestType
+	end
+
+@ The multichoice selection IDs are equal to the CATEGORY values
+@ So rather than list the cases they just copy VAR_RESULT for a valid selection into VAR_CONTEST_CATEGORY
+LilycoveCity_ContestLobby_EventScript_ChooseContestType::
+	message LilycoveCity_ContestLobby_Text_EnterWhichContest1
+	waitmessage
+	multichoice 0, 0, MULTI_CONTEST_TYPE, FALSE
+	switch VAR_RESULT
+	case 5, LilycoveCity_ContestLobby_EventScript_CancelEnterContest
+	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_CancelEnterContest
+	copyvar VAR_CONTEST_CATEGORY, VAR_RESULT
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestMon
+	end
+
+LilycoveCity_ContestLobby_EventScript_CantEnterLowRank::
+	msgbox LilycoveCity_ContestLobby_Text_MonNotQualifiedForRank, MSGBOX_DEFAULT
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestMon
+	release
+	end
+
+@ Unused
+LilycoveCity_ContestLobby_EventScript_ConfirmEntry::
+	msgbox LilycoveCity_ContestLobby_Text_ConfirmContestMon, MSGBOX_YESNO
+	switch VAR_RESULT
+	case NO, LilycoveCity_ContestLobby_EventScript_ChooseContestMon
+	case YES, LilycoveCity_ContestLobby_EventScript_EnterMon
+	end
+
+LilycoveCity_ContestLobby_EventScript_ConfirmEntryAlreadyWon::
+	msgbox LilycoveCity_ContestLobby_Text_AlreadyWonEnterAnyway, MSGBOX_YESNO
+	switch VAR_RESULT
+	case NO, LilycoveCity_ContestLobby_EventScript_ChooseContestMon
+	case YES, LilycoveCity_ContestLobby_EventScript_EnterMon
+	end
+
+LilycoveCity_ContestLobby_EventScript_CantEnterEgg::
+	msgbox LilycoveCity_ContestLobby_Text_EggCannotTakePart, MSGBOX_DEFAULT
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestMon
+	release
+	end
+
+LilycoveCity_ContestLobby_EventScript_CantEnterFainted::
+	msgbox LilycoveCity_ContestLobby_Text_MonInNoConditionForContest, MSGBOX_DEFAULT
+	goto LilycoveCity_ContestLobby_EventScript_ChooseContestMon
+	release
+	end
+
+@ The return here is back to LilycoveCity_ContestLobby_EventScript_ContestReceptionist
+LilycoveCity_ContestLobby_EventScript_EnterMon::
+	msgbox LilycoveCity_ContestLobby_Text_YourMonIsEntryNum4, MSGBOX_DEFAULT
+	closemessage
+	releaseall
+	setvar VAR_CONTEST_HALL_STATE, 1
+	return
+
+LilycoveCity_ContestLobby_EventScript_SetMuseumCurator::
+	setflag FLAG_HIDE_LILYCOVE_MUSEUM_CURATOR
+	return
 
 @ EventScript_SpeakToContestReceptionist either ends or returns after a contest entry is submitted
 LilycoveCity_ContestLobby_EventScript_ContestReceptionist::
 	special ClearLinkContestFlags
 	specialvar VAR_RESULT, IsContestDebugActive  @ Always FALSE
 	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_ContestLobby_EventScript_SetDebug
+	call_if_unset FLAG_HIDE_LILYCOVE_MUSEUM_CURATOR, LilycoveCity_ContestLobby_EventScript_SetMuseumCurator
 	call LilycoveCity_ContestLobby_EventScript_SpeakToContestReceptionist
 	call LilycoveCity_ContestLobby_EventScript_LeadToContestHall
 	special SetContestTrainerGfxIds
@@ -354,7 +441,6 @@ LilycoveCity_ContestLobby_EventScript_SetMasterContestType::
 
 @ Functionally unused
 LilycoveCity_ContestLobby_EventScript_SetDebug::
-	setflag FLAG_HIDE_LILYCOVE_MUSEUM_CURATOR
 	copyvar VAR_LILYCOVE_MUSEUM_2F_STATE, 1
 	additem ITEM_CONTEST_PASS
 	setvar VAR_0x800B, 8
@@ -404,24 +490,26 @@ LilycoveCity_ContestLobby_EventScript_WarpToToughContestHall::
 	return
 
 LilycoveCity_ContestLobby_EventScript_LeadToContestHall::
+	setvar VAR_FOLLOWER_VISIBILITY, 1
+	setflag FLAG_HIDE_FOLLOWER
 	lockall
 	applymovement LOCALID_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_ReceptionistApproachCounter
-	waitmovement 0
+	waitmovement 1
 	playse SE_BRIDGE_WALK
-	setmetatile 12, 2, METATILE_Contest_WallShadow, TRUE
-	setmetatile 12, 3, METATILE_Contest_FloorShadow, TRUE
+	setmetatile 13, 2, METATILE_Contest_WallShadow, TRUE
+	setmetatile 13, 3, METATILE_Contest_FloorShadow, TRUE
 	special DrawWholeMapView
 	applymovement LOCALID_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_ReceptionistExitCounter
-	waitmovement 0
+	waitmovement 1
 	playse SE_BRIDGE_WALK
-	setmetatile 12, 2, METATILE_Contest_CounterFlap_Top, TRUE
-	setmetatile 12, 3, METATILE_Contest_CounterFlap_Bottom, TRUE
+	setmetatile 13, 2, METATILE_Contest_CounterFlap_Top, TRUE
+	setmetatile 13, 3, METATILE_Contest_CounterFlap_Bottom, TRUE
 	special DrawWholeMapView
 	delay 20
 	applymovement LOCALID_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_ReceptionistFacePlayer
-	waitmovement 0
+	waitmovement 1
 	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerApproachReceptionist
-	waitmovement 0
+	waitmovement 1
 	msgbox LilycoveCity_ContestLobby_Text_ComeThroughHere, MSGBOX_DEFAULT
 	closemessage
 	applymovement LOCALID_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_ReceptionistWalkToContestHall
@@ -556,14 +644,6 @@ LilycoveCity_ContestLobby_EventScript_BerryBlenderSpeedRecords::
 	releaseall
 	end
 
-LilycoveCity_ContestLobby_EventScript_LinkContestResults::
-	lockall
-	frontier_results FACILITY_LINK_CONTEST
-	waitbuttonpress
-	special RemoveRecordsWindow
-	releaseall
-	end
-
 LilycoveCity_ContestLobby_EventScript_BlendMaster::
 	lock
 	faceplayer
@@ -617,357 +697,6 @@ LilycoveCity_ContestLobby_EventScript_FaceOriginalDirection::
 	release
 	end
 
-LilycoveCity_ContestLobby_EventScript_LinkContestReceptionist::
-	special ClearLinkContestFlags
-	lock
-	faceplayer
-	msgbox LilycoveCity_ContestLobby_Text_LinkContestReception, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_AskEnterLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_AskEnterLinkContest::
-	message LilycoveCity_ContestLobby_Text_EnterContest3
-	waitmessage
-	multichoice 0, 0, MULTI_ENTERINFO, FALSE
-	switch VAR_RESULT
-	case 0, LilycoveCity_ContestLobby_EventScript_TryEnterLinkContest
-	case 1, LilycoveCity_ContestLobby_EventScript_LinkContestInfo
-	case 2, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_TryEnterLinkContest::
-	msgbox LilycoveCity_ContestLobby_Text_ProgressWillBeSaved, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	call Common_EventScript_SaveGame
-	goto_if_eq VAR_RESULT, FALSE, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	message LilycoveCity_ContestLobby_Text_WhichContestMode
-	waitmessage
-	specialvar VAR_TEMP_D, IsWirelessAdapterConnected
-	multichoice 0, 0, MULTI_LINK_CONTEST_MODE, FALSE
-	switch VAR_RESULT
-	case 0, LilycoveCity_ContestLobby_EventScript_EmeraldMode  @ Shortened to E-Mode
-	case 1, LilycoveCity_ContestLobby_EventScript_GlobalMode   @ Shortened to G-Mode
-	case 2, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_EmeraldMode::
-	setvar VAR_TEMP_C, 0
-	goto LilycoveCity_ContestLobby_EventScript_ChooseLinkContestType
-	end
-
-LilycoveCity_ContestLobby_EventScript_GlobalMode::
-	setvar VAR_TEMP_C, 1
-	goto_if_eq VAR_TEMP_D, 1, LilycoveCity_ContestLobby_EventScript_CancelLinkNoWirelessGMode
-	goto LilycoveCity_ContestLobby_EventScript_ChooseLinkContestType
-	end
-
-LilycoveCity_ContestLobby_EventScript_ChooseLinkContestType::
-	message LilycoveCity_ContestLobby_Text_EnterWhichContest3
-	waitmessage
-	multichoice 0, 0, MULTI_CONTEST_TYPE, FALSE
-	switch VAR_RESULT
-	case CONTEST_CATEGORIES_COUNT, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	copyvar VAR_CONTEST_CATEGORY, VAR_RESULT
-	goto LilycoveCity_ContestLobby_EventScript_ChooseLinkContestMon
-	end
-
-LilycoveCity_ContestLobby_EventScript_LinkContestInfo::
-	message LilycoveCity_ContestLobby_Text_WhichTopic2
-	waitmessage
-	multichoice 0, 0, MULTI_LINK_CONTEST_INFO, FALSE
-	switch VAR_RESULT
-	case 0, LilycoveCity_ContestLobby_EventScript_ExplainLinkContest
-	case 1, LilycoveCity_ContestLobby_EventScript_ExplainEMode
-	case 2, LilycoveCity_ContestLobby_EventScript_ExplainGMode
-	case 3, LilycoveCity_ContestLobby_EventScript_AskEnterLinkContest
-	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_AskEnterLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_ExplainLinkContest::
-	msgbox LilycoveCity_ContestLobby_Text_ExplainLinkContest, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_LinkContestInfo
-	end
-
-LilycoveCity_ContestLobby_EventScript_ExplainEMode::
-	msgbox LilycoveCity_ContestLobby_Text_ExplainEMode, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_LinkContestInfo
-	end
-
-LilycoveCity_ContestLobby_EventScript_ExplainGMode::
-	msgbox LilycoveCity_ContestLobby_Text_ExplainGMode, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_LinkContestInfo
-	end
-
-LilycoveCity_ContestLobby_EventScript_CancelLinkContest::
-	special CloseLink
-	msgbox LilycoveCity_ContestLobby_Text_ParticipateAnotherTime, MSGBOX_DEFAULT
-	release
-	end
-
-LilycoveCity_ContestLobby_EventScript_ChooseLinkContestMon::
-	msgbox LilycoveCity_ContestLobby_Text_EnterWhichPokemon3, MSGBOX_DEFAULT
-	setvar VAR_CONTEST_RANK, 0
-	choosecontestmon
-	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	special TryEnterContestMon
-	goto_if_eq VAR_RESULT, CANT_ENTER_CONTEST, LilycoveCity_ContestLobby_EventScript_LinkCantEnterLowRank
-	goto_if_eq VAR_RESULT, CAN_ENTER_CONTEST_EQUAL_RANK, LilycoveCity_ContestLobby_EventScript_EnterMonForLinkContest
-	goto_if_eq VAR_RESULT, CAN_ENTER_CONTEST_HIGH_RANK, LilycoveCity_ContestLobby_EventScript_EnterMonForLinkContest
-	goto_if_eq VAR_RESULT, CANT_ENTER_CONTEST_EGG, LilycoveCity_ContestLobby_EventScript_LinkCantEnterEgg
-	goto_if_eq VAR_RESULT, CANT_ENTER_CONTEST_FAINTED, LilycoveCity_ContestLobby_EventScript_LinkCantEnterFainted
-	end
-
-LilycoveCity_ContestLobby_EventScript_LinkCantEnterLowRank::
-	msgbox LilycoveCity_ContestLobby_Text_MonNotQualifiedForRank, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_ChooseLinkContestMon
-	end
-
-LilycoveCity_ContestLobby_EventScript_LinkCantEnterEgg::
-	msgbox LilycoveCity_ContestLobby_Text_EggCannotTakePart2, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_ChooseLinkContestMon
-	end
-
-LilycoveCity_ContestLobby_EventScript_LinkCantEnterFainted::
-	msgbox LilycoveCity_ContestLobby_Text_MonInNoCondition2, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_ChooseLinkContestMon
-	end
-
-LilycoveCity_ContestLobby_EventScript_EnterMonForLinkContest::
-	copyvar VAR_0x8008, VAR_0x8004
-	goto LilycoveCity_ContestLobby_EventScript_TrySetUpLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_TrySetUpLinkContest::
-	goto_if_eq VAR_TEMP_D, 1, LilycoveCity_ContestLobby_EventScript_SetLinkGroupType
-	goto_if_ge VAR_TEMP_D, 2, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	message LilycoveCity_ContestLobby_Text_PleaseWaitBButtonCancel
-	waitmessage
-	copyvar VAR_0x8004, VAR_RESULT
-	call_if_eq VAR_TEMP_C, 0, LilycoveCity_ContestLobby_EventScript_TryLinkEMode
-	call_if_eq VAR_TEMP_C, 1, LilycoveCity_ContestLobby_EventScript_TryLinkGMode
-	goto_if_ge VAR_TEMP_C, 2, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	goto_if_eq VAR_RESULT, LINKUP_WRONG_NUM_PLAYERS, LilycoveCity_ContestLobby_EventScript_CancelLinkDifferentChoices
-	goto_if_eq VAR_RESULT, LINKUP_DIFF_SELECTIONS, LilycoveCity_ContestLobby_EventScript_CancelLinkDifferentChoices
-	goto_if_eq VAR_RESULT, LINKUP_FAILED, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	goto_if_eq VAR_RESULT, LINKUP_CONNECTION_ERROR, LilycoveCity_ContestLobby_EventScript_CancelLinkError
-	goto_if_eq VAR_RESULT, LINKUP_FAILED_CONTEST_GMODE, LilycoveCity_ContestLobby_EventScript_CancelLinkModeDifference
-	messageinstant LilycoveCity_ContestLobby_Text_Transmitting
-	contestlinktransfer
-	switch VAR_0x8004
-	case 0, LilycoveCity_ContestLobby_EventScript_StartLinkContest
-	case 1, LilycoveCity_ContestLobby_EventScript_CancelLinkDifferentContest
-	case 2, LilycoveCity_ContestLobby_EventScript_CancelLinkTransmissionError
-	end
-
-LilycoveCity_ContestLobby_EventScript_TryLinkEMode::
-	special TryContestEModeLinkup
-	waitstate
-	return
-
-LilycoveCity_ContestLobby_EventScript_TryLinkGMode::
-	special TryContestGModeLinkup
-	waitstate
-	return
-
-LilycoveCity_ContestLobby_EventScript_CancelLinkDifferentContest::
-	msgbox LilycoveCity_ContestLobby_Text_PlayersChoseDifferentContest, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_CancelLinkDifferentChoices::
-	msgbox LilycoveCity_ContestLobby_Text_PlayersMadeDifferentChoice, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_CancelLinkModeDifference::
-	msgbox LilycoveCity_ContestLobby_Text_PlayerAt4PCounterUseGMode, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_CancelLinkError::
-	special CloseLink
-	msgbox Text_LinkErrorPleaseReset, MSGBOX_DEFAULT
-	release
-	end
-
-LilycoveCity_ContestLobby_EventScript_CancelLinkNoWirelessGMode::
-	special CloseLink
-	msgbox LilycoveCity_ContestLobby_Text_NoWirelessAdapterInGMode, MSGBOX_DEFAULT
-	release
-	end
-
-LilycoveCity_ContestLobby_EventScript_CancelLinkTransmissionError::
-	msgbox LilycoveCity_ContestLobby_Text_TransmissionError, MSGBOX_DEFAULT
-	goto LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_StartLinkContest::
-	special GetContestPlayerId
-	addvar VAR_0x8004, 1
-	buffernumberstring STR_VAR_2, VAR_0x8004
-	messageautoscroll LilycoveCity_ContestLobby_Text_YourMonIsEntryNumX
-	waitmessage
-	subvar VAR_0x8004, 1
-	call LilycoveCity_ContestLobby_EventScript_LeadToLinkContestHall
-	setvar VAR_CONTEST_HALL_STATE, 1
-	special SetLinkContestPlayerGfx
-	setvar VAR_CONTEST_TYPE, CONTEST_TYPE_LINK
-	setvar VAR_CONTEST_RANK, CONTEST_RANK_MASTER
-	call LilycoveCity_ContestLobby_EventScript_WarpToContestHall
-	end
-
-LilycoveCity_ContestLobby_EventScript_SetLinkGroupType::
-	call_if_eq VAR_CONTEST_CATEGORY, CONTEST_CATEGORY_COOL, LilycoveCity_ContestLobby_EventScript_SetLinkGroupCoolContest
-	call_if_eq VAR_CONTEST_CATEGORY, CONTEST_CATEGORY_BEAUTY, LilycoveCity_ContestLobby_EventScript_SetLinkGroupBeautyContest
-	call_if_eq VAR_CONTEST_CATEGORY, CONTEST_CATEGORY_CUTE, LilycoveCity_ContestLobby_EventScript_SetLinkGroupCuteContest
-	call_if_eq VAR_CONTEST_CATEGORY, CONTEST_CATEGORY_SMART, LilycoveCity_ContestLobby_EventScript_SetLinkGroupSmartContest
-	call_if_eq VAR_CONTEST_CATEGORY, CONTEST_CATEGORY_TOUGH, LilycoveCity_ContestLobby_EventScript_SetLinkGroupToughContest
-	goto LilycoveCity_ContestLobby_EventScript_DecideLinkLeader
-	end
-
-LilycoveCity_ContestLobby_EventScript_SetLinkGroupCoolContest::
-	setvar VAR_0x8004, LINK_GROUP_COOL_CONTEST
-	return
-
-LilycoveCity_ContestLobby_EventScript_SetLinkGroupBeautyContest::
-	setvar VAR_0x8004, LINK_GROUP_BEAUTY_CONTEST
-	return
-
-LilycoveCity_ContestLobby_EventScript_SetLinkGroupCuteContest::
-	setvar VAR_0x8004, LINK_GROUP_CUTE_CONTEST
-	return
-
-LilycoveCity_ContestLobby_EventScript_SetLinkGroupSmartContest::
-	setvar VAR_0x8004, LINK_GROUP_SMART_CONTEST
-	return
-
-LilycoveCity_ContestLobby_EventScript_SetLinkGroupToughContest::
-	setvar VAR_0x8004, LINK_GROUP_TOUGH_CONTEST
-	return
-
-LilycoveCity_ContestLobby_EventScript_DecideLinkLeader::
-	message LilycoveCity_ContestLobby_Text_PleaseDecideLinkLeader
-	waitmessage
-	multichoice 16, 6, MULTI_LINK_LEADER, FALSE
-	switch VAR_RESULT
-	case 0, LilycoveCity_ContestLobby_EventScript_TryJoinGroup
-	case 1, LilycoveCity_ContestLobby_EventScript_TryLeadGroup
-	case 2, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	case MULTI_B_PRESSED, LilycoveCity_ContestLobby_EventScript_CancelLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_TryLeadGroup::
-	call LilycoveCity_ContestLobby_EventScript_TryBecomeLinkLeader
-	goto_if_eq VAR_RESULT, LINKUP_SUCCESS, LilycoveCity_ContestLobby_EventScript_LinkLeaderDecided
-	goto_if_eq VAR_RESULT, LINKUP_FAILED, LilycoveCity_ContestLobby_EventScript_DecideLinkLeader
-	goto_if_eq VAR_RESULT, LINKUP_RETRY_ROLE_ASSIGN, LilycoveCity_ContestLobby_EventScript_TryLeadGroup
-	release
-	end
-
-LilycoveCity_ContestLobby_EventScript_TryJoinGroup::
-	call LilycoveCity_ContestLobby_EventScript_TryJoinLinkGroup
-	goto_if_eq VAR_RESULT, LINKUP_SUCCESS, LilycoveCity_ContestLobby_EventScript_LinkLeaderDecided
-	goto_if_eq VAR_RESULT, LINKUP_FAILED, LilycoveCity_ContestLobby_EventScript_DecideLinkLeader
-	goto_if_eq VAR_RESULT, LINKUP_RETRY_ROLE_ASSIGN, LilycoveCity_ContestLobby_EventScript_TryJoinGroup
-	release
-	end
-
-LilycoveCity_ContestLobby_EventScript_TryBecomeLinkLeader::
-	special TryBecomeLinkLeader
-	waitstate
-	return
-
-LilycoveCity_ContestLobby_EventScript_TryJoinLinkGroup::
-	special TryJoinLinkGroup
-	waitstate
-	return
-
-LilycoveCity_ContestLobby_EventScript_LinkLeaderDecided::
-	messageinstant LilycoveCity_ContestLobby_Text_Transmitting
-	contestlinktransfer
-	goto LilycoveCity_ContestLobby_EventScript_StartLinkContest
-	end
-
-LilycoveCity_ContestLobby_EventScript_LeadToLinkContestHall::
-	messageautoscroll LilycoveCity_ContestLobby_Text_ContestBeginShortly
-	waitmessage
-	delay 20
-	closemessage
-	applymovement LOCALID_LINK_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_LinkReceptionistApproachCounter
-	waitmovement 0
-	playse SE_BRIDGE_WALK
-	setmetatile 17, 2, METATILE_Contest_WallShadow, TRUE
-	setmetatile 17, 3, METATILE_Contest_FloorShadow, TRUE
-	special DrawWholeMapView
-	applymovement LOCALID_LINK_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_LinkReceptionistExitCounter
-	waitmovement 0
-	playse SE_BRIDGE_WALK
-	setmetatile 17, 2, METATILE_Contest_CounterFlap_Top, TRUE
-	setmetatile 17, 3, METATILE_Contest_CounterFlap_Bottom, TRUE
-	special DrawWholeMapView
-	delay 20
-	applymovement LOCALID_LINK_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_LinkReceptionistFacePlayer
-	waitmovement 0
-	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerApproachLinkReceptionist
-	waitmovement 0
-	messageautoscroll LilycoveCity_ContestLobby_Text_ComeThroughHere
-	waitmessage
-	delay 20
-	closemessage
-	call LilycoveCity_ContestLobby_EventScript_DelayIfContestWithRSPlayer
-	applymovement LOCALID_LINK_RECEPTIONIST, LilycoveCity_ContestLobby_Movement_LinkReceptionistWalkToContestHall
-	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerWalkToLinkContestHall
-	waitmovement 0
-	release
-	return
-
-LilycoveCity_ContestLobby_Movement_PlayerWalkToLinkContestHall:
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_up
-	walk_up
-	walk_up
-	delay_8
-	set_invisible
-	step_end
-
-LilycoveCity_ContestLobby_Movement_PlayerApproachLinkReceptionist:
-	walk_right
-	step_end
-
-LilycoveCity_ContestLobby_Movement_LinkReceptionistApproachCounter:
-	walk_right
-	walk_right
-	walk_in_place_faster_down
-	step_end
-
-LilycoveCity_ContestLobby_Movement_LinkReceptionistExitCounter:
-	walk_down
-	walk_down
-	walk_in_place_faster_up
-	step_end
-
-LilycoveCity_ContestLobby_Movement_LinkReceptionistWalkToContestHall:
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_up
-	walk_up
-	walk_up
-	delay_8
-	set_invisible
-	step_end
-
-LilycoveCity_ContestLobby_Movement_LinkReceptionistFacePlayer:
-	walk_in_place_faster_left
-	step_end
 
 LilycoveCity_ContestLobby_EventScript_LittleGirl::
 	lock
@@ -984,51 +713,48 @@ LilycoveCity_ContestLobby_EventScript_LittleGirlHaveCase::
 
 LilycoveCity_ContestLobby_Text_LadyGaveMePokeblockCase:
 	.string "Yippee!\p"
-	.string "The lady at the reception counter\n"
-	.string "gave me a case for {POKEBLOCK}S!$"
+	.string "I can make {POKEBLOCK}s with\n"
+	.string "this case my daddy gave me!$"
 
 LilycoveCity_ContestLobby_Text_MakePokeblocksDifferentBerries:
-	.string "Make {POKEBLOCK}S and put them in there.\p"
+	.string "Make {POKEBLOCK}s and put them in there.\p"
 	.string "When you make a {POKEBLOCK}, everyone\n"
-	.string "has to put in a different BERRY.$"
+	.string "has to put in a different Berry.$"
 
 LilycoveCity_ContestLobby_Text_YourPokemonSpurredMeToPaint:
 	.string "Congratulations!\p"
-	.string "I did a painting of your POKéMON to\n"
-	.string "commemorate its victory…\p"
-	.string "Well, your POKéMON's appeals were\n"
-	.string "so fantastic, it spurred me into\l"
-	.string "painting better than I usually do.\l"
+	.string "It was an amazing perfomance\n"
+	.string "of you and your Pokémon!\p"
+	.string "It also inspired me to capture\n"
+	.string "this moment in a painting!\p"
 	.string "Look, see?$"
 
 LilycoveCity_ContestLobby_Text_ShouldITakePaintingToMuseum:
 	.string "What do you think? I'm confident in\n"
 	.string "what I've done, but do you like it?\p"
-	.string "A work of this caliber, it wouldn't look\n"
-	.string "out of place in an art museum.\p"
-	.string "Huh? An art museum really is looking\n"
-	.string "for paintings?\p"
-	.string "Do you think I should take this there?$"
+	.string "Since it shows a Master Rank Contest\n"
+	.string "and all its amazing details, I feel\l"
+	.string "that it can be exposed upstaris,\l"
+	.string "in the Contest Hall Exhibit\p"
+	.string "Do you think I can take it there?$"
 
 LilycoveCity_ContestLobby_Text_IllTakePaintingToMuseum:
 	.string "What, really? Then, sure, I will take\n"
 	.string "this painting there right now.\p"
 	.string "I'll give it a proper title, too.\p"
-	.string "I hope they'll like it and consider\n"
-	.string "exhibiting this.\p"
-	.string "Please check if they did accept this.\n"
+	.string "It will surely be a delight for the eyes!\p"
 	.string "Thank you!$"
 
 LilycoveCity_ContestLobby_Text_TakeMementoOfPainting:
 	.string "Oh, that's right!\p"
 	.string "As a memento of me painting your\n"
-	.string "POKéMON, please take this.$"
+	.string "Pokémon, please take this.$"
 
 LilycoveCity_ContestLobby_Text_ReceivedARibbon:
-	.string "{PLAYER} received a RIBBON.$"
+	.string "{PLAYER} received a Ribbon.$"
 
 LilycoveCity_ContestLobby_Text_PutTheRibbonOnMon:
-	.string "{PLAYER} put the RIBBON on\n"
+	.string "{PLAYER} put the Ribbon on\n"
 	.string "{STR_VAR_1}.$"
 
 LilycoveCity_ContestLobby_Text_OkaySeeYou:
@@ -1037,8 +763,8 @@ LilycoveCity_ContestLobby_Text_OkaySeeYou:
 LilycoveCity_ContestLobby_Text_TakeHomeButIdLikeToTakeToMuseum:
 	.string "Oh… Then, I guess I'll just take\n"
 	.string "this home with me…\p"
-	.string "But, you know, I would like to take\n"
-	.string "this to the art museum… Okay?$"
+	.string "But, you know, I would like to expose\n"
+	.string "it in the Exhibit… Okay?$"
 
 LilycoveCity_ContestLobby_Text_FineThatsTheWayItIs:
 	.string "Oh, fine, that's the way it is.\n"
@@ -1047,40 +773,223 @@ LilycoveCity_ContestLobby_Text_FineThatsTheWayItIs:
 	.string "Well, be seeing you.$"
 
 LilycoveCity_ContestLobby_Text_MasterRankHereICome:
-	.string "Hoo, boy… Master Rank CONTESTS,\n"
+	.string "Hoo, boy… Master Rank Contests,\n"
 	.string "here I come.\p"
 	.string "The world will know that my dearest\n"
-	.string "POKéMON is the cutest being in all\l"
+	.string "Pokémon is the cutest being in all\l"
 	.string "existence. The time has come!\l"
-	.string "Uheheheh.$"
+	.string "Uheheheh!\p"
+	.string "Huh? Daisy is here again?!\n"
+	.string "Oh, no…\p"
+	.string "Nevermind! Let's do this!\n"
+	.string "Seventh time is the charm!$"
 
 LilycoveCity_ContestLobby_Text_WholeVarietyOfPokemonHere:
 	.string "You can see a whole variety of\n"
-	.string "POKéMON here.\p"
+	.string "Pokémon here.\p"
 	.string "That's why I make this place a regular\n"
-	.string "part of my daily stroll.$"
+	.string "part of my daily stroll.\p"
+	.string "Mr. Scott surely invited only the best\n"
+	.string "to perform here!$"
 
 LilycoveCity_ContestLobby_Text_ContestFeastForEyes:
-	.string "Wow, coming out to a CONTEST is\n"
+	.string "Wow, coming out to a Contest is\n"
 	.string "a feast for these eyes!\p"
-	.string "Would you look at all the POKéMON\n"
-	.string "that just scream to be painted?$"
-
+	.string "Would you look at all the Pokémon\n"
+	.string "that just scream to be painted?\p"
+	.string "This place turned out to be very\n"
+	.string "faithful to the Hoenn Contest Hall!\p"
+	.string "Even the quality of the shows and\n"
+	.string "Pokémon are similar!\p"
+	.string "But that girl Daisy surely is\n"
+	.string "on another level…$"
+	
 LilycoveCity_ContestLobby_Text_ToughContestIsExtreme:
-	.string "The TOUGHNESS CONTEST is like\n"
+	.string "The Toughness Contest is like\n"
 	.string "extreme, man!\p"
 	.string "Those muscular appeals…\n"
-	.string "Cascading sweat… I swoon!$"
+	.string "Cascading sweat… I swoon!\p"
+	.string "Whenever I'm tired of battling\n"
+	.string "at the Battle Tower\p"
+	.string "I come here to watch the Contests.$"
 
 LilycoveCity_ContestLobby_Text_LavishedCareOnMon:
 	.string "Day in and day out, I lavished my care\n"
-	.string "on this POKéMON.\p"
+	.string "on this Pokémon.\p"
 	.string "Its condition is peaking.\n"
-	.string "Today, victory is mine!$"
+	.string "Today, victory is mine!\p"
+	.string "If that girl from Pallete Town\n"
+	.string "don't show up…\p"
+	.string "She's such a pro at Contests!$"
 
 LilycoveCity_ContestLobby_Text_MadePokeblocksWithFamily:
-	.string "I made {POKEBLOCK}S with Mom, Dad, and\n"
+	.string "I made {POKEBLOCK}s with Mom, Dad, and\n"
 	.string "Big Sister. They turned out great!\p"
 	.string "I bet you can make smoother, better\n"
-	.string "{POKEBLOCK}S if you have more people.$"
+	.string "{POKEBLOCK}s if you have more people.$"
 
+LilycoveCity_ContestLobby_Text_ParticipateAnotherTime:
+	.string "We hope you will participate another\n"
+	.string "time.$"
+
+LilycoveCity_ContestLobby_Text_PleaseDecideLinkLeader:
+	.string "Please decide which of you will\n"
+	.string "become the Group Leader.\p"
+	.string "The other players must then choose\n"
+	.string "“Join Group.”$"
+
+LilycoveCity_ContestLobby_Text_WhichContestMode:
+	.string "Which Contest Mode would you like\n"
+	.string "to enter?$"
+
+LilycoveCity_ContestLobby_EventScript_DelayIfContestWithRSPlayer::
+	specialvar VAR_RESULT, IsContestWithRSPlayer
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_ContestLobby_EventScript_DelayForRSPlayer
+	return
+
+LilycoveCity_ContestLobby_EventScript_DelayForRSPlayer::
+	delay 9
+	return
+
+LilycoveCity_ContestLobby_Text_NoContestPass:
+	.string "Hello!\p"
+	.string "Welcome to the new Kanto Contest Hall!\n"
+	.string "This is the reception counter for\l"
+	.string "Pokémon Contests.\p"
+	.string "Oh? It appears that you don't have\n"
+	.string "a Contest Pass.\p"
+	.string "Since we are still setting up\n"
+	.string "we are limiting the entrance for invited\l"
+	.string "Trainers only.\p" 
+	.string "I'm terribly sorry but I'm afraid\n"
+	.string "I can't let you enter without a Contest Pass.\p"
+	.string "Please return once you have\n"
+	.string "a Contest Pass.$"
+
+LilycoveCity_ContestLobby_Text_ContestReception:
+	.string "Hello!\p"
+	.string "Welcome to the new Kanto Contest Hall!\n"
+	.string "This is the reception counter for\l"
+	.string "Pokémon Contests.\p"
+	.string "Oh! You have a Contest Pass!\n"
+	.string "That means you can enter any\l"
+	.string "event in here!$"
+
+LilycoveCity_ContestLobby_Text_EnterContest1:
+	.string "Would you like to enter your Pokémon\n"
+	.string "in our Contests?$"
+
+LilycoveCity_ContestLobby_Text_WhichTopic1:
+	.string "Which topic would you like?$"
+
+LilycoveCity_ContestLobby_Text_ExplainContests:
+	.string "A Pokémon Contest involves four\n"
+	.string "Trainers entering one Pokémon each\l"
+	.string "in competitive judging.\p"
+	.string "A Contest has two stages of judging,\n"
+	.string "primary and secondary.\p"
+	.string "Primary judging is a popularity poll\n"
+	.string "involving the audience.\p"
+	.string "Secondary judging features appeals\n"
+	.string "by the Pokémon using their moves.\p"
+	.string "Plan appeals carefully to earn the\n"
+	.string "most attention of the Judge and\l"
+	.string "excite the audience.\l"
+	.string "Do your best to stand out.\p"
+	.string "The primary and secondary scores are\n"
+	.string "added at the end.\p"
+	.string "The Pokémon garnering the highest\n"
+	.string "score is declared the winner.$"
+
+LilycoveCity_ContestLobby_Text_ExplainContestTypes:
+	.string "There are five kinds of Contests.\p"
+	.string "Cool, Beauty, Cute, Smart, and\n"
+	.string "Tough are the five categories.\p"
+	.string "Choose the Contest that is right for\n"
+	.string "the Pokémon you plan to enter.$"
+
+LilycoveCity_ContestLobby_Text_ExplainContestRanks:
+	.string "There are four ranks of Pokémon\n"
+	.string "Contests.\p"
+	.string "Normal, Super, Hyper, and Master\n"
+	.string "are the four ranks.\p"
+	.string "In the Normal Rank, any Pokémon may\n"
+	.string "enter.\p"
+	.string "Any Pokémon that won a Normal Rank\n"
+	.string "Contest may move up to the Super Rank\l"
+	.string "in the same category.\p"
+	.string "In the same way, a Super Rank winner\n"
+	.string "can move up to the Hyper Rank, and\l"
+	.string "a Hyper Rank winner can advance to\l"
+	.string "the Master Rank in the same category.\p"
+	.string "A Pokémon that won in the Master Rank\n"
+	.string "may compete in the Master Rank as\l"
+	.string "often as its Trainer wants.$"
+
+LilycoveCity_ContestLobby_Text_EnterWhichRank:
+	.string "Which Rank would you like to enter?$"
+
+LilycoveCity_ContestLobby_Text_EnterWhichContest1:
+	.string "Which Contest would you like to enter?$"
+
+LilycoveCity_ContestLobby_Text_EnterWhichPokemon1:
+	.string "Which Pokémon would you like to enter?$"
+
+LilycoveCity_ContestLobby_Text_MonNotQualifiedForRank:
+	.string "I'm terribly sorry, but your Pokémon\n"
+	.string "is not qualified to compete at this\l"
+	.string "Rank yet…$"
+
+LilycoveCity_ContestLobby_Text_EggCannotTakePart:
+	.string "I'm sorry, but an Egg cannot take part\n"
+	.string "in a Pokémon Contest.$"
+
+LilycoveCity_ContestLobby_Text_MonInNoConditionForContest:
+	.string "Your Pokémon appears to be in no\n"
+	.string "condition to take part in a Contest…$"
+
+LilycoveCity_ContestLobby_Text_AlreadyWonEnterAnyway:
+	.string "Oh, but that Ribbon…\p"
+	.string "Your Pokémon has won this Contest\n"
+	.string "before, hasn't it?\p"
+	.string "Would you like to enter it in this\n"
+	.string "Contest anyway?$"
+
+LilycoveCity_ContestLobby_Text_ConfirmContestMon:
+	.string "Is that your Contest Pokémon?$"
+
+LilycoveCity_ContestLobby_Text_YourMonIsEntryNum4:
+	.string "Okay, your Pokémon will be entered\n"
+	.string "in this Contest.\p"
+	.string "Your Pokémon is Entry No. 4.\n"
+	.string "The Contest will begin shortly.$"
+
+LilycoveCity_ContestLobby_Text_ComeThroughHere:
+	.string "Please come in through here.\n"
+	.string "Good luck!$"
+
+LilycoveCity_ContestLobby_Text_PokemonWonWeHavePrize:
+	.string "Congratulations! Your Pokémon is the\n"
+	.string "Contest winner!\p"
+	.string "We have your prize right here.\n"
+	.string "Please, right this way!$"
+
+LilycoveCity_ContestLobby_Text_ComeBackForPrizeLater:
+	.string "Please come back for your prize\n"
+	.string "later on.$"
+
+LilycoveCity_ContestLobby_EventScript_ExhibitHall::
+	msgbox LilycoveCity_ContestLobby_Text_ExhibitHall, MSGBOX_SIGN
+	end
+
+LilycoveCity_ContestLobby_EventScript_ContestSign::
+	msgbox LilycoveCity_ContestLobby_Text_Contest, MSGBOX_SIGN
+	end
+
+LilycoveCity_ContestLobby_Text_ExhibitHall:
+	.string "Contest Hall Exhibit\n"
+	.string "Now Open!$"
+
+LilycoveCity_ContestLobby_Text_Contest:
+	.string "Kanto Contest Hall\n"
+	.string "Shine on the Stage!$"

@@ -16,6 +16,7 @@
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "in_connection": false,
       "x": 0,
       "y": 0,
       "elevation": 0,
@@ -29,6 +30,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 1,
       "y": 0,
       "elevation": 3,
@@ -42,6 +44,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 2,
       "y": 0,
       "elevation": 3,
@@ -55,6 +58,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 3,
       "y": 0,
       "elevation": 3,
@@ -68,6 +72,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 4,
       "y": 0,
       "elevation": 3,
@@ -81,6 +86,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 5,
       "y": 0,
       "elevation": 3,
@@ -94,6 +100,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 6,
       "y": 0,
       "elevation": 3,
@@ -107,6 +114,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 7,
       "y": 0,
       "elevation": 0,
@@ -120,6 +128,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 0,
       "y": 1,
       "elevation": 3,
@@ -133,6 +142,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 1,
       "y": 1,
       "elevation": 3,
@@ -146,6 +156,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 3,
       "y": 1,
       "elevation": 0,
@@ -159,6 +170,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 4,
       "y": 1,
       "elevation": 0,
@@ -172,6 +184,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 5,
       "y": 1,
       "elevation": 0,
@@ -185,6 +198,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 6,
       "y": 1,
       "elevation": 0,
@@ -198,6 +212,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 7,
       "y": 1,
       "elevation": 0,
@@ -211,6 +226,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "in_connection": false,
       "x": 2,
       "y": 1,
       "elevation": 0,
