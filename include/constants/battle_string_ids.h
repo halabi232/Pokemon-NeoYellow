@@ -547,7 +547,7 @@
 #define STRINGID_NOONEWILLBEABLETORUNAWAY             545
 #define STRINGID_DESTINYKNOTACTIVATES                 546
 #define STRINGID_CLOAKEDINAFREEZINGLIGHT              547
-#define STRINGID_STATWASNOTLOWERED                    548
+#define STRINGID_CLEARAMULETWONTLOWERSTATS            548
 #define STRINGID_FERVENTWISHREACHED                   549
 #define STRINGID_AIRLOCKACTIVATES                     550
 #define STRINGID_PRESSUREENTERS                       551
@@ -691,8 +691,18 @@
 #define STRINGID_PKMNDROPPEDITEM                      689
 #define STRINGID_PKMNGAINEDEXPALL                     690
 #define STRINGID_BAGISFULL                            691
+#define STRINGID_ZEROTOHEROTRANSFORMATION             692
+#define STRINGID_THETWOMOVESBECOMEONE                 693
+#define STRINGID_ARAINBOWAPPEAREDONSIDE               694
+#define STRINGID_THERAINBOWDISAPPEARED                695
+#define STRINGID_WAITINGFORPARTNERSMOVE               696
+#define STRINGID_SEAOFFIREENVELOPEDSIDE               697
+#define STRINGID_HURTBYTHESEAOFFIRE                   698
+#define STRINGID_THESEAOFFIREDISAPPEARED              699
+#define STRINGID_SWAMPENVELOPEDSIDE                   700
+#define STRINGID_THESWAMPDISAPPEARED                  701
 
-#define BATTLESTRINGS_COUNT                           692
+#define BATTLESTRINGS_COUNT                           702
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

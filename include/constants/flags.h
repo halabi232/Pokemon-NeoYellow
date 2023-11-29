@@ -1313,10 +1313,10 @@
 #define FLAG_REGISTERED_AIDE                                        0x4ED
 #define FLAG_REGISTERED_DAISY                                       0x4EE
 #define FLAG_REGISTERED_RIVAL                            			0x4EF
-#define FLAG_REGISTERED_PROF_OAK                         			0x4F9
-#define FLAG_HAS_MATCH_CALL                                         0x4FA
+#define FLAG_REGISTERED_PROF_OAK                         			0x4F0
+#define FLAG_HAS_MATCH_CALL                                         0x4F1
+#define FLAG_ADDED_MATCH_CALL_TO_POKENAV                            0x4F2
 
-#define FLAG_UNUSED_0x4F2                                           0x4F2
 #define FLAG_UNUSED_0x4F3                                           0x4F3
 #define FLAG_UNUSED_0x4F4                                           0x4F4
 #define FLAG_UNUSED_0x4F5                                           0x4F5

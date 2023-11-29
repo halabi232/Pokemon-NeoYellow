@@ -51,11 +51,13 @@
 #define ITEM_LEMONADE	            37
 #define ITEM_MOOMOO_MILK	        38
 #define ITEM_ENERGY_POWDER	        39
+#define ITEM_ENERGYPOWDER ITEM_ENERGY_POWDER // Pre-Gen VI name
 #define ITEM_ENERGY_ROOT	        40
 #define ITEM_HEAL_POWDER	        41
 #define ITEM_REVIVAL_HERB	        42
 #define ITEM_ANTIDOTE	            43
 #define ITEM_PARALYZE_HEAL	        44
+#define ITEM_PARLYZ_HEAL ITEM_PARALYZE_HEAL // Pre-Gen VI name
 #define ITEM_BURN_HEAL	            45
 #define ITEM_ICE_HEAL	            46
 #define ITEM_AWAKENING	            47
@@ -63,7 +65,9 @@
 #define ITEM_ETHER	                49
 #define ITEM_MAX_ETHER	            50
 #define ITEM_ELIXIR	                51
+#define ITEM_ELIXER ITEM_ELIXIR // Pre-Gen III name
 #define ITEM_MAX_ELIXIR	            52
+#define ITEM_MAX_ELIXER ITEM_MAX_ELIXIR // Pre-Gen III name
 #define ITEM_BERRY_JUICE	        53
 #define ITEM_SACRED_ASH	            54
 #define ITEM_SWEET_HEART	        55
@@ -72,6 +76,7 @@
 // Regional Specialties	
 #define ITEM_PEWTER_CRUNCHIES	    57
 #define ITEM_RAGE_CANDY_BAR	        58
+#define ITEM_RAGECANDYBAR ITEM_RAGE_CANDY_BAR // Pre-Gen VI name
 #define ITEM_LAVA_COOKIE	        59
 #define ITEM_OLD_GATEAU	            60
 #define ITEM_CASTELIACONE	        61
@@ -91,12 +96,18 @@
 	
 // EV Feathers	
 #define ITEM_HEALTH_FEATHER	        73
+#define ITEM_HEALTH_WING ITEM_HEALTH_FEATHER // Pre-Gen VIII name
 #define ITEM_MUSCLE_FEATHER	        74
+#define ITEM_MUSCLE_WING ITEM_MUSCLE_FEATHER // Pre-Gen VIII name
 #define ITEM_RESIST_FEATHER	        75
+#define ITEM_RESIST_WING ITEM_RESIST_FEATHER // Pre-Gen VIII name
 #define ITEM_GENIUS_FEATHER	        76
+#define ITEM_GENIUS_WING ITEM_GENIUS_FEATHER // Pre-Gen VIII name
 #define ITEM_CLEVER_FEATHER	        77
+#define ITEM_CLEVER_WING ITEM_CLEVER_FEATHER // Pre-Gen VIII name
 #define ITEM_SWIFT_FEATHER	        78
-	
+	#define ITEM_SWIFT_WING ITEM_SWIFT_FEATHER // Pre-Gen VIII name
+
 // Ability Modifiers	
 #define ITEM_ABILITY_CAPSULE	    79
 #define ITEM_ABILITY_PATCH	        80
@@ -163,7 +174,9 @@
 // X Items	
 #define ITEM_X_ATTACK	            129
 #define ITEM_X_DEFENSE	            130
+#define ITEM_X_DEFEND ITEM_X_DEFENSE // Pre-Gen VI name
 #define ITEM_X_SP_ATK	            131
+#define ITEM_X_SPECIAL ITEM_X_SP_ATK // Pre-Gen VI name
 #define ITEM_X_SP_DEF	            132
 #define ITEM_X_SPEED	            133
 #define ITEM_X_ACCURACY	            134
@@ -184,8 +197,10 @@
 #define ITEM_NUGGET	                143
 #define ITEM_BIG_NUGGET	            144
 #define ITEM_TINY_MUSHROOM	        145
+#define ITEM_TINYMUSHROOM ITEM_TINY_MUSHROOM // Pre-Gen VI name
 #define ITEM_BIG_MUSHROOM	        146
 #define ITEM_BALM_MUSHROOM	        147
+#define ITEM_BALMMUSHROOM ITEM_BALM_MUSHROOM // Pre-Gen VI name
 #define ITEM_PEARL	                148
 #define ITEM_BIG_PEARL	            149
 #define ITEM_PEARL_STRING	        150
@@ -203,6 +218,7 @@
 #define ITEM_RARE_BONE	            162
 #define ITEM_ODD_KEYSTONE	        163
 #define ITEM_PRETTY_FEATHER	        164
+#define ITEM_PRETTY_WING ITEM_PRETTY_FEATHER // Pre-Gen VIII name
 #define ITEM_RELIC_COPPER	        165
 #define ITEM_RELIC_SILVER	        166
 #define ITEM_RELIC_GOLD	            167
@@ -242,12 +258,18 @@
 // Apricorns	
 #define ITEM_RED_APRICORN	        196
 #define ITEM_BLUE_APRICORN	        197
+#define ITEM_BLU_APRICORN ITEM_BLUE_APRICORN // Pre-Gen VI name
 #define ITEM_YELLOW_APRICORN	    198
+#define ITEM_YLW_APRICORN ITEM_YELLOW_APRICORN // Pre-Gen VI name
 #define ITEM_GREEN_APRICORN	        199
+#define ITEM_GRN_APRICORN ITEM_GREEN_APRICORN // Pre-Gen VI name
 #define ITEM_PINK_APRICORN	        200
+#define ITEM_PNK_APRICORN ITEM_PINK_APRICORN // Pre-Gen VI name
 #define ITEM_WHITE_APRICORN	        201
+#define ITEM_WHT_APRICORN ITEM_WHITE_APRICORN // Pre-Gen VI name
 #define ITEM_BLACK_APRICORN	        202
-	
+	#define ITEM_BLK_APRICORN ITEM_BLACK_APRICORN // Pre-Gen VI name
+
 #define ITEM_WISHING_PIECE	        203
 #define ITEM_GALARICA_TWIG	        204
 #define ITEM_ARMORITE_ORE	        205
@@ -273,6 +295,7 @@
 #define ITEM_FIRE_STONE	            219
 #define ITEM_WATER_STONE	        220
 #define ITEM_THUNDER_STONE	        221
+#define ITEM_THUNDERSTONE ITEM_THUNDER_STONE // Pre-Gen VI name
 #define ITEM_LEAF_STONE	            222
 #define ITEM_ICE_STONE	            223
 #define ITEM_SUN_STONE	            224
@@ -288,6 +311,7 @@
 #define ITEM_GALARICA_WREATH	    234
 #define ITEM_DRAGON_SCALE	        235
 #define ITEM_UPGRADE	            236
+#define ITEM_UP_GRADE ITEM_UPGRADE // Pre-Gen VIII name
 #define ITEM_PROTECTOR	            237
 #define ITEM_ELECTIRIZER	        238
 #define ITEM_MAGMARIZER	            239
@@ -470,13 +494,16 @@
 	
 // Species-specific Held Items	
 #define ITEM_LIGHT_BALL	            399
-#define ITEM_STICK	                400
+#define ITEM_LEEK	                400
+#define ITEM_STICK ITEM_LEEK // Pre-Gen VIII name
 #define ITEM_THICK_CLUB	            401
 #define ITEM_LUCKY_PUNCH	        402
 #define ITEM_METAL_POWDER	        403
 #define ITEM_QUICK_POWDER	        404
 #define ITEM_DEEP_SEA_SCALE	        405
+#define ITEM_DEEPSEASCALE ITEM_DEEP_SEA_SCALE // Pre-Gen VI name
 #define ITEM_DEEP_SEA_TOOTH	        406
+#define ITEM_DEEPSEATOOTH ITEM_DEEP_SEA_TOOTH // Pre-Gen VI name
 #define ITEM_SOUL_DEW	            407
 #define ITEM_ADAMANT_ORB	        408
 #define ITEM_LUSTROUS_ORB	        409
@@ -516,16 +543,21 @@
 #define ITEM_MAGNET	                435
 #define ITEM_MIRACLE_SEED	        436
 #define ITEM_NEVER_MELT_ICE	        437
+#define ITEM_NEVERMELTICE ITEM_NEVER_MELT_ICE // Pre-Gen VI name
 #define ITEM_BLACK_BELT	            438
+#define ITEM_BLACKBELT ITEM_BLACK_BELT // Gen II name
 #define ITEM_POISON_BARB	        439
 #define ITEM_SOFT_SAND	            440
 #define ITEM_SHARP_BEAK	            441
 #define ITEM_TWISTED_SPOON	        442
+#define ITEM_TWISTEDSPOON ITEM_TWISTED_SPOON // Pre-Gen VI name
 #define ITEM_SILVER_POWDER	        443
+#define ITEM_SILVERPOWDER ITEM_SILVER_POWDER // Pre-Gen VI name
 #define ITEM_HARD_STONE	            444
 #define ITEM_SPELL_TAG	            445
 #define ITEM_DRAGON_FANG	        446
 #define ITEM_BLACK_GLASSES	        447
+#define ITEM_BLACKGLASSES ITEM_BLACK_GLASSES // Pre-Gen VI name
 #define ITEM_METAL_COAT	            448
 	
 // Choice Items	
@@ -559,8 +591,10 @@
 	
 // Misc. Held Items	
 #define ITEM_BRIGHT_POWDER	        467
+#define ITEM_BRIGHTPOWDER ITEM_BRIGHT_POWDER // Pre-Gen VI name
 #define ITEM_WHITE_HERB	            468
 #define ITEM_EXP_SHARE	            469
+#define ITEM_EXP_ALL ITEM_EXP_SHARE // Gen I name
 #define ITEM_QUICK_CLAW	            470
 #define ITEM_SOOTHE_BELL	        471
 #define ITEM_MENTAL_HERB	        472
@@ -615,6 +649,20 @@
 #define ITEM_UTILITY_UMBRELLA	    521
 	
 // Berries	
+#if B_CONFUSE_BERRIES_HEAL >= GEN_8
+    #define CONFUSE_BERRY_HEAL_FRACTION 3
+#elif B_CONFUSE_BERRIES_HEAL == GEN_7
+    #define CONFUSE_BERRY_HEAL_FRACTION 2
+#else
+    #define CONFUSE_BERRY_HEAL_FRACTION 8
+#endif
+
+#if B_CONFUSE_BERRIES_HEAL >= GEN_7
+    #define CONFUSE_BERRY_HP_FRACTION 4
+#else
+    #define CONFUSE_BERRY_HP_FRACTION 2
+#endif
+
 #define ITEM_CHERI_BERRY	        522
 #define ITEM_CHESTO_BERRY	        523
 #define ITEM_PECHA_BERRY	        524
@@ -828,6 +876,8 @@
 #define ITEM_GOOD_ROD	            718
 #define ITEM_SUPER_ROD	            719
 #define ITEM_DOWSING_MACHINE	    720
+#define ITEM_ITEMFINDER ITEM_DOWSING_MACHINE // Pre-Gen IV name
+#define ITEM_DOWSING_MCHN ITEM_DOWSING_MACHINE // Gen IV-V name
 #define ITEM_TOWN_MAP	            721
 #define ITEM_VS_SEEKER	            722
 #define ITEM_TM_CASE	            723
@@ -851,19 +901,25 @@
 #define ITEM_OLD_SEA_MAP	        739
 #define ITEM_LETTER	                740
 #define ITEM_DEVON_PARTS	        741
+#define ITEM_DEVON_GOODS ITEM_DEVON_PARTS // Pre-Gen VI name
 #define ITEM_GO_GOGGLES	            742
 #define ITEM_DEVON_SCOPE	        743
 #define ITEM_BASEMENT_KEY	        744
 #define ITEM_SCANNER	            745
 #define ITEM_STORAGE_KEY	        746
 #define ITEM_KEY_TO_ROOM_1	        747
-#define ITEM_KEY_TO_ROOM_2	        748
-#define ITEM_KEY_TO_ROOM_4	        749
-#define ITEM_KEY_TO_ROOM_6	        750
+#define ITEM_RM_1_KEY ITEM_KEY_TO_ROOM_1 // Pre-Gen VI name
+#define ITEM_KEY_TO_ROOM_2          748
+#define ITEM_RM_2_KEY ITEM_KEY_TO_ROOM_2 // Pre-Gen VI name
+#define ITEM_KEY_TO_ROOM_4          749
+#define ITEM_RM_4_KEY ITEM_KEY_TO_ROOM_4 // Pre-Gen VI name
+#define ITEM_KEY_TO_ROOM_6          750
+#define ITEM_RM_6_KEY ITEM_KEY_TO_ROOM_6 // Pre-Gen VI name
 #define ITEM_METEORITE	            751
 #define ITEM_MAGMA_EMBLEM	        752
 #define ITEM_CONTEST_PASS	        753
-#define ITEM_OAKS_PARCEL	        754
+#define ITEM_PARCEL	                754
+#define ITEM_OAKS_PARCEL  ITEM_PARCEL
 #define ITEM_SECRET_KEY	            755
 #define ITEM_BIKE_VOUCHER	        756
 #define ITEM_GOLD_TEETH	            757
@@ -941,9 +997,8 @@
 #define ITEM_POWER_STONE            822
 #define ITEM_PIXIE_DUST             823
 #define ITEM_ROCKET_PLANS           824
-#define ITEM_ITEMFINDER             825
 
-#define ITEMS_COUNT 826
+#define ITEMS_COUNT 825
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations

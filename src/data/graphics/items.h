@@ -658,6 +658,15 @@ const u32 gItemIconPalette_LinkingCord[] = INCBIN_U32("graphics/items/icon_palet
 const u32 gItemIcon_PeatBlock[] = INCBIN_U32("graphics/items/icons/peat_block.4bpp.lz");
 const u32 gItemIconPalette_PeatBlock[] = INCBIN_U32("graphics/items/icon_palettes/peat_block.gbapal.lz");
 
+const u32 gItemIcon_SyrupyApple[] = INCBIN_U32("graphics/items/icons/syrupy_apple.4bpp.lz");
+const u32 gItemIconPalette_SyrupyApple[] = INCBIN_U32("graphics/items/icon_palettes/syrupy_apple.gbapal.lz");
+
+const u32 gItemIcon_UnremarkableTeacup[] = INCBIN_U32("graphics/items/icons/unremarkable_teacup.4bpp.lz");
+const u32 gItemIconPalette_UnremarkableTeacup[] = INCBIN_U32("graphics/items/icon_palettes/unremarkable_teacup.gbapal.lz");
+
+const u32 gItemIcon_MasterpieceTeacup[] = INCBIN_U32("graphics/items/icons/masterpiece_teacup.4bpp.lz");
+const u32 gItemIconPalette_MasterpieceTeacup[] = INCBIN_U32("graphics/items/icon_palettes/masterpiece_teacup.gbapal.lz");
+
 // Nectars
 
 const u32 gItemIcon_RedNectar[] = INCBIN_U32("graphics/items/icons/red_nectar.4bpp.lz");
@@ -1925,6 +1934,27 @@ const u32 gItemIconPalette_SteelTeraShard[] = INCBIN_U32("graphics/items/icon_pa
 const u32 gItemIconPalette_FairyTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/fairy_tera_shard.gbapal.lz");
 
 
+// Mochi
+
+const u32 gItemIcon_Mochi[] = INCBIN_U32("graphics/items/icons/mochi.4bpp.lz");
+const u32 gItemIconPalette_HealthMochi[] = INCBIN_U32("graphics/items/icon_palettes/health_mochi.gbapal.lz");
+const u32 gItemIconPalette_MuscleMochi[] = INCBIN_U32("graphics/items/icon_palettes/muscle_mochi.gbapal.lz");
+const u32 gItemIconPalette_ResistMochi[] = INCBIN_U32("graphics/items/icon_palettes/resist_mochi.gbapal.lz");
+const u32 gItemIconPalette_GeniusMochi[] = INCBIN_U32("graphics/items/icon_palettes/genius_mochi.gbapal.lz");
+const u32 gItemIconPalette_CleverMochi[] = INCBIN_U32("graphics/items/icon_palettes/clever_mochi.gbapal.lz");
+const u32 gItemIconPalette_SwiftMochi[] = INCBIN_U32("graphics/items/icon_palettes/swift_mochi.gbapal.lz");
+const u32 gItemIconPalette_FreshStartMochi[] = INCBIN_U32("graphics/items/icon_palettes/fresh_start_mochi.gbapal.lz");
+
+// Ogerpon masks
+
+const u32 gItemIcon_WellspringMask[] = INCBIN_U32("graphics/items/icons/wellspring_mask.4bpp.lz");
+const u32 gItemIconPalette_WellspringMask[] = INCBIN_U32("graphics/items/icon_palettes/wellspring_mask.gbapal.lz");
+const u32 gItemIcon_HearthflameMask[] = INCBIN_U32("graphics/items/icons/hearthflame_mask.4bpp.lz");
+const u32 gItemIconPalette_HearthflameMask[] = INCBIN_U32("graphics/items/icon_palettes/hearthflame_mask.gbapal.lz");
+const u32 gItemIcon_CornerstoneMask[] = INCBIN_U32("graphics/items/icons/cornerstone_mask.4bpp.lz");
+const u32 gItemIconPalette_CornerstoneMask[] = INCBIN_U32("graphics/items/icon_palettes/cornerstone_mask.gbapal.lz");
+
+
 // Poké Ball Summary Icons
 const u32 gBallIcon_Poke[] = INCBIN_U32("graphics/summary_screen/ball_icons/poke.4bpp.lz");
 const u32 gBallIconPalette_Poke[] = INCBIN_U32("graphics/summary_screen/ball_icons/poke.gbapal.lz");
@@ -1997,6 +2027,10 @@ const u32 gItemIconPalette_CatchingCharm[] = INCBIN_U32("graphics/items/icon_pal
 
 const u32 gItemIcon_ExpCharm[] = INCBIN_U32("graphics/items/icons/exp_charm.4bpp.lz");
 const u32 gItemIconPalette_ExpCharm[] = INCBIN_U32("graphics/items/icon_palettes/exp_charm.gbapal.lz");
+
+const u32 gItemIcon_GlimmeringCharm[] = INCBIN_U32("graphics/items/icons/glimmering_charm.4bpp.lz");
+const u32 gItemIconPalette_GlimmeringCharm[] = INCBIN_U32("graphics/items/icon_palettes/glimmering_charm.gbapal.lz");
+
 
 // Form-changing Key Items
 

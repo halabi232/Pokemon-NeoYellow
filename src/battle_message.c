@@ -706,7 +706,7 @@ static const u8 sText_PkmnAbsorbingPower[] = _("{B_ATK_NAME_WITH_PREFIX} is abso
 static const u8 sText_NoOneWillBeAbleToRun[] = _("No one will be able to run away\nduring the next turn!");
 static const u8 sText_DestinyKnotActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} fell in love\nfrom the {B_LAST_ITEM}!");
 static const u8 sText_CloakedInAFreezingLight[] = _("{B_ATK_NAME_WITH_PREFIX} became cloaked\nin a freezing light!");
-static const u8 sText_StatWasNotLowered[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_BUFF1}\nwas not lowered!");
+static const u8 sText_ClearAmuletWontLowerStats[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_LAST_ITEM} prevents\nits stats from being lowered!");
 static const u8 sText_AuraFlaredToLife[] = _("{B_DEF_NAME_WITH_PREFIX}'s aura flared to life!");
 static const u8 sText_AirLockActivates[] = _("The effects of weather\ndisappeared.");
 static const u8 sText_PressureActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} is exerting its\npressure!");
@@ -830,9 +830,29 @@ static const u8 sText_TargetCoveredInStickyCandySyrup[] = _("{B_DEF_NAME_WITH_PR
 static const u8 sText_PkmnDroppedItem[] = _("{B_OPPONENT_MON1_NAME} dropped\nits {B_LAST_ITEM}!{WAIT_SE}\p");
 static const u8 sText_BagIsFull[] = _("{B_OPPONENT_MON1_NAME} dropped\n{B_LAST_ITEM}!{WAIT_SE}\pBut your bag is full!\p");
 
+static const u8 sText_ZeroToHeroTransformation[] = _("{B_ATK_NAME_WITH_PREFIX} underwent a heroic\ntransformation!");
+static const u8 sText_TheTwoMovesBecomeOne[] = _("The two moves become one!\nIt's a combined move!{PAUSE 16}");
+static const u8 sText_ARainbowAppearedOnSide[] = _("A rainbow appeared in the sky\non {B_ATK_TEAM2} team's side!");
+static const u8 sText_TheRainbowDisappeared[] = _("The rainbow on {B_ATK_TEAM2}\nside disappeared!");
+static const u8 sText_WaitingForPartnersMove[] = _("{B_ATK_NAME_WITH_PREFIX} is waiting\nfor {B_ATK_PARTNER_NAME}'s move…{PAUSE 16}");
+static const u8 sText_SeaOfFireEnvelopedSide[] = _("A sea of fire enveloped\n{B_DEF_TEAM2} team!");
+static const u8 sText_HurtByTheSeaOfFire[] = _("{B_ATK_TEAM1} {B_ATK_NAME_WITH_PREFIX} was hurt\nby the sea of fire!");
+static const u8 sText_TheSeaOfFireDisappeared[] = _("The sea of fire around {B_ATK_TEAM2}\nteam disappeared!");
+static const u8 sText_SwampEnvelopedSide[] = _("A swamp enveloped\n{B_DEF_TEAM2} team!");
+static const u8 sText_TheSwampDisappeared[] = _("The swamp around {B_ATK_TEAM2}\nteam disappeared!");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
+    [STRINGID_THESWAMPDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_TheSwampDisappeared,
+    [STRINGID_SWAMPENVELOPEDSIDE - BATTLESTRINGS_TABLE_START] = sText_SwampEnvelopedSide,
+    [STRINGID_THESEAOFFIREDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_TheSeaOfFireDisappeared,
+    [STRINGID_HURTBYTHESEAOFFIRE - BATTLESTRINGS_TABLE_START] = sText_HurtByTheSeaOfFire,
+    [STRINGID_SEAOFFIREENVELOPEDSIDE - BATTLESTRINGS_TABLE_START] = sText_SeaOfFireEnvelopedSide,
+    [STRINGID_WAITINGFORPARTNERSMOVE - BATTLESTRINGS_TABLE_START] = sText_WaitingForPartnersMove,
+    [STRINGID_THERAINBOWDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_TheRainbowDisappeared,
+    [STRINGID_ARAINBOWAPPEAREDONSIDE - BATTLESTRINGS_TABLE_START] = sText_ARainbowAppearedOnSide,
+    [STRINGID_THETWOMOVESBECOMEONE - BATTLESTRINGS_TABLE_START] = sText_TheTwoMovesBecomeOne,
+    [STRINGID_ZEROTOHEROTRANSFORMATION - BATTLESTRINGS_TABLE_START] = sText_ZeroToHeroTransformation,
 [STRINGID_MOVEBLOCKEDBYDYNAMAX - BATTLESTRINGS_TABLE_START] = sText_MoveBlockedByDynamax,
     [STRINGID_OPPORTUNISTCOPIED - BATTLESTRINGS_TABLE_START] = sText_OpportunistCopied,
     [STRINGID_TARGETISHURTBYSALTCURE - BATTLESTRINGS_TABLE_START] = sText_TargetIsHurtBySaltCure,
@@ -933,7 +953,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_ASANDSTORMKICKEDUP - BATTLESTRINGS_TABLE_START] = sText_ASandstormKickedUp,
     [STRINGID_BATTLERABILITYRAISEDSTAT - BATTLESTRINGS_TABLE_START] = sText_BattlerAbilityRaisedStat,
     [STRINGID_FETCHEDPOKEBALL - BATTLESTRINGS_TABLE_START] = sText_FetchedPokeBall,
-    [STRINGID_STATWASNOTLOWERED - BATTLESTRINGS_TABLE_START] = sText_StatWasNotLowered,
+    [STRINGID_CLEARAMULETWONTLOWERSTATS - BATTLESTRINGS_TABLE_START] = sText_ClearAmuletWontLowerStats,
     [STRINGID_CLOAKEDINAFREEZINGLIGHT - BATTLESTRINGS_TABLE_START] = sText_CloakedInAFreezingLight,
     [STRINGID_DESTINYKNOTACTIVATES - BATTLESTRINGS_TABLE_START] = sText_DestinyKnotActivates,
     [STRINGID_NOONEWILLBEABLETORUNAWAY - BATTLESTRINGS_TABLE_START] = sText_NoOneWillBeAbleToRun,
@@ -4039,6 +4059,7 @@ struct TrainerSlide
     const u8 *msgMegaEvolution;
     const u8 *msgZMove;
     const u8 *msgBeforeFirstTurn;
+    const u8 *msgDynamax;
 };
 
 static const struct TrainerSlide sTrainerSlides[] =
@@ -4059,6 +4080,7 @@ static const struct TrainerSlide sTrainerSlides[] =
         .msgMegaEvolution = sText_PowderExplodes,
         .msgZMove = sText_Electromagnetism,
         .msgBeforeFirstTurn = sText_GravityIntensified,
+        .msgDynamax = sText_TargetWokeUp,
     },
     */
 };
@@ -4241,6 +4263,14 @@ u32 ShouldDoTrainerSlide(u32 battler, u32 which)
                 {
                     gBattleStruct->trainerSlideBeforeFirstTurnMsgDone = TRUE;
                     gBattleStruct->trainerSlideMsg = sTrainerSlides[i].msgBeforeFirstTurn;
+                    return TRUE;
+                }
+                break;
+            case TRAINER_SLIDE_DYNAMAX:
+                if (sTrainerSlides[i].msgDynamax != NULL && !gBattleStruct->trainerSlideDynamaxMsgDone)
+                {
+                    gBattleStruct->trainerSlideDynamaxMsgDone = TRUE;
+                    gBattleStruct->trainerSlideMsg = sTrainerSlides[i].msgDynamax;
                     return TRUE;
                 }
                 break;

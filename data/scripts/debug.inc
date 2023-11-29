@@ -70,28 +70,41 @@ Debug_BoxFilledMessage::
 Debug_BoxFilledMessage_Text:
 	.string "Storage boxes filled!$"
 
-Debug_Script_1::
+Debug_FlagsAndVarNotSetBattleConfigMessage::
+	lockall
+	message Debug_FlagsAndVarNotSetBattleConfigMessage_Text
+	waitmessage
+	waitbuttonpress
+	releaseall
 	end
 
-Debug_Script_2::
+Debug_FlagsAndVarNotSetBattleConfigMessage_Text:
+	.string "Feature unavailable! Please define a\n"
+	.string "usable flag and a usable var in:\l"
+	.string "'include/config/battle.h'!$"
+
+Debug_EventScript_Script_1::
 	end
 
-Debug_Script_3::
+Debug_EventScript_Script_2::
 	end
 
-Debug_Script_4::
+Debug_EventScript_Script_3::
 	end
 
-Debug_Script_5::
+Debug_EventScript_Script_4::
 	end
 
-Debug_Script_6::
+Debug_EventScript_Script_5::
 	end
 
-Debug_Script_7::
+Debug_EventScript_Script_6::
 	end
 
-Debug_Script_8::
+Debug_EventScript_Script_7::
+	end
+
+Debug_EventScript_Script_8::
 	end
 
 Debug_CheckSaveBlock::
@@ -156,29 +169,38 @@ DebugScript_HatchAnEgg_Text_EmptyParty::
 
 DebugScript_HatchAnEgg_Text_NotAnEgg::
 	.string "That's not a Pokémon Egg.$"
-	
+
 DebugScript_ZeroDaycareMons::
 	msgbox DebugText_DaycareNoPokemon, MSGBOX_DEFAULT
 	releaseall
 	end
-	
+
 DebugScript_OneDaycareMons::
 	msgbox DebugText_DaycareOnePokemon, MSGBOX_DEFAULT
 	releaseall
 	end
-	
+
 DebugScript_DaycareMonsNotCompatible::
 	msgbox DebugText_DaycarePokemonNotCompatible, MSGBOX_DEFAULT
 	releaseall
 	end
-	
+
 DebugText_DaycareNoPokemon:
 	.string "You have no Pokémon at Daycare.$"
-	
+
 DebugText_DaycareOnePokemon:
 	.string "You have only one Pokémon at Daycare.$"
-	
+
 DebugText_DaycarePokemonNotCompatible:
 	.string "Your Pokémon at Daycare can't\nhave babies together!$"
+
+Debug_ShowExpansionVersion::
+	callnative BufferExpansionVersion
+	msgbox Debug_ExpansionVersion, MSGBOX_DEFAULT
+	release
+	end
+
+Debug_ExpansionVersion:
+	.string "pokeemerald-expansion {STR_VAR_1}$"
 
 .endif
