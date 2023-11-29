@@ -3972,7 +3972,6 @@ extern const u32 gMonFollowerPalette_Fearow[];
 extern const u32 gMonFollowerPalette_Ekans[];
 extern const u32 gMonFollowerPalette_Arbok[];
 extern const u32 gMonFollowerPalette_Pikachu[];
-extern const u32 gMonFollowerPalette_PikachuPartner[];
 extern const u32 gMonFollowerPalette_Raichu[];
 extern const u32 gMonFollowerPalette_Sandshrew[];
 extern const u32 gMonFollowerPalette_Sandslash[];

@@ -1415,6 +1415,7 @@ const struct CompressedSpritePalette gMonFollowerPaletteTable[NUM_SPECIES + 1] =
     FOLLOWER_PAL(EKANS, gMonFollowerPalette_Ekans),
     FOLLOWER_PAL(ARBOK, gMonFollowerPalette_Arbok),
     FOLLOWER_PAL(PIKACHU, gMonFollowerPalette_Pikachu),
+    FOLLOWER_PAL(PIKACHU_PARTNER, gMonFollowerPalette_Pikachu),
     FOLLOWER_PAL(RAICHU, gMonFollowerPalette_Raichu),
     FOLLOWER_PAL(SANDSHREW, gMonFollowerPalette_Sandshrew),
     FOLLOWER_PAL(SANDSLASH, gMonFollowerPalette_Sandslash),
