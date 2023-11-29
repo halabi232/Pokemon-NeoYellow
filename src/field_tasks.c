@@ -254,7 +254,7 @@ static const struct PacifidlogMetatileOffsets *GetPacifidlogBridgeMetatileOffset
 static void TrySetPacifidlogBridgeMetatiles(const struct PacifidlogMetatileOffsets *offsets, s16 x, s16 y, bool32 redrawMap)
 {
     offsets = GetPacifidlogBridgeMetatileOffsets(offsets, MapGridGetMetatileBehaviorAt(x, y));
-
+    
     // If offsets is NULL, position is not a log (don't set it)
     if (offsets)
     {
@@ -304,7 +304,7 @@ static bool32 ShouldRaisePacifidlogLogs(s16 newX, s16 newY, s16 oldX, s16 oldY)
     }
     else if (MetatileBehavior_IsPacifidlogHorizontalLogLeft(oldBehavior))
     {
-        // Still on same one if moved from left to right
+        // Still on same one if moved from left to right 
         if (newX > oldX)
             return FALSE;
     }
@@ -343,13 +343,13 @@ static bool32 ShouldSinkPacifidlogLogs(s16 newX, s16 newY, s16 oldX, s16 oldY)
     }
     else if (MetatileBehavior_IsPacifidlogHorizontalLogLeft(newBehavior))
     {
-        // Still on same one if moved from right to left
+        // Still on same one if moved from right to left 
         if (newX < oldX)
             return FALSE;
     }
     else if (MetatileBehavior_IsPacifidlogHorizontalLogRight(newBehavior))
     {
-        // Still on same one if moved from left to right
+        // Still on same one if moved from left to right 
         if (newX > oldX)
             return FALSE;
     }
@@ -374,7 +374,7 @@ static void PacifidlogBridgePerStepCallback(u8 taskId)
     case 0:
         tPrevX = x;
         tPrevY = y;
-
+        
         // If player is already standing on a log when the callback
         // is set then immediately set it to submerged
         TrySetLogBridgeFullySubmerged(x, y, TRUE);
@@ -427,7 +427,7 @@ static void PacifidlogBridgePerStepCallback(u8 taskId)
         {
             // If player's current position is a log submerge it fully.
             TrySetLogBridgeFullySubmerged(x, y, TRUE);
-
+            
             // Player's previous position is not the other end of a log
             // they're standing on, try to raise their previous position.
             if (tToRaiseX != -1 && tToRaiseY != -1)
@@ -448,35 +448,13 @@ static void PacifidlogBridgePerStepCallback(u8 taskId)
 
 static void TryLowerFortreeBridge(s16 x, s16 y)
 {
-    u8 elevation = PlayerGetElevation();
-    if (!(elevation & 1))
     {
-        switch (MapGridGetMetatileIdAt(x, y))
-        {
-        case METATILE_Fortree_BridgeOverGrass_Raised:
-            MapGridSetMetatileIdAt(x, y, METATILE_Fortree_BridgeOverGrass_Lowered);
-            break;
-        case METATILE_Fortree_BridgeOverTrees_Raised:
-            MapGridSetMetatileIdAt(x, y, METATILE_Fortree_BridgeOverTrees_Lowered);
-            break;
-        }
     }
 }
 
 static void TryRaiseFortreeBridge(s16 x, s16 y)
 {
-    u8 elevation = PlayerGetElevation();
-    if (!(elevation & 1))
     {
-        switch (MapGridGetMetatileIdAt(x, y))
-        {
-        case METATILE_Fortree_BridgeOverGrass_Lowered:
-            MapGridSetMetatileIdAt(x, y, METATILE_Fortree_BridgeOverGrass_Raised);
-            break;
-        case METATILE_Fortree_BridgeOverTrees_Lowered:
-            MapGridSetMetatileIdAt(x, y, METATILE_Fortree_BridgeOverTrees_Raised);
-            break;
-        }
     }
 }
 
@@ -502,7 +480,7 @@ static void FortreeBridgePerStepCallback(u8 taskId)
     case 0:
         tPrevX = x;
         tPrevY = y;
-
+        
         // If player is already on bridge when callback is set then lower it immediately.
         if (MetatileBehavior_IsFortreeBridge(MapGridGetMetatileBehaviorAt(x, y)))
         {
@@ -521,7 +499,7 @@ static void FortreeBridgePerStepCallback(u8 taskId)
 
         isFortreeBridgeCur = MetatileBehavior_IsFortreeBridge(MapGridGetMetatileBehaviorAt(x, y));
         isFortreeBridgePrev = MetatileBehavior_IsFortreeBridge(MapGridGetMetatileBehaviorAt(prevX, prevY));
-
+        
         // Make sure player isn't below bridge
         elevation = PlayerGetElevation();
         onBridgeElevation = FALSE;
@@ -675,7 +653,7 @@ static void SootopolisGymIcePerStepCallback(u8 taskId)
         // End if player hasn't moved
         if (x == tPrevX && y == tPrevY)
             return;
-
+        
         tPrevX = x;
         tPrevY = y;
         tileBehavior = MapGridGetMetatileBehaviorAt(x, y);

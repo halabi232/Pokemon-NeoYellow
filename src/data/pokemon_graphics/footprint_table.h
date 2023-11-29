@@ -26,6 +26,7 @@ const u8 *const gMonFootprintTable[NUM_SPECIES + 1] =
     [SPECIES_EKANS] = gMonFootprint_Ekans,
     [SPECIES_ARBOK] = gMonFootprint_Arbok,
     [SPECIES_PIKACHU] = gMonFootprint_Pikachu,
+    [SPECIES_PIKACHU_PARTNER] = gMonFootprint_Pikachu,
     [SPECIES_RAICHU] = gMonFootprint_Raichu,
     [SPECIES_SANDSHREW] = gMonFootprint_Sandshrew,
     [SPECIES_SANDSLASH] = gMonFootprint_Sandslash,

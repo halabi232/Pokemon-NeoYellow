@@ -1,3 +1,4 @@
+#include "constants/game_stat.h"
 #include "global.h"
 #include "main.h"
 #include "constants/songs.h"
@@ -968,7 +969,7 @@ static const struct Story sStorytellerStories[] = {
         MauvilleCity_PokemonCenter_1F_Text_PokemonCaughtStory
     },
     {
-        GAME_STAT_FISHING_ENCOUNTERS, 1,
+        GAME_STAT_FISHING_CAPTURES, 1,
         MauvilleCity_PokemonCenter_1F_Text_FishingPokemonCaughtTitle,
         MauvilleCity_PokemonCenter_1F_Text_FishingPokemonCaughtAction,
         MauvilleCity_PokemonCenter_1F_Text_FishingPokemonCaughtStory

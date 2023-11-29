@@ -30,6 +30,7 @@ EWRAM_DATA struct MapHeader gMapHeader = {0};
 EWRAM_DATA struct Camera gCamera = {0};
 EWRAM_DATA static struct ConnectionFlags sMapConnectionFlags = {0};
 EWRAM_DATA static u32 UNUSED sFiller = 0; // without this, the next file won't align properly
+EWRAM_DATA struct Coords16 gLightMetatiles[32] = {0};
 
 struct BackupMapLayout gBackupMapLayout;
 
@@ -48,16 +49,28 @@ static const struct MapConnection *GetIncomingConnection(u8 direction, int x, in
 static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, const struct MapConnection *connection);
 static bool8 IsCoordInIncomingConnectingMap(int coord, int srcMax, int destMax, int offset);
 
-static inline u16 GetBorderBlockAt(int x, int y)
-{
-    int i = (x + 1) & 1;
-    i += ((y + 1) & 1) * 2;
-    return gMapHeader.mapLayout->border[i] | MAPGRID_COLLISION_MASK;
-}
+#define GetBorderBlockAt(x, y) ({                                                                 \
+    u16 block;                                                                                    \
+    s32 xprime;                                                                                   \
+    s32 yprime;                                                                                   \
+                                                                                                  \
+    const struct MapLayout *mapLayout = gMapHeader.mapLayout;                                     \
+                                                                                                  \
+    xprime = x - MAP_OFFSET;                                                                      \
+    xprime += 8 * mapLayout->borderWidth;                                                         \
+    xprime %= mapLayout->borderWidth;                                                             \
+                                                                                                  \
+    yprime = y - MAP_OFFSET;                                                                      \
+    yprime += 8 * mapLayout->borderHeight;                                                        \
+    yprime %= mapLayout->borderHeight;                                                            \
+                                                                                                  \
+    block = mapLayout->border[xprime + yprime * mapLayout->borderWidth] | MAPGRID_COLLISION_MASK; \
+})
 
 #define AreCoordsWithinMapGridBounds(x, y) (x >= 0 && x < gBackupMapLayout.width && y >= 0 && y < gBackupMapLayout.height)
 
 #define GetMapGridBlockAt(x, y) (AreCoordsWithinMapGridBounds(x, y) ? gBackupMapLayout.map[x + gBackupMapLayout.width * y] : GetBorderBlockAt(x, y))
+static void CacheLightMetatiles(void);
 
 const struct MapHeader *const GetMapHeaderFromConnection(const struct MapConnection *connection)
 {
@@ -69,6 +82,7 @@ void InitMap(void)
     InitMapLayoutData(&gMapHeader);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     RunOnLoadMapScript();
+CacheLightMetatiles();
 }
 
 void InitMapFromSavedGame(void)
@@ -78,6 +92,7 @@ void InitMapFromSavedGame(void)
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     LoadSavedMapView();
     RunOnLoadMapScript();
+CacheLightMetatiles();
     UpdateTVScreensOnMap(gBackupMapLayout.width, gBackupMapLayout.height);
 }
 
@@ -374,6 +389,23 @@ u32 MapGridGetMetatileBehaviorAt(int x, int y)
     return GetMetatileAttributesById(metatile) & METATILE_ATTR_BEHAVIOR_MASK;
 }
 
+// Caches light metatile coordinates
+static void CacheLightMetatiles(void) { // TODO: Better way to dynamically generate lights
+  u8 i = 0;
+  s16 x, y;
+  for (x = 0; x < gBackupMapLayout.width; x++) {
+    for (y = 0; y < gBackupMapLayout.height; y++) {
+      if (MapGridGetMetatileBehaviorAt(x, y) == 0x04) {
+        gLightMetatiles[i].x = x;
+        gLightMetatiles[i].y = y;
+        i++;
+      }
+    }
+  }
+  gLightMetatiles[i].x = -1;
+  gLightMetatiles[i].y = -1;
+}
+
 u8 MapGridGetMetatileLayerTypeAt(int x, int y)
 {
     u16 metatile = MapGridGetMetatileIdAt(x, y);
@@ -662,18 +694,18 @@ bool8 CameraMove(int x, int y)
         old_x = gSaveBlock1Ptr->pos.x;
         old_y = gSaveBlock1Ptr->pos.y;
         connection = GetIncomingConnection(direction, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);
-        if (connection)
+    if (connection)
         {
-            SetPositionFromConnection(connection, direction, x, y);
-            LoadMapFromCameraTransition(connection->mapGroup, connection->mapNum);
-            gCamera.active = TRUE;
-            gCamera.x = old_x - gSaveBlock1Ptr->pos.x;
-            gCamera.y = old_y - gSaveBlock1Ptr->pos.y;
-            gSaveBlock1Ptr->pos.x += x;
-            gSaveBlock1Ptr->pos.y += y;
-            MoveMapViewToBackup(direction);
+        SetPositionFromConnection(connection, direction, x, y);
+        LoadMapFromCameraTransition(connection->mapGroup, connection->mapNum);
+        gCamera.active = TRUE;
+        gCamera.x = old_x - gSaveBlock1Ptr->pos.x;
+        gCamera.y = old_y - gSaveBlock1Ptr->pos.y;
+        gSaveBlock1Ptr->pos.x += x;
+        gSaveBlock1Ptr->pos.y += y;
+        MoveMapViewToBackup(direction);
         }
-        else
+    else
         {
             DebugPrintfLevel(MGBA_LOG_WARN, "GetIncomingConnection returned an invalid connection inside CameraMove!");
         }

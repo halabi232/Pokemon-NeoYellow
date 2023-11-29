@@ -291,7 +291,7 @@ EWRAM_DATA bool8 gAffineAnimsDisabled = FALSE;
 void ResetSpriteData(void)
 {
     ResetOamRange(0, 128);
-    gOamDummyIndex = 0;
+gOamDummyIndex = 0;
     ResetAllSprites();
     ClearSpriteCopyRequests();
     ResetAffineAnimData();
@@ -346,31 +346,31 @@ void BuildOamBuffer(void)
         s32 y;
         if (!sprite->inUse || sprite->invisible)
         {
-            skippedSprites[skippedSpritesN++] = index;
+skippedSprites[skippedSpritesN++] = index;
             continue;
         }
 
         if (sprite->oam.affineMode & ST_OAM_AFFINE_ON_MASK)
             matrices |= 1 << sprite->oam.matrixNum;
 
-        if (sprite->coordOffsetEnabled)
-        {
-            sprite->oam.x = sprite->x + sprite->x2 + sprite->centerToCornerVecX + gSpriteCoordOffsetX;
-            sprite->oam.y = sprite->y + sprite->y2 + sprite->centerToCornerVecY + gSpriteCoordOffsetY;
-        }
-        else
-        {
-            sprite->oam.x = sprite->x + sprite->x2 + sprite->centerToCornerVecX;
-            sprite->oam.y = sprite->y + sprite->y2 + sprite->centerToCornerVecY;
-        }
-
+            if (sprite->coordOffsetEnabled)
+            {
+                sprite->oam.x = sprite->x + sprite->x2 + sprite->centerToCornerVecX + gSpriteCoordOffsetX;
+                sprite->oam.y = sprite->y + sprite->y2 + sprite->centerToCornerVecY + gSpriteCoordOffsetY;
+            }
+            else
+            {
+                sprite->oam.x = sprite->x + sprite->x2 + sprite->centerToCornerVecX;
+                sprite->oam.y = sprite->y + sprite->y2 + sprite->centerToCornerVecY;
+            }
+        
         y = sprite->oam.y;
         if (y >= DISPLAY_HEIGHT)
         {
             y -= 256;
         }
         else if (sprite->oam.affineMode == ST_OAM_AFFINE_DOUBLE
-              && sprite->oam.size == ST_OAM_SIZE_3)
+         && sprite->oam.size == ST_OAM_SIZE_3)
         {
             u32 shape = sprite->oam.shape;
             if (shape == ST_OAM_SQUARE || shape == ST_OAM_V_RECTANGLE)
@@ -403,24 +403,24 @@ void BuildOamBuffer(void)
         if (AddSpriteToOamBuffer(&gSprites[spritePriorities[i] & 0xFF], &oamIndex))
             break;
     }
-
+            
     for (i = oamIndex; i < gOamDummyIndex; i++)
         gMain.oamBuffer[i] = gDummyOamData;
     gOamDummyIndex = oamIndex;
 
     for (i = 0; matrices != 0; i++, matrices >>= 1)
     {
-        if (matrices & 1)
-        {
-            u32 base = 4 * i;
-            gMain.oamBuffer[base + 0].affineParam = gOamMatrices[i].a;
-            gMain.oamBuffer[base + 1].affineParam = gOamMatrices[i].b;
-            gMain.oamBuffer[base + 2].affineParam = gOamMatrices[i].c;
-            gMain.oamBuffer[base + 3].affineParam = gOamMatrices[i].d;
-        }
+    if (matrices & 1)
+    {
+        u32 base = 4 * i;
+        gMain.oamBuffer[base + 0].affineParam = gOamMatrices[i].a;
+        gMain.oamBuffer[base + 1].affineParam = gOamMatrices[i].b;
+        gMain.oamBuffer[base + 2].affineParam = gOamMatrices[i].c;
+        gMain.oamBuffer[base + 3].affineParam = gOamMatrices[i].d;
     }
+}
 
-    gMain.oamLoadDisabled = oamLoadDisabled;
+gMain.oamLoadDisabled = oamLoadDisabled;
     sShouldProcessSpriteCopyRequests = TRUE;
 }
 
@@ -438,12 +438,12 @@ static inline void InsertionSort(u32 *spritePriorities, s32 n)
         }
         spritePriorities[j + 1] = x;
         i++;
-    }
 }
+    }
 
-static void SortSprites(u32 *spritePriorities, s32 n)
-{
-    InsertionSort(spritePriorities, n);
+    static void SortSprites(u32 *spritePriorities, s32 n)
+    {
+        InsertionSort(spritePriorities, n);
 }
 
 u8 CreateSprite(const struct SpriteTemplate *template, s16 x, s16 y, u8 subpriority)
@@ -1730,4 +1730,12 @@ bool8 AddSubspritesToOamBuffer(struct Sprite *sprite, struct OamData *destOam, u
     }
 
     return 0;
+}
+
+
+void obj_pos2_update_enable(struct Sprite* sprite, s16 xmod, s16 ymod)
+{
+    sprite->data[6] = xmod;
+    sprite->data[7] = ymod;
+    sprite->anchored = 1;
 }

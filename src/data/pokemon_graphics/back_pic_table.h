@@ -1,3 +1,5 @@
+#include "constants/species.h"
+#include "graphics.h"
 const struct CompressedSpriteSheet gMonBackPicTable[NUM_SPECIES + 1] =
 {
     SPECIES_SPRITE(NONE, gMonBackPic_CircledQuestionMark),
@@ -26,6 +28,7 @@ const struct CompressedSpriteSheet gMonBackPicTable[NUM_SPECIES + 1] =
     SPECIES_SPRITE(EKANS, gMonBackPic_Ekans),
     SPECIES_SPRITE(ARBOK, gMonBackPic_Arbok),
     SPECIES_SPRITE(PIKACHU, gMonBackPic_Pikachu),
+    SPECIES_SPRITE(PIKACHU_PARTNER, gMonBackPic_PikachuPartner),
     SPECIES_SPRITE(RAICHU, gMonBackPic_Raichu),
     SPECIES_SPRITE(SANDSHREW, gMonBackPic_Sandshrew),
     SPECIES_SPRITE(SANDSLASH, gMonBackPic_Sandslash),
@@ -1052,7 +1055,7 @@ const struct CompressedSpriteSheet gMonBackPicTable[NUM_SPECIES + 1] =
     SPECIES_SPRITE(PIKACHU_UNOVA_CAP, gMonBackPic_PikachuUnovaCap),
     SPECIES_SPRITE(PIKACHU_KALOS_CAP, gMonBackPic_PikachuKalosCap),
     SPECIES_SPRITE(PIKACHU_ALOLA_CAP, gMonBackPic_PikachuAlolaCap),
-    SPECIES_SPRITE(PIKACHU_PARTNER_CAP, gMonBackPic_PikachuPartnerCap),
+    SPECIES_SPRITE(PIKACHU_PART_CAP, gMonBackPic_PikachuPartnerCap),
     SPECIES_SPRITE(PIKACHU_WORLD_CAP, gMonBackPic_PikachuWorldCap),
 
     SPECIES_SPRITE(PICHU_SPIKY_EARED, gMonBackPic_PichuSpikyEared),

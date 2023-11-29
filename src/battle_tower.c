@@ -136,7 +136,7 @@ const u16 gBattleFrontierHeldItems[] =
     [BATTLE_FRONTIER_ITEM_APICOT_BERRY]    = ITEM_APICOT_BERRY,
     [BATTLE_FRONTIER_ITEM_STARF_BERRY]     = ITEM_STARF_BERRY,
     [BATTLE_FRONTIER_ITEM_LIECHI_BERRY]    = ITEM_LIECHI_BERRY,
-    [BATTLE_FRONTIER_ITEM_STICK]           = ITEM_LEEK,
+    [BATTLE_FRONTIER_ITEM_STICK]           = ITEM_STICK,
     [BATTLE_FRONTIER_ITEM_LAX_INCENSE]     = ITEM_LAX_INCENSE,
     [BATTLE_FRONTIER_ITEM_AGUAV_BERRY]     = ITEM_AGUAV_BERRY,
     [BATTLE_FRONTIER_ITEM_FIGY_BERRY]      = ITEM_FIGY_BERRY,
@@ -178,7 +178,7 @@ const u16 gBattleFrontierHeldItems[] =
     [BATTLE_FRONTIER_ITEM_DAMP_ROCK]       = ITEM_DAMP_ROCK,   
     [BATTLE_FRONTIER_ITEM_ICY_ROCK]        = ITEM_ICY_ROCK,   
     [BATTLE_FRONTIER_ITEM_DESTINY_KNOT]    = ITEM_DESTINY_KNOT,
-    //[BATTLE_FRONTIER_ITEM_PIXIE_DUST]      = ITEM_PIXIE_DUST,
+    [BATTLE_FRONTIER_ITEM_PIXIE_DUST]      = ITEM_PIXIE_DUST,
     [BATTLE_FRONTIER_ITEM_EVIOLITE]        = ITEM_EVIOLITE,   
 };
 
@@ -186,7 +186,7 @@ const u16 gBattleFrontierHeldItems[] =
 #include "data/battle_frontier/battle_frontier_trainers.h"
 #include "data/battle_frontier/battle_frontier_mons.h"
 
-const u8 gTowerMaleFacilityClasses[30] =
+const u8 gTowerMaleFacilityClasses[36] =
 {
     FACILITY_CLASS_RUIN_MANIAC,
     FACILITY_CLASS_TUBER_M,
@@ -217,10 +217,16 @@ const u8 gTowerMaleFacilityClasses[30] =
     FACILITY_CLASS_PKMN_BREEDER_M,
     FACILITY_CLASS_PKMN_RANGER_M,
     FACILITY_CLASS_BUG_CATCHER,
-    FACILITY_CLASS_HIKER
+    FACILITY_CLASS_HIKER,
+    FACILITY_CLASS_LEADER_BROCK,
+    FACILITY_CLASS_LEADER_SURGE,
+    FACILITY_CLASS_LEADER_KOGA,
+    FACILITY_CLASS_LEADER_BLAINE,
+    FACILITY_CLASS_ELITE_FOUR_BRUNO,
+    FACILITY_CLASS_ELITE_FOUR_LANCE
 };
 
-const u8 gTowerFemaleFacilityClasses[20] =
+const u8 gTowerFemaleFacilityClasses[25] =
 {
     FACILITY_CLASS_AROMA_LADY,
     FACILITY_CLASS_TUBER_F,
@@ -241,20 +247,25 @@ const u8 gTowerFemaleFacilityClasses[20] =
     FACILITY_CLASS_PICNICKER,
     FACILITY_CLASS_PKMN_BREEDER_F,
     FACILITY_CLASS_PKMN_RANGER_F,
-    FACILITY_CLASS_LASS
+    FACILITY_CLASS_LASS,
+    FACILITY_CLASS_LEADER_MISTY,
+    FACILITY_CLASS_LEADER_ERIKA,
+    FACILITY_CLASS_LEADER_SABRINA,
+    FACILITY_CLASS_ELITE_FOUR_LORELEI,
+    FACILITY_CLASS_ELITE_FOUR_AGATHA
 };
 
-const u16 gTowerMaleTrainerGfxIds[30] =
+const u16 gTowerMaleTrainerGfxIds[36] =
 {
     OBJ_EVENT_GFX_HIKER,
     OBJ_EVENT_GFX_TUBER_M,
-    OBJ_EVENT_GFX_MAN_3,
+    OBJ_EVENT_GFX_COOL_TRAINER_M,
     OBJ_EVENT_GFX_RICH_BOY,
     OBJ_EVENT_GFX_MANIAC,
     OBJ_EVENT_GFX_RUNNING_TRIATHLETE_M,
     OBJ_EVENT_GFX_BLACK_BELT,
-    OBJ_EVENT_GFX_MAN_5,
-    OBJ_EVENT_GFX_MAN_5,
+    OBJ_EVENT_GFX_MAN_2,
+    OBJ_EVENT_GFX_JUGGLER,
     OBJ_EVENT_GFX_CAMPER,
     OBJ_EVENT_GFX_MANIAC,
     OBJ_EVENT_GFX_PSYCHIC_M,
@@ -267,39 +278,50 @@ const u16 gTowerMaleTrainerGfxIds[30] =
     OBJ_EVENT_GFX_CYCLING_TRIATHLETE_M,
     OBJ_EVENT_GFX_RUNNING_TRIATHLETE_M,
     OBJ_EVENT_GFX_RUNNING_TRIATHLETE_M,
-    OBJ_EVENT_GFX_MAN_3,
-    OBJ_EVENT_GFX_MAN_5,
+    OBJ_EVENT_GFX_DRAGON_TAMER,
+    OBJ_EVENT_GFX_MAN_2,
     OBJ_EVENT_GFX_NINJA_BOY,
     OBJ_EVENT_GFX_SAILOR,
     OBJ_EVENT_GFX_MANIAC,
-    OBJ_EVENT_GFX_MAN_4,
+    OBJ_EVENT_GFX_BREEDER_M,
     OBJ_EVENT_GFX_CAMPER,
     OBJ_EVENT_GFX_BUG_CATCHER,
-    OBJ_EVENT_GFX_HIKER
+    OBJ_EVENT_GFX_HIKER,
+    OBJ_EVENT_GFX_BROCK,
+    OBJ_EVENT_GFX_SURGE,
+    OBJ_EVENT_GFX_KOGA,
+    OBJ_EVENT_GFX_BLAINE,
+    OBJ_EVENT_GFX_BRUNO,
+    OBJ_EVENT_GFX_LANCE
 };
 
-const u16 gTowerFemaleTrainerGfxIds[20] =
+const u16 gTowerFemaleTrainerGfxIds[25] =
 {
     OBJ_EVENT_GFX_WOMAN_2,
     OBJ_EVENT_GFX_TUBER_F,
-    OBJ_EVENT_GFX_WOMAN_5,
+    OBJ_EVENT_GFX_COOL_TRAINER_F,
     OBJ_EVENT_GFX_HEX_MANIAC,
-    OBJ_EVENT_GFX_WOMAN_2,
+    OBJ_EVENT_GFX_LADY,
     OBJ_EVENT_GFX_BEAUTY,
-    OBJ_EVENT_GFX_LASS,
-    OBJ_EVENT_GFX_GIRL_3,
+    OBJ_EVENT_GFX_PSYCHIC_F,
+    OBJ_EVENT_GFX_SCHOOL_KID_F,
     OBJ_EVENT_GFX_POKEFAN_F,
     OBJ_EVENT_GFX_EXPERT_F,
     OBJ_EVENT_GFX_CYCLING_TRIATHLETE_F,
     OBJ_EVENT_GFX_RUNNING_TRIATHLETE_F,
     OBJ_EVENT_GFX_RUNNING_TRIATHLETE_F,
-    OBJ_EVENT_GFX_GIRL_3,
+    OBJ_EVENT_GFX_RUNNING_TRIATHLETE_F,
     OBJ_EVENT_GFX_WOMAN_5,
     OBJ_EVENT_GFX_RUNNING_TRIATHLETE_F,
     OBJ_EVENT_GFX_PICNICKER,
-    OBJ_EVENT_GFX_WOMAN_2,
+    OBJ_EVENT_GFX_BREEDER_F,
     OBJ_EVENT_GFX_PICNICKER,
-    OBJ_EVENT_GFX_LASS
+    OBJ_EVENT_GFX_LASS,
+    OBJ_EVENT_GFX_MISTY,
+    OBJ_EVENT_GFX_ERIKA,
+    OBJ_EVENT_GFX_SABRINA,
+    OBJ_EVENT_GFX_LORELEI,
+    OBJ_EVENT_GFX_AGATHA
 };
 
 // Excludes the unused RS_FACILITY_CLASS_BOARDER_1 and _2
@@ -897,7 +919,7 @@ static const u16 sFrontierTrainerIdRanges[][2] =
     {FRONTIER_TRAINER_BRADEN,  FRONTIER_TRAINER_ALISON}, // 140 - 179
     {FRONTIER_TRAINER_ZACHERY, FRONTIER_TRAINER_LAMAR},  // 160 - 199
     {FRONTIER_TRAINER_HANK,    FRONTIER_TRAINER_TESS},   // 180 - 219
-    {FRONTIER_TRAINER_JAXON,   FRONTIER_TRAINER_GRETEL}, // 200 - 299
+    {FRONTIER_TRAINER_JAXON,   FRONTIER_TRAINER_SCOTT},  // 200 - 311
 };
 
 static const u16 sFrontierTrainerIdRangesHard[][2] =
@@ -909,7 +931,7 @@ static const u16 sFrontierTrainerIdRangesHard[][2] =
     {FRONTIER_TRAINER_HANK,    FRONTIER_TRAINER_LAMAR},  // 180 - 199
     {FRONTIER_TRAINER_JAXON,   FRONTIER_TRAINER_TESS},   // 200 - 219
     {FRONTIER_TRAINER_LEON,    FRONTIER_TRAINER_RAUL},   // 220 - 239
-    {FRONTIER_TRAINER_JAXON,   FRONTIER_TRAINER_GRETEL}, // 200 - 299
+    {FRONTIER_TRAINER_JAXON,   FRONTIER_TRAINER_SCOTT},  // 200 - 311
 };
 
 // Unknown, unused data
@@ -1008,7 +1030,7 @@ static void SetTowerBattleWon(void)
     if (gTrainerBattleOpponent_A == TRAINER_EREADER)
         ClearEReaderTrainer(&gSaveBlock2Ptr->frontier.ereaderTrainer);
     #endif
-    
+
     // towerNumWins is never read outside this conditional
     if (gSaveBlock2Ptr->frontier.towerNumWins < MAX_STREAK)
         gSaveBlock2Ptr->frontier.towerNumWins++;
@@ -1724,7 +1746,7 @@ static void FillTrainerParty(u16 trainerId, u8 firstMonId, u8 monCount)
     else if (trainerId == TRAINER_EREADER)
     {
         #ifndef FREE_BATTLE_TOWER_E_READER
-        for (i = firstMonId; i < firstMonId + FRONTIER_PARTY_SIZE; i++)
+                for (i = firstMonId; i < firstMonId + FRONTIER_PARTY_SIZE; i++)
             CreateBattleTowerMon(&gEnemyParty[i], &gSaveBlock2Ptr->frontier.ereaderTrainer.party[i - firstMonId]);
         #endif
         return;
@@ -1910,13 +1932,13 @@ static void FillFactoryFrontierTrainerParty(u16 trainerId, u8 firstMonId)
 
     if (trainerId < FRONTIER_TRAINERS_COUNT)
     {
-    // By mistake Battle Tower's Level 50 challenge number is used to determine the IVs for Battle Factory.
+// By mistake Battle Tower's Level 50 challenge number is used to determine the IVs for Battle Factory.
     #ifdef BUGFIX
         u8 lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
         u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-        u8 challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+            u8 challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
     #else
-        u8 UNUSED lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
+u8 UNUSED lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
         u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
         u8 challengeNum = gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][FRONTIER_LVL_50] / FRONTIER_STAGES_PER_CHALLENGE;
     #endif
@@ -1928,7 +1950,7 @@ static void FillFactoryFrontierTrainerParty(u16 trainerId, u8 firstMonId)
     else if (trainerId == TRAINER_EREADER)
     {
         #ifndef FREE_BATTLE_TOWER_E_READER
-        for (i = firstMonId; i < firstMonId + FRONTIER_PARTY_SIZE; i++)
+                for (i = firstMonId; i < firstMonId + FRONTIER_PARTY_SIZE; i++)
             CreateBattleTowerMon(&gEnemyParty[i], &gSaveBlock2Ptr->frontier.ereaderTrainer.party[i - firstMonId]);
         #endif
         return;
@@ -2213,7 +2235,7 @@ void DoSpecialTrainerBattle(void)
         PlayMapChosenOrBattleBGM(0);
         BattleTransition_StartOnField(GetSpecialBattleTransition(B_TRANSITION_GROUP_B_PIKE));
         break;
-    case SPECIAL_BATTLE_STEVEN:
+    /*case SPECIAL_BATTLE_STEVEN: //UNUSED in PokeClassic. Repurpose as a double battle w/ Lance at some point?
         gBattleTypeFlags = BATTLE_TYPE_TRAINER | BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
         FillPartnerParty(TRAINER_STEVEN_PARTNER);
         gApproachingTrainerId = 0;
@@ -2224,7 +2246,7 @@ void DoSpecialTrainerBattle(void)
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);
         BattleTransition_StartOnField(B_TRANSITION_MAGMA);
-        break;
+        break;*/
     case SPECIAL_BATTLE_MULTI:
         if (gSpecialVar_0x8005 & MULTI_BATTLE_2_VS_WILD) // Player + AI against wild mon
         {
@@ -3111,7 +3133,7 @@ static void FillPartnerParty(u16 trainerId)
     u16 monId;
     u32 otID;
     u8 trainerName[(PLAYER_NAME_LENGTH * 3) + 1];
-    s32 ball = -1;
+s32 ball = -1;
     SetFacilityPtrsGetLevel();
 
     if (trainerId == TRAINER_STEVEN_PARTNER)
@@ -3171,11 +3193,11 @@ static void FillPartnerParty(u16 trainerId)
                 otID = HIHALF(personality) ^ LOHALF(personality);
             }
 
-            CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, 0, TRUE, personality, otIdType, otID);
-            SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
+                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, 0, TRUE, personality, otIdType, otID);
+                    SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
             CustomTrainerPartyAssignMoves(&gPlayerParty[i+3], &partyData[i]);
 
-            SetMonData(&gPlayerParty[i+3], MON_DATA_IVS, &(partyData[i].iv));
+                    SetMonData(&gPlayerParty[i+3], MON_DATA_IVS, &(partyData[i].iv));
             if (partyData[i].ev != NULL)
             {
                 SetMonData(&gPlayerParty[i+3], MON_DATA_HP_EV, &(partyData[i].ev[0]));
@@ -3206,13 +3228,13 @@ static void FillPartnerParty(u16 trainerId)
             }
             if (partyData[i].nickname != NULL)
             {
-                SetMonData(&gPlayerParty[i+3], MON_DATA_NICKNAME, partyData[i].nickname);
-            }
-            CalculateMonStats(&gPlayerParty[i+3]);
+                    SetMonData(&gPlayerParty[i+3], MON_DATA_NICKNAME, partyData[i].nickname);
+                }
+                CalculateMonStats(&gPlayerParty[i+3]);
 
             StringCopy(trainerName, gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].trainerName);
             SetMonData(&gPlayerParty[i + 3], MON_DATA_OT_NAME, trainerName);
-            j = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].encounterMusic_gender >> 7;
+j = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].encounterMusic_gender >> 7;
             SetMonData(&gPlayerParty[i+3], MON_DATA_OT_GENDER, &j);
         }
     }

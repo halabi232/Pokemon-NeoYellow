@@ -41,7 +41,7 @@
 
 #define PLACE_DECORATION_SELECTOR_TAG 0xbe5
 #define PLACE_DECORATION_PLAYER_TAG   0x008
-#define NUM_DECORATION_FLAGS (FLAG_DECORATION_13 - FLAG_DECORATION_1 + 1)
+#define NUM_DECORATION_FLAGS (FLAG_DECORATION_14 - FLAG_DECORATION_1 + 1)
 
 #define tCursorX data[0]
 #define tCursorY data[1]
@@ -112,7 +112,7 @@ EWRAM_DATA static u8 sPlayerRoomItemsIndicesBuffer[DECOR_MAX_PLAYERS_HOUSE] = {}
 EWRAM_DATA static u16 sDecorationsCursorPos = 0;
 EWRAM_DATA static u16 sDecorationsScrollOffset = 0;
 EWRAM_DATA u8 gCurDecorationIndex = 0;
-EWRAM_DATA static u8 sCurDecorationCategory = DECORCAT_DESK;
+EWRAM_DATA static u8 sCurDecorationCategory = DECORCAT_DOLL;
 EWRAM_DATA static u32 UNUSED sFiller[2] = {};
 EWRAM_DATA static struct DecorationPCContext sDecorationContext = {};
 EWRAM_DATA static u8 sDecorMenuWindowIds[WINDOW_COUNT] = {};
@@ -210,13 +210,8 @@ static void TossDecoration(u8 taskId);
 
 static const u8 *const sDecorationCategoryNames[] =
 {
-    gText_Desk,
-    gText_Chair,
-    gText_Plant,
-    gText_Ornament,
-    gText_Mat,
-    gText_Poster,
     gText_Doll,
+    gText_Desk,
     gText_Cushion
 };
 
@@ -638,7 +633,7 @@ static void DecorationMenuAction_Decorate(u8 taskId)
     else
     {
         gTasks[taskId].tDecorationMenuCommand = DECOR_MENU_PLACE;
-        sCurDecorationCategory = DECORCAT_DESK;
+        sCurDecorationCategory = DECORCAT_DOLL;
         SecretBasePC_PrepMenuForSelectingStoredDecors(taskId);
     }
 }
@@ -670,7 +665,7 @@ static void DecorationMenuAction_Toss(u8 taskId)
     else
     {
         gTasks[taskId].tDecorationMenuCommand = DECOR_MENU_TOSS;
-        sCurDecorationCategory = DECORCAT_DESK;
+        sCurDecorationCategory = DECORCAT_DOLL;
         SecretBasePC_PrepMenuForSelectingStoredDecors(taskId);
     }
 }
@@ -732,7 +727,7 @@ static void PrintDecorationCategoryMenuItems(u8 taskId)
     for (i = 0; i < DECORCAT_COUNT; i++)
     {
         // Only DOLL and CUSHION decorations are enabled when decorating the player's room.
-        if (shouldDisable == TRUE && i != DECORCAT_DOLL && i != DECORCAT_CUSHION)
+        if (shouldDisable == TRUE && i != DECORCAT_DOLL && i != DECORCAT_BIG_DOLL && i != DECORCAT_CUSHION)
             PrintDecorationCategoryMenuItem(windowId, i, 8, i * 16, TRUE, TEXT_SKIP_DRAW);
         else
             PrintDecorationCategoryMenuItem(windowId, i, 8, i * 16, FALSE, TEXT_SKIP_DRAW);
@@ -846,7 +841,7 @@ void ShowDecorationCategoriesWindow(u8 taskId)
     LoadPalette(sDecorationMenuPalette, BG_PLTT_ID(13), sizeof(sDecorationMenuPalette));
     ClearDialogWindowAndFrame(0, FALSE);
     gTasks[taskId].tDecorationMenuCommand = DECOR_MENU_TRADE;
-    sCurDecorationCategory = DECORCAT_DESK;
+    sCurDecorationCategory = DECORCAT_DOLL;
     InitDecorationCategoriesWindow(taskId);
 }
 
@@ -886,9 +881,9 @@ static void PrintDecorationItemMenuItems(u8 taskId)
     u16 i;
 
     data = gTasks[taskId].data;
-    if ((sCurDecorationCategory < DECORCAT_DOLL || sCurDecorationCategory > DECORCAT_CUSHION) && sDecorationContext.isPlayerRoom == TRUE && tDecorationMenuCommand == DECOR_MENU_PLACE)
+    /*if ((sCurDecorationCategory < DECORCAT_DOLL || sCurDecorationCategory > DECORCAT_CUSHION) && sDecorationContext.isPlayerRoom == TRUE && tDecorationMenuCommand == DECOR_MENU_PLACE)
         ColorMenuItemString(gStringVar1, TRUE);
-    else
+    else*/
         ColorMenuItemString(gStringVar1, FALSE);
 
     for (i = 0; i < sDecorationItemsMenu->numMenuItems - 1; i++)
@@ -1221,7 +1216,7 @@ static void ShowDecorationOnMap_(u16 mapX, u16 mapY, u8 decWidth, u8 decHeight, 
         {
             x = mapX + i;
             attributes = GetMetatileAttributesById(NUM_TILES_IN_PRIMARY + gDecorations[decoration].tiles[j * decWidth + i]);
-            if (MetatileBehavior_IsSecretBaseImpassable(attributes & METATILE_ATTR_BEHAVIOR_MASK) == TRUE
+            if (MetatileBehavior_IsSecretBaseImpassable(attributes & METATILE_ATTR_BEHAVIOR_MASK) == TRUE 
              || (gDecorations[decoration].permission != DECORPERM_PASS_FLOOR && (attributes >> METATILE_ATTR_LAYER_SHIFT) != METATILE_LAYER_TYPE_NORMAL))
                 impassableFlag = MAPGRID_COLLISION_MASK;
             else
@@ -1324,7 +1319,7 @@ static bool8 HasDecorationSpace(void)
 
 static void DecorationItemsMenuAction_AttemptPlace(u8 taskId)
 {
-    if (sDecorationContext.isPlayerRoom == TRUE && sCurDecorationCategory != DECORCAT_DOLL && sCurDecorationCategory != DECORCAT_CUSHION)
+    if (sDecorationContext.isPlayerRoom == TRUE && sCurDecorationCategory != DECORCAT_DOLL && sCurDecorationCategory != DECORCAT_BIG_DOLL && sCurDecorationCategory != DECORCAT_CUSHION)
     {
         StringExpandPlaceholders(gStringVar4, gText_CantPlaceInRoom);
         DisplayItemMessageOnField(taskId, gStringVar4, ReturnToDecorationItemsAfterInvalidSelection);
@@ -1406,10 +1401,42 @@ static void SetUpPlacingDecorationPlayerAvatar(u8 taskId, struct PlaceDecoration
     if (data->decoration->shape == DECORSHAPE_3x1 || data->decoration->shape == DECORSHAPE_3x3 || data->decoration->shape == DECORSHAPE_3x2)
         x -= 8;
 
-    if (gSaveBlock2Ptr->playerGender == MALE)
+   switch (gSaveBlock2Ptr->costumeId)
+    {
+    case BRENDAN_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_BRENDAN_DECORATING, SpriteCallbackDummy, x, 72, 0);
-    else
+        break;
+    case MAY_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_MAY_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case RED_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_RED_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LEAF_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LEAF_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case ETHAN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_ETHAN_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LYRA_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LYRA_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case KRIS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_KRIS_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LUCAS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case DAWN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LUCAS_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_PLATINUM_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case DAWN_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_PLATINUM_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    }
 
     gSprites[sDecor_CameraSpriteObjectIdx2].oam.priority = 1;
     DestroySprite(&gSprites[sDecor_CameraSpriteObjectIdx1]);
@@ -1493,7 +1520,7 @@ static bool8 IsSecretBaseTrainerSpot(u8 behaviorAt, u16 layerType)
 // Can't place decoration where the player was standing when they interacted with the PC
 static bool8 IsntInitialPosition(u8 taskId, s16 x, s16 y, u16 layerType)
 {
-    if (x == gTasks[taskId].tInitialX + MAP_OFFSET
+    if (x == gTasks[taskId].tInitialX + MAP_OFFSET 
      && y == gTasks[taskId].tInitialY + MAP_OFFSET
      && layerType != METATILE_LAYER_TYPE_NORMAL)
         return FALSE;
@@ -1630,7 +1657,7 @@ static bool8 CanPlaceDecoration(u8 taskId, const struct Decoration *decoration)
     if (decoration->permission == DECORPERM_SPRITE) {
         for (i = 0; i < NUM_DECORATION_FLAGS; i++)
             if (FlagGet(FLAG_DECORATION_1 + i) == TRUE)
-                return TRUE;
+            return TRUE;
         return FALSE;
     }
     return TRUE;
@@ -2306,10 +2333,43 @@ static void SetUpPuttingAwayDecorationPlayerAvatar(void)
     sDecor_CameraSpriteObjectIdx1 = gSprites[gFieldCamera.spriteId].data[0];
     LoadPlayerSpritePalette();
     gFieldCamera.spriteId = CreateSprite(&sPuttingAwayCursorSpriteTemplate, 120, 80, 0);
-    if (gSaveBlock2Ptr->playerGender == MALE)
+
+    switch (gSaveBlock2Ptr->costumeId)
+    {
+    case BRENDAN_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_BRENDAN_DECORATING, SpriteCallbackDummy, 136, 72, 0);
-    else
+        break;
+    case MAY_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_MAY_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case RED_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_RED_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LEAF_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LEAF_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case ETHAN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_ETHAN_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LYRA_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LYRA_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case KRIS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_KRIS_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LUCAS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case DAWN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LUCAS_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_PLATINUM_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case DAWN_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_PLATINUM_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    }
 
     gSprites[sDecor_CameraSpriteObjectIdx2].oam.priority = 1;
     DestroySprite(&gSprites[sDecor_CameraSpriteObjectIdx1]);

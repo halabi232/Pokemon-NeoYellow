@@ -195,6 +195,10 @@ static bool8 NpcTakeStep(struct Sprite *);
 static bool8 AreElevationsCompatible(u8, u8);
 static u16 PackGraphicsId(const struct ObjectEventTemplate *template);
 static void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
+static void SetObjectTemplateFlagIfTemporary(struct ObjectEventTemplate *template);
+static bool8 IsTreeOrRockOffScreenPostWalkTransition(struct ObjectEventTemplate *template, s16 x, s16 y);
+static bool8 IsConnectionTreeOrRockOnScreen(struct ObjectEventTemplate *template, s16 x, s16 y);
+static bool8 ShouldTreeOrRockObjectBeCreated(struct ObjectEventTemplate *template, bool8 inConnection, s16 x, s16 y);
 
 static const struct SpriteFrameImage sPicTable_PechaBerryTree[];
 
@@ -676,7 +680,10 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_NEON_LIGHT              0x8004
 // Not a real OW palette tag; used for the white flash applied to followers
 #define OBJ_EVENT_PAL_TAG_WHITE                   (OBJ_EVENT_PAL_TAG_NONE - 1)
-#define OBJ_EVENT_PAL_TAG_NONE 0x11FF
+#define OBJ_EVENT_PAL_TAG_NONE 0x1290
+
+
+
 
 #include "data/object_events/object_event_graphics_info_pointers.h"
 #include "data/field_effects/field_effect_object_template_pointers.h"
@@ -1272,6 +1279,18 @@ static const u8 sRunningDirectionAnimNums[] = {
     [DIR_NORTHEAST] = ANIM_RUN_NORTH,
 };
 
+static const u8 sSpinDirectionAnimNums[] = {
+    [DIR_NONE] = ANIM_SPIN_SOUTH,
+    [DIR_SOUTH] = ANIM_SPIN_SOUTH,
+    [DIR_NORTH] = ANIM_SPIN_NORTH,
+    [DIR_WEST] = ANIM_SPIN_WEST,
+    [DIR_EAST] = ANIM_SPIN_EAST,
+    [DIR_SOUTHWEST] = ANIM_SPIN_SOUTH,
+    [DIR_SOUTHEAST] = ANIM_SPIN_SOUTH,
+    [DIR_NORTHWEST] = ANIM_SPIN_NORTH,
+    [DIR_NORTHEAST] = ANIM_SPIN_NORTH,
+};
+
 const u8 gTrainerFacingDirectionMovementTypes[] = {
     [DIR_NONE] = MOVEMENT_TYPE_FACE_DOWN,
     [DIR_SOUTH] = MOVEMENT_TYPE_FACE_DOWN,
@@ -1365,6 +1384,13 @@ const u8 gPlayerRunMovementActions[] = {
     MOVEMENT_ACTION_PLAYER_RUN_UP,
     MOVEMENT_ACTION_PLAYER_RUN_LEFT,
     MOVEMENT_ACTION_PLAYER_RUN_RIGHT,
+};
+const u8 gSpinMovementActions[] = {
+    MOVEMENT_ACTION_SPIN_DOWN,
+    MOVEMENT_ACTION_SPIN_DOWN,
+    MOVEMENT_ACTION_SPIN_UP,
+    MOVEMENT_ACTION_SPIN_LEFT,
+    MOVEMENT_ACTION_SPIN_RIGHT,
 };
 const u8 gJump2MovementActions[] = {
     MOVEMENT_ACTION_JUMP_2_DOWN,
@@ -1755,6 +1781,100 @@ u8 Unref_TryInitLocalObjectEvent(u8 localId)
     return OBJECT_EVENTS_COUNT;
 }
 
+static bool8 ShouldTreeOrRockObjectBeCreated(struct ObjectEventTemplate *template, bool8 inConnection, s16 x, s16 y)
+{
+    if (inConnection && !IsConnectionTreeOrRockOnScreen(template, x, y))
+        return FALSE;
+    else if (!IsTreeOrRockOffScreenPostWalkTransition(template, x, y))
+        return FALSE;
+    return TRUE;
+}
+
+#define CONNECTION_OBJECT_RADIUS_X 8
+#define CONNECTION_OBJECT_RADIUS_Y 6
+
+static bool8 IsConnectionTreeOrRockOnScreen(struct ObjectEventTemplate *template, s16 x, s16 y)
+{
+    if (template->graphicsId == OBJ_EVENT_GFX_CUTTABLE_TREE
+     || template->graphicsId == OBJ_EVENT_GFX_BREAKABLE_ROCK)
+    {
+        // if player is to left of object
+        if (gSaveBlock1Ptr->pos.x < x)
+        {
+            if (gSaveBlock1Ptr->pos.x + CONNECTION_OBJECT_RADIUS_X < x)
+                return TRUE;
+
+            if (gSaveBlock1Ptr->pos.y - CONNECTION_OBJECT_RADIUS_Y <= y
+             && gSaveBlock1Ptr->pos.y + CONNECTION_OBJECT_RADIUS_Y >= y)
+                return FALSE;
+        }
+        else 
+        {
+            if (gSaveBlock1Ptr->pos.x - CONNECTION_OBJECT_RADIUS_X > x)
+                return TRUE;
+
+            if (gSaveBlock1Ptr->pos.y - CONNECTION_OBJECT_RADIUS_Y <= y
+             && gSaveBlock1Ptr->pos.y + CONNECTION_OBJECT_RADIUS_Y >= y)
+                return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+// If object is tree or rock, and is on screen when player is on edge of map,
+// then set its template flag so it isn't shown.
+// These would have a clone anyway so this should be okay.
+static bool8 IsTreeOrRockOffScreenPostWalkTransition(struct ObjectEventTemplate *template, s16 x, s16 y)
+{
+    s32 width, height;
+
+    if (!IsMapTypeOutdoors(GetCurrentMapType()))
+        return TRUE;
+
+    width = gBackupMapLayout.width - 16;
+    height = gBackupMapLayout.height - 15;
+
+    if (template->graphicsId != OBJ_EVENT_GFX_CUTTABLE_TREE
+     && template->graphicsId != OBJ_EVENT_GFX_BREAKABLE_ROCK)
+        return TRUE;
+
+    // player is at left edge of map and object is within sight to right
+    if ((gSaveBlock1Ptr->pos.x == 0) && (x <= CONNECTION_OBJECT_RADIUS_X))
+    {
+        SetObjectTemplateFlagIfTemporary(template);
+        return FALSE;
+    }
+
+    // player is at right edge of map and object is within sight to left
+    if ((gSaveBlock1Ptr->pos.x == width) && (x >= (width - CONNECTION_OBJECT_RADIUS_X)))
+    {
+        SetObjectTemplateFlagIfTemporary(template);
+        return FALSE;
+    }
+
+    // player is at top edge of map and object is within sight below
+    if ((gSaveBlock1Ptr->pos.y == 0) && (y <= CONNECTION_OBJECT_RADIUS_Y))
+    {
+        SetObjectTemplateFlagIfTemporary(template);
+        return FALSE;
+    }
+
+    // player is at bottom edge of map and object is within sight above
+    if ((gSaveBlock1Ptr->pos.y == height) && (y >= (height - CONNECTION_OBJECT_RADIUS_Y)))
+    {
+        SetObjectTemplateFlagIfTemporary(template);
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+static void SetObjectTemplateFlagIfTemporary(struct ObjectEventTemplate *template)
+{
+    if (template->flagId >= FLAG_TEMP_11 && template->flagId <= FLAG_TEMP_1F)
+        FlagSet(template->flagId);
+}
+
 static bool8 GetAvailableObjectEventId(u16 localId, u8 mapNum, u8 mapGroup, u8 *objectEventId)
 // Looks for an empty slot.
 // Returns FALSE and the location of the available slot
@@ -1784,7 +1904,7 @@ static void RemoveObjectEvent(struct ObjectEvent *objectEvent)
 {
     objectEvent->active = FALSE;
     RemoveObjectEventInternal(objectEvent);
-    // zero potential species info
+// zero potential species info
     objectEvent->graphicsId = objectEvent->shiny = 0;
 }
 
@@ -1857,11 +1977,11 @@ static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEven
     }
 
     sprite = &gSprites[spriteId];
-    // Use palette from species palette table
+// Use palette from species palette table
     if (spriteTemplate->paletteTag == OBJ_EVENT_PAL_TAG_DYNAMIC) {
         sprite->oam.paletteNum = LoadDynamicFollowerPalette(OW_SPECIES(objectEvent), OW_FORM(objectEvent), objectEvent->shiny);
     }
-    GetMapCoordsFromSpritePos(objectEvent->currentCoords.x + cameraX, objectEvent->currentCoords.y + cameraY, &sprite->x, &sprite->y);
+        GetMapCoordsFromSpritePos(objectEvent->currentCoords.x + cameraX, objectEvent->currentCoords.y + cameraY, &sprite->x, &sprite->y);
     sprite->centerToCornerVecX = -(graphicsInfo->width >> 1);
     sprite->centerToCornerVecY = -(graphicsInfo->height >> 1);
     sprite->x += 8;
@@ -1899,15 +2019,15 @@ static u16 PackGraphicsId(const struct ObjectEventTemplate *template) {
 static u8 TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
 {
   u8 objectEventId;
-  u16 graphicsId = PackGraphicsId(objectEventTemplate);
+    u16 graphicsId = PackGraphicsId(objectEventTemplate);
   struct SpriteTemplate spriteTemplate;
   struct SpriteFrameImage spriteFrameImage;
   const struct ObjectEventGraphicsInfo *graphicsInfo;
   const struct SubspriteTable *subspriteTables = NULL;
-  u16 species;
+    u16 species;
   u8 form = 0;
   bool8 shiny = FALSE;
-
+  
   graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
   CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(graphicsId, objectEventTemplate->movementType, &spriteTemplate, &subspriteTables);
   spriteFrameImage.size = graphicsInfo->size;
@@ -1940,7 +2060,7 @@ u8 SpawnSpecialObjectEventParameterized(u16 graphicsId, u8 movementBehavior, u8 
     y -= MAP_OFFSET;
     objectEventTemplate.localId = localId;
     objectEventTemplate.graphicsId = graphicsId;
-    // objectEventTemplate.kind = OBJ_KIND_NORMAL;
+    objectEventTemplate.inConnection = 0;
     objectEventTemplate.x = x;
     objectEventTemplate.y = y;
     objectEventTemplate.elevation = elevation;
@@ -2033,12 +2153,12 @@ u8 CreateObjectGraphicsSpriteWithTag(u16 graphicsId, void (*callback)(struct Spr
     } else if (spriteTemplate->paletteTag != TAG_NONE) {
         if (paletteTag == TAG_NONE)
             LoadObjectEventPalette(spriteTemplate->paletteTag);
-        else {
+else {
             LoadObjectEventPaletteWithTag(spriteTemplate->paletteTag, paletteTag);
             spriteTemplate->paletteTag = paletteTag;
         }
     }   
-
+        
     spriteId = CreateSprite(spriteTemplate, x, y, subpriority);
     Free(spriteTemplate);
 
@@ -2102,12 +2222,20 @@ u8 CreateVirtualObject(u16 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevati
     }
     return spriteId;
 }
-
 struct Pokemon * GetFirstLiveMon(void) { // Return address of first conscious party mon or NULL
   u8 i;
-  for (i=0; i<PARTY_SIZE;i++) {
+  for (i=0; i<PARTY_SIZE;i++) 
+  {
+    if (gSaveBlock2Ptr->optionsFollowerType == (1) && (FlagGet(FLAG_SYS_GAME_CLEAR) == TRUE))
+    {
     if (gPlayerParty[i].hp > 0 && !(gPlayerParty[i].box.isEgg || gPlayerParty[i].box.isBadEgg))
       return &gPlayerParty[i];
+  }
+else
+    {
+        if (gPlayerParty[i].hp > 0 && (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) == SPECIES_PIKACHU_PARTNER) && !(gPlayerParty[i].box.isEgg || gPlayerParty[i].box.isBadEgg))
+            return &gPlayerParty[i];
+    }
   }
   return NULL;
 }
@@ -2252,7 +2380,7 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
   bool8 shiny;
   u8 form;
   // Avoid spawning large (>32x32) follower pokemon inside buildings
-  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height > 32) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER)) {
+  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height > 32) && !FlagGet(FLAG_HIDE_FOLLOWER)) {
     if (objEvent == NULL) { // Spawn follower
       struct ObjectEventTemplate template = {
         .localId = OBJ_EVENT_ID_FOLLOWER,
@@ -2263,9 +2391,9 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
         // If player active, copy player elevation
         .elevation = gObjectEvents[gPlayerAvatar.objectEventId].active ? gObjectEvents[gPlayerAvatar.objectEventId].currentElevation : 3,
         .movementType = MOVEMENT_TYPE_FOLLOW_PLAYER,
-        // store form info in template
+// store form info in template
         .trainerRange_berryTreeId = (form & 0x1F) | (shiny << 5),
-      };
+              };
       objEvent = &gObjectEvents[SpawnSpecialObjectEvent(&template)];
       objEvent->invisible = TRUE;
     }
@@ -2290,14 +2418,22 @@ void RemoveFollowingPokemon(void) { // Remove follower object. Idempotent.
 }
 
 static bool8 IsFollowerVisible(void) { // Determine whether follower *should* be visible
+if (gSaveBlock2Ptr->optionsFollowerType == (2))
+    { 
+        return;
+    }
+    else
+    {
   return
   !(TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING | PLAYER_AVATAR_FLAG_ACRO_BIKE | PLAYER_AVATAR_FLAG_MACH_BIKE)
+  || (FlagGet(FLAG_HIDE_FOLLOWER) == TRUE)
   || MetatileBehavior_IsSurfableWaterOrUnderwater(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior)
   || MetatileBehavior_IsSurfableWaterOrUnderwater(gObjectEvents[gPlayerAvatar.objectEventId].previousMetatileBehavior)
   || MetatileBehavior_IsForcedMovementTile(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior)
   || MetatileBehavior_IsForcedMovementTile(gObjectEvents[gPlayerAvatar.objectEventId].previousMetatileBehavior)
   || gWeatherPtr->currWeather == WEATHER_UNDERWATER
   || gWeatherPtr->currWeather == WEATHER_UNDERWATER_BUBBLES);
+}
 }
 
 static bool8 SpeciesHasType(u16 species, u8 type) {
@@ -2712,8 +2848,8 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
                 if (template->graphicsId == OBJ_EVENT_GFX_LIGHT_SPRITE) {  // light sprite instead
                     SpawnLightSprite(npcX, npcY, cameraX, cameraY, template->trainerRange_berryTreeId);
                 } else
-                    TrySpawnObjectEventTemplate(template, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, cameraX, cameraY);
-            }
+                TrySpawnObjectEventTemplate(template, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, cameraX, cameraY);
+}
         }
     }
 }
@@ -2769,7 +2905,7 @@ void SpawnObjectEventsOnReturnToField(s16 x, s16 y)
             SpawnObjectEventOnReturnToField(i, x, y);
     }
     CreateReflectionEffectSprites();
-    TrySpawnLightSprites(x, y);
+TrySpawnLightSprites(x, y);
 }
 
 static void SpawnObjectEventOnReturnToField(u8 objectEventId, s16 x, s16 y)
@@ -2801,10 +2937,10 @@ static void SpawnObjectEventOnReturnToField(u8 objectEventId, s16 x, s16 y)
     if (i != MAX_SPRITES)
     {
         sprite = &gSprites[i];
-        // Use palette from species palette table
+// Use palette from species palette table
         if (spriteTemplate.paletteTag == OBJ_EVENT_PAL_TAG_DYNAMIC)
             sprite->oam.paletteNum = LoadDynamicFollowerPalette(OW_SPECIES(objectEvent), OW_FORM(objectEvent), objectEvent->shiny);
-        GetMapCoordsFromSpritePos(x + objectEvent->currentCoords.x, y + objectEvent->currentCoords.y, &sprite->x, &sprite->y);
+                GetMapCoordsFromSpritePos(x + objectEvent->currentCoords.x, y + objectEvent->currentCoords.y, &sprite->x, &sprite->y);
         sprite->centerToCornerVecX = -(graphicsInfo->width >> 1);
         sprite->centerToCornerVecY = -(graphicsInfo->height >> 1);
         sprite->x += 8;
@@ -2861,10 +2997,10 @@ static u8 UpdateSpritePalette(const struct SpritePalette * spritePalette, struct
     UpdateSpritePaletteWithWeather(sprite->oam.paletteNum, FALSE);
   } else {
     sprite->oam.paletteNum = LoadSpritePalette(spritePalette);
-  }
+}
 
   return sprite->oam.paletteNum;
-}
+  }
 
 // Find and update based on template's paletteTag
 // TODO: Add a better way to associate tags -> palettes besides listing them in sObjectEventSpritePalettes
@@ -3002,7 +3138,7 @@ const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u16 graphicsId)
     if (graphicsId >= OBJ_EVENT_GFX_MON_BASE)
         return SpeciesToGraphicsInfo(graphicsId - OBJ_EVENT_GFX_MON_BASE, form);
 
-    if (graphicsId >= NUM_OBJ_EVENT_GFX)
+        if (graphicsId >= NUM_OBJ_EVENT_GFX)
         graphicsId = OBJ_EVENT_GFX_NINJA_BOY;
 
     return gObjectEventGraphicsInfoPointers[graphicsId];
@@ -6001,6 +6137,11 @@ u8 GetRunningDirectionAnimNum(u8 direction)
     return sRunningDirectionAnimNums[direction];
 }
 
+u8 GetSpinDirectionAnimNum(u8 direction)
+{
+    return sSpinDirectionAnimNums[direction];
+}
+
 static const struct StepAnimTable *GetStepAnimTable(const union AnimCmd *const *anims)
 {
     const struct StepAnimTable *stepTable;
@@ -6128,10 +6269,10 @@ u8 GetCollisionAtCoords(struct ObjectEvent *objectEvent, s16 x, s16 y, u32 dir)
 {
     u8 direction = dir;
 
-#if OW_FLAG_NO_COLLISION != 0
-    if (FlagGet(OW_FLAG_NO_COLLISION))
-        return COLLISION_NONE;
-#endif
+    #if OW_FLAG_NO_COLLISION != 0
+        if (FlagGet(OW_FLAG_NO_COLLISION))
+            return COLLISION_NONE;
+    #endif
 
     if (IsCoordOutsideObjectEventMovementRange(objectEvent, x, y))
         return COLLISION_OUTSIDE_RANGE;
@@ -6440,6 +6581,7 @@ dirn_to_anim(GetRideWaterCurrentMovementAction, gRideWaterCurrentMovementActions
 dirn_to_anim(GetWalkFasterMovementAction, gWalkFasterMovementActions);
 dirn_to_anim(GetSlideMovementAction, gSlideMovementActions);
 dirn_to_anim(GetPlayerRunMovementAction, gPlayerRunMovementActions);
+dirn_to_anim(GetSpinMovementAction, gSpinMovementActions);
 dirn_to_anim(GetJump2MovementAction, gJump2MovementActions);
 dirn_to_anim(GetJumpInPlaceMovementAction, gJumpInPlaceMovementActions);
 dirn_to_anim(GetJumpInPlaceTurnAroundMovementAction, gJumpInPlaceTurnAroundMovementActions);
@@ -7232,8 +7374,8 @@ static u8 LoadFillColorPalette(u16 color, u16 paletteTag, struct Sprite *sprite)
 
 bool8 MovementAction_ExitPokeball_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite) {
     u8 direction = gObjectEvents[gPlayerAvatar.objectEventId].facingDirection;
-    u16 graphicsId = objectEvent->graphicsId;
-    objectEvent->invisible = FALSE;
+u16 graphicsId = objectEvent->graphicsId;
+        objectEvent->invisible = FALSE;
     if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH)) { // If player is dashing, the pokemon must come out faster
         StartSpriteAnimInDirection(objectEvent, sprite, direction, GetMoveDirectionFastestAnimNum(direction) + 4);
         sprite->data[3] = 8; // duration
@@ -7245,8 +7387,8 @@ bool8 MovementAction_ExitPokeball_Step0(struct ObjectEvent *objectEvent, struct 
     }
     sprite->data[6] |= (direction == DIR_EAST ? 1 : 0) << 4;
     ObjectEventSetGraphicsId(objectEvent, OBJ_EVENT_GFX_ANIMATED_BALL);
-    objectEvent->graphicsId = graphicsId;
-    objectEvent->inanimate = FALSE;
+objectEvent->graphicsId = graphicsId;
+        objectEvent->inanimate = FALSE;
     return MovementAction_ExitPokeball_Step1(objectEvent, sprite);
 }
 
@@ -7334,8 +7476,8 @@ bool8 MovementAction_EnterPokeball_Step0(struct ObjectEvent *objectEvent, struct
 
 bool8 MovementAction_EnterPokeball_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
-    u16 graphicsId = objectEvent->graphicsId;
-    sprite->data[3]--;
+u16 graphicsId = objectEvent->graphicsId;
+        sprite->data[3]--;
     if (sprite->data[3] == 0) {
         sprite->data[2] = 2;
         return FALSE;
@@ -7343,17 +7485,17 @@ bool8 MovementAction_EnterPokeball_Step1(struct ObjectEvent *objectEvent, struct
       LoadFillColorPalette(RGB_WHITE, OBJ_EVENT_PAL_TAG_WHITE, sprite);
       sprite->affineAnims = sAffineAnims_PokeballFollower;
       sprite->oam.affineMode = ST_OAM_AFFINE_NORMAL;
-      #if LARGE_OW_SUPPORT
+#if LARGE_OW_SUPPORT
       sprite->subspriteTableNum = 1;
       #endif
-      InitSpriteAffineAnim(sprite);
+            InitSpriteAffineAnim(sprite);
       StartSpriteAffineAnim(sprite, sprite->data[6]);
     } else if (sprite->data[3] == 7) { // Free white palette and change to pokeball, disable affine
       sprite->affineAnimEnded = TRUE;
       FreeSpriteOamMatrix(sprite);
       sprite->oam.affineMode = ST_OAM_AFFINE_OFF;
       ObjectEventSetGraphicsId(objectEvent, OBJ_EVENT_GFX_ANIMATED_BALL);
-      objectEvent->graphicsId = graphicsId;
+objectEvent->graphicsId = graphicsId;
       objectEvent->inanimate = FALSE;
     }
     return FALSE;
@@ -9375,7 +9517,7 @@ static void UpdateObjectEventElevationAndPriority(struct ObjectEvent *objEvent, 
         return;
 
     ObjectEventUpdateElevation(objEvent, sprite);
-    #if LARGE_OW_SUPPORT
+#if LARGE_OW_SUPPORT
     if (objEvent->localId == OBJ_EVENT_ID_FOLLOWER) {
         // keep subspriteMode synced with player's
         // so that it disappears under bridges when they do
@@ -9411,11 +9553,11 @@ void ObjectEventUpdateElevation(struct ObjectEvent *objEvent, struct Sprite *spr
         sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
         #endif
         return;
-    }
+}
     #if LARGE_OW_SUPPORT
     sprite->subspriteMode = SUBSPRITES_ON;
     #endif
-
+    
     objEvent->currentElevation = curElevation;
 
     if (curElevation != 0 && curElevation != 15)
@@ -9773,9 +9915,9 @@ static void DoFlaggedGroundEffects(struct ObjectEvent *objEvent, struct Sprite *
     for (i = 0; i < ARRAY_COUNT(sGroundEffectFuncs); i++, flags >>= 1)
         if (flags & 1)
             sGroundEffectFuncs[i](objEvent, sprite);
-    if (!(gWeatherPtr->noShadows || objEvent->inHotSprings || objEvent->inSandPile || MetatileBehavior_IsPuddle(objEvent->currentMetatileBehavior)))
+if (!(gWeatherPtr->noShadows || objEvent->inHotSprings || objEvent->inSandPile || MetatileBehavior_IsPuddle(objEvent->currentMetatileBehavior)))
       GroundEffect_Shadow(objEvent, sprite);
-}
+    }
 
 void filters_out_some_ground_effects(struct ObjectEvent *objEvent, u32 *flags)
 {
@@ -10724,3 +10866,82 @@ bool8 ScrFunc_getdaycaregfx(struct ScriptContext *ctx) {
     gSpecialVar_Result = i;
     return FALSE;
 }
+
+static void InitSpin(struct ObjectEvent *objectEvent, struct Sprite *sprite, u8 direction, u8 speed)
+{
+    InitNpcForMovement(objectEvent, sprite, direction, speed);
+    SetStepAnimHandleAlternation(objectEvent, sprite, GetSpinDirectionAnimNum(objectEvent->facingDirection));
+    SeekSpriteAnim(sprite, 0);
+}
+
+u8 MovementAction_SpinDown_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitSpin(objectEvent, sprite, DIR_SOUTH, MOVE_SPEED_FAST_1);
+    return MovementAction_SpinDown_Step1(objectEvent, sprite);
+}
+
+u8 MovementAction_SpinDown_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    if (UpdateMovementNormal(objectEvent, sprite))
+    {
+        sprite->sActionFuncId = 2;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+u8 MovementAction_SpinUp_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitSpin(objectEvent, sprite, DIR_NORTH, MOVE_SPEED_FAST_1);
+    return MovementAction_SpinUp_Step1(objectEvent, sprite);
+}
+
+u8 MovementAction_SpinUp_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    if (UpdateMovementNormal(objectEvent, sprite))
+    {
+        sprite->sActionFuncId = 2;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+u8 MovementAction_SpinLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitSpin(objectEvent, sprite, DIR_WEST, MOVE_SPEED_FAST_1);
+    return MovementAction_SpinLeft_Step1(objectEvent, sprite);
+}
+
+u8 MovementAction_SpinLeft_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    if (UpdateMovementNormal(objectEvent, sprite))
+    {
+        sprite->sActionFuncId = 2;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+u8 MovementAction_SpinRight_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitSpin(objectEvent, sprite, DIR_EAST, MOVE_SPEED_FAST_1);
+    return MovementAction_SpinRight_Step1(objectEvent, sprite);
+}
+
+u8 MovementAction_SpinRight_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    if (UpdateMovementNormal(objectEvent, sprite))
+    {
+        sprite->sActionFuncId = 2;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+u16 GetBoulderRevealFlagByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
+{
+    // Pushable boulder object events store the flag to reveal the boulder
+    // on the floor below in their trainer type field.
+    return GetObjectEventTemplateByLocalIdAndMap(localId, mapNum, mapGroup)->trainerType;
+}
+

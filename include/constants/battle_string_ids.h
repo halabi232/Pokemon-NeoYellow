@@ -265,8 +265,8 @@
 #define STRINGID_ITAPPEAREDCAUGHT                     264
 #define STRINGID_AARGHALMOSTHADIT                     265
 #define STRINGID_SHOOTSOCLOSE                         266
-#define STRINGID_GOTCHAPKMNCAUGHTPLAYER               267
-#define STRINGID_GOTCHAPKMNCAUGHTWALLY                268
+#define STRINGID_GOTCHAPKMNCAUGHT                     267
+#define STRINGID_GOTCHAPKMNCAUGHT2                    268
 #define STRINGID_GIVENICKNAMECAPTURED                 269
 #define STRINGID_PKMNSENTTOPC                         270
 #define STRINGID_PKMNDATAADDEDTODEX                   271
@@ -685,8 +685,14 @@
 #define STRINGID_TEAMSURROUNDEDBYROCKS                683
 #define STRINGID_PKMNHURTBYROCKSTHROWN                684
 #define STRINGID_MOVEBLOCKEDBYDYNAMAX                 685
+#define STRINGID_PLAYERWHITEOUT3					  686
+#define STRINGID_PLAYERPAIDPRIZEMONEYNOWHITEOUT		  687
+#define STRINGID_PLAYERDROPPEDMONEYNOWHITEOUT		  688
+#define STRINGID_PKMNDROPPEDITEM                      689
+#define STRINGID_PKMNGAINEDEXPALL                     690
+#define STRINGID_BAGISFULL                            691
 
-#define BATTLESTRINGS_COUNT                           686
+#define BATTLESTRINGS_COUNT                           692
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -789,6 +795,7 @@
 // gUproarAwakeStringIds
 #define B_MSG_CANT_SLEEP_UPROAR  0
 #define B_MSG_UPROAR_KEPT_AWAKE  1
+#define B_MSG_STAYED_AWAKE_USING 2
 
 // gUproarOverTurnStringIds
 #define B_MSG_UPROAR_CONTINUES  0
@@ -1005,5 +1012,9 @@
 #define B_MSG_HURT_BY_VORTEX    1
 #define B_MSG_BURNING_UP  2
 #define B_MSG_HURT_BY_ROCKS_THROWN 3
+
+// gItemDroppedStringIds
+#define B_MSG_ITEM_DROPPED   0
+#define B_MSG_BAG_IS_FULL    1
 
 #endif // GUARD_CONSTANTS_BATTLE_STRING_IDS_H

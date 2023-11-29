@@ -257,7 +257,7 @@ CableClub_EventScript_UnusedWelcomeToCableClub::
 
 CableClub_EventScript_SelectCableClubRoom::
 	setvar VAR_0x8004, 0
-	goto_if_set FLAG_VISITED_MAUVILLE_CITY, CableClub_EventScript_CableClubUnlockedRecordCorner
+	goto_if_set FLAG_SYS_GAME_CLEAR, CableClub_EventScript_CableClubUnlockedRecordCorner
 	multichoice 0, 0, MULTI_CABLE_CLUB_NO_RECORD_MIX, FALSE
 	switch VAR_RESULT
 	case 0, CableClub_EventScript_TradeCenter
@@ -743,36 +743,37 @@ EventScript_TradeCenter_Chair3::
 	waitstate
 	end
 
+@ VAR_TEMP_1 for below scripts set by ReceiveGiftItem
 EventScript_RecordCenter_Spot0::
 	setvar VAR_0x8005, 0
 	special RecordMixingPlayerSpotTriggered
 	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
+	goto_if_ne VAR_TEMP_1, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
 	end
 
 EventScript_RecordCenter_Spot1::
 	setvar VAR_0x8005, 1
 	special RecordMixingPlayerSpotTriggered
 	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
+	goto_if_ne VAR_TEMP_1, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
 	end
 
 EventScript_RecordCenter_Spot2::
 	setvar VAR_0x8005, 2
 	special RecordMixingPlayerSpotTriggered
 	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
+	goto_if_ne VAR_TEMP_1, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
 	end
 
 EventScript_RecordCenter_Spot3::
 	setvar VAR_0x8005, 3
 	special RecordMixingPlayerSpotTriggered
 	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
+	goto_if_ne VAR_TEMP_1, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
 	end
 
 RecordCorner_EventScript_ReceivedGiftItem::
-	bufferitemname STR_VAR_2, VAR_TEMP_RECORD_MIX_GIFT_ITEM
+	bufferitemname STR_VAR_2, VAR_TEMP_1
 	message RecordCorner_Text_PlayerSentOverOneX
 	waitmessage
 	waitbuttonpress
@@ -813,7 +814,7 @@ TradeCenter_EventScript_Attendant::
 	end
 
 RecordCorner_EventScript_Attendant::
-	goto_if_ne VAR_TEMP_MIXED_RECORDS, 0, RecordCorner_EventScript_AlreadyMixed
+	goto_if_ne VAR_TEMP_0, 0, RecordCorner_EventScript_AlreadyMixed
 	special Script_FacePlayer
 	message RecordCorner_Text_TakeSeatAndWait
 	waitmessage
@@ -969,7 +970,7 @@ CableClub_EventScript_DirectCornerAttendant::
 CableClub_EventScript_DirectCornerSelectService::
 	checkitem ITEM_POWDER_JAR
 	goto_if_eq VAR_RESULT, FALSE, CableClub_EventScript_DirectCornerNoBerry
-	goto_if_set FLAG_VISITED_MAUVILLE_CITY, CableClub_EventScript_DirectCornerSelectAllServices
+	goto_if_set FLAG_SYS_GAME_CLEAR, CableClub_EventScript_DirectCornerSelectAllServices
 	multichoice 0, 0, MULTI_WIRELESS_NO_RECORD, FALSE
 	switch VAR_RESULT
 	case 0, CableClub_EventScript_WirelessTrade
@@ -991,7 +992,7 @@ CableClub_EventScript_DirectCornerSelectAllServices::
 	end
 
 CableClub_EventScript_DirectCornerNoBerry::
-	goto_if_set FLAG_VISITED_MAUVILLE_CITY, CableClub_EventScript_DirectCornerHasRecordMix
+	goto_if_set FLAG_SYS_GAME_CLEAR, CableClub_EventScript_DirectCornerHasRecordMix
 	multichoice 0, 0, MULTI_WIRELESS_NO_RECORD_BERRY, FALSE
 	switch VAR_RESULT
 	case 0, CableClub_EventScript_WirelessTrade
@@ -1257,7 +1258,7 @@ EventScript_CloseMossdeepGameCornerBarrier::
 	return
 
 CableClub_OnResume:
-	special InitUnionRoom
+	@ special InitUnionRoom
 	end
 
 MossdeepCity_GameCorner_1F_EventScript_InfoMan2::

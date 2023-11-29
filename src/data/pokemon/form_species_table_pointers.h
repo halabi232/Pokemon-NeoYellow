@@ -310,7 +310,7 @@ const u16 *const gFormSpeciesIdTables[NUM_SPECIES] =
     [SPECIES_PIKACHU_UNOVA_CAP] = sPikachuFormSpeciesIdTable,
     [SPECIES_PIKACHU_KALOS_CAP] = sPikachuFormSpeciesIdTable,
     [SPECIES_PIKACHU_ALOLA_CAP] = sPikachuFormSpeciesIdTable,
-    [SPECIES_PIKACHU_PARTNER_CAP] = sPikachuFormSpeciesIdTable,
+    [SPECIES_PIKACHU_PART_CAP] = sPikachuFormSpeciesIdTable,
     [SPECIES_PIKACHU_WORLD_CAP] = sPikachuFormSpeciesIdTable,
     // Pichu
     [SPECIES_PICHU_SPIKY_EARED] = sPichuFormSpeciesIdTable,

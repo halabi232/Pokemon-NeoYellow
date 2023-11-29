@@ -114,7 +114,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_OLD_AMBER",
-      "is_connection": false,
+      "in_connection": false,
       "x": 11,
       "y": 14,
       "elevation": 0,

@@ -958,8 +958,13 @@
 #define SPECIES_BASCULEGION_MALE             902
 #define SPECIES_SNEASLER                     903
 #define SPECIES_OVERQWIL                     904
+#define SPECIES_ANNIHILAPE                   905
+#define SPECIES_RIVAL_EEVEE                  906
+#define SPECIES_PIKACHU_PARTNER              907
 #define SPECIES_ENAMORUS                     SPECIES_ENAMORUS_INCARNATE
-#define SPECIES_ENAMORUS_INCARNATE           905
+#define SPECIES_ENAMORUS_INCARNATE           908
+
+
 
 // Megas
 #define SPECIES_VENUSAUR_MEGA                FORMS_START + 1
@@ -1092,7 +1097,7 @@
 #define SPECIES_PIKACHU_UNOVA_CAP            FORMS_START + 113
 #define SPECIES_PIKACHU_KALOS_CAP            FORMS_START + 114
 #define SPECIES_PIKACHU_ALOLA_CAP            FORMS_START + 115
-#define SPECIES_PIKACHU_PARTNER_CAP          FORMS_START + 116
+#define SPECIES_PIKACHU_PART_CAP          FORMS_START + 116
 #define SPECIES_PIKACHU_WORLD_CAP            FORMS_START + 117
 
 // Pichu

@@ -12,7 +12,7 @@ SilphCo_6F_EventScript_ItemHPUp::
 	end
 
 SilphCo_6F_EventScript_ItemXSpecial::
-	finditem ITEM_X_SPECIAL, 1
+	finditem ITEM_X_SP_ATK, 1
 	release
 	end
 

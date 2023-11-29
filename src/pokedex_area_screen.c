@@ -30,9 +30,9 @@
 //   determined by the data for the corresponding MAPSEC in gRegionMapEntries.
 
 // Only maps in the following map groups have their encounters considered for the area screen
-#define MAP_GROUP_TOWNS_AND_ROUTES MAP_GROUP(PETALBURG_CITY)
-#define MAP_GROUP_DUNGEONS MAP_GROUP(METEOR_FALLS_1F_1R)
-#define MAP_GROUP_SPECIAL_AREA MAP_GROUP(SAFARI_ZONE_NORTHWEST)
+#define MAP_GROUP_TOWNS_AND_ROUTES MAP_GROUP(PALLET_TOWN)
+#define MAP_GROUP_DUNGEONS MAP_GROUP(VICTORY_ROAD_1F)
+#define MAP_GROUP_SPECIAL_AREA MAP_GROUP(SAFARI_ZONE_CENTER)
 
 #define AREA_SCREEN_WIDTH 32
 #define AREA_SCREEN_HEIGHT 20
@@ -122,7 +122,7 @@ static const u16 sMovingRegionMapSections[3] =
 
 static const u16 sFeebasData[][3] =
 {
-    {SPECIES_FEEBAS, MAP_GROUP(ROUTE119), MAP_NUM(ROUTE119)},
+    {SPECIES_FEEBAS, MAP_GROUP(ROUTE20), MAP_NUM(ROUTE20)},
     {NUM_SPECIES}
 };
 

@@ -5,8 +5,8 @@
 #define MB_SECRET_BASE_WALL 0x01
 #define MB_TALL_GRASS 0x02
 #define MB_LONG_GRASS 0x03
-#define MB_UNUSED_04 0x04
-#define MB_UNUSED_05 0x05
+#define MB_STRENGTH_BUTTON 0x04 // TODO: implement this
+#define MB_ROCK_STAIRS 0x05 // TODO: implement this
 #define MB_DEEP_SAND 0x06
 #define MB_SHORT_GRASS 0x07
 #define MB_CAVE 0x08
@@ -18,7 +18,7 @@
 #define MB_MOSSDEEP_GYM_WARP 0x0E
 #define MB_MT_PYRE_HOLE 0x0F
 #define MB_POND_WATER 0x10
-#define MB_INTERIOR_DEEP_WATER 0x11 // Used by interior maps; functionally the same as MB_DEEP_WATER
+#define MB_SEMI_DEEP_WATER 0x11
 #define MB_DEEP_WATER 0x12
 #define MB_WATERFALL 0x13
 #define MB_SOOTOPOLIS_DEEP_WATER 0x14
@@ -45,10 +45,10 @@
 #define MB_LAVARIDGE_GYM_B1F_WARP 0x29
 #define MB_SEAWEED_NO_SURFACING 0x2A
 #define MB_REFLECTION_UNDER_BRIDGE 0x2B
-#define MB_UNUSED_2C 0x2C
-#define MB_UNUSED_2D 0x2D
-#define MB_UNUSED_2E 0x2E
-#define MB_UNUSED_2F 0x2F
+#define MB_UP_RIGHT_STAIR_WARP 0x2C // TODO: implement this
+#define MB_UP_LEFT_STAIR_WARP 0x2D // TODO: implement this
+#define MB_DOWN_RIGHT_STAIR_WARP 0x2E // TODO: implement this
+#define MB_DOWN_LEFT_STAIR_WARP 0x2F // TODO: implement this
 #define MB_IMPASSABLE_EAST 0x30
 #define MB_IMPASSABLE_WEST 0x31
 #define MB_IMPASSABLE_NORTH 0x32
@@ -85,25 +85,25 @@
 #define MB_WESTWARD_CURRENT 0x51
 #define MB_NORTHWARD_CURRENT 0x52
 #define MB_SOUTHWARD_CURRENT 0x53
-#define MB_UNUSED_54 0x54
-#define MB_UNUSED_55 0x55
-#define MB_UNUSED_56 0x56
-#define MB_UNUSED_57 0x57
-#define MB_UNUSED_58 0x58
-#define MB_UNUSED_59 0x59
-#define MB_UNUSED_5A 0x5A
-#define MB_UNUSED_5B 0x5B
-#define MB_UNUSED_5C 0x5C
+#define MB_SPIN_RIGHT 0x54
+#define MB_SPIN_LEFT 0x55
+#define MB_SPIN_UP 0x56
+#define MB_SPIN_DOWN 0x57
+#define MB_STOP_SPINNING 0x58
+#define MB_CABINET 0x59 // TODO: implement this
+#define MB_KITCHEN 0x5A // TODO: implement this
+#define MB_DRESSER 0x5B // TODO: implement this
+#define MB_SNACKS 0x5C // TODO: implement this
 #define MB_UNUSED_5D 0x5D
 #define MB_UNUSED_5E 0x5E
-#define MB_UNUSED_5F 0x5F
+#define MB_CRACKED_FLOOR_HOLE 0x5F
 #define MB_NON_ANIMATED_DOOR 0x60
 #define MB_LADDER 0x61
 #define MB_EAST_ARROW_WARP 0x62
 #define MB_WEST_ARROW_WARP 0x63
 #define MB_NORTH_ARROW_WARP 0x64
 #define MB_SOUTH_ARROW_WARP 0x65
-#define MB_CRACKED_FLOOR_HOLE 0x66
+#define MB_FALL_WARP 0x66
 #define MB_AQUA_HIDEOUT_WARP 0x67
 #define MB_LAVARIDGE_GYM_1F_WARP 0x68
 #define MB_ANIMATED_DOOR 0x69
@@ -130,8 +130,8 @@
 #define MB_UNUSED_BRIDGE 0x7E
 #define MB_BIKE_BRIDGE_OVER_BARRIER 0x7F
 #define MB_COUNTER 0x80
-#define MB_UNUSED_81 0x81
-#define MB_UNUSED_82 0x82
+#define MB_POKEMON_CENTER_SIGN 0x81 // TODO: implement this
+#define MB_POKEMART_SIGN 0x82 // TODO: implement this
 #define MB_PC 0x83
 #define MB_CABLE_BOX_RESULTS_1 0x84
 #define MB_REGION_MAP 0x85
@@ -159,24 +159,24 @@
 #define MB_SECRET_BASE_SPOT_BLUE_CAVE_OPEN 0x9B
 #define MB_SECRET_BASE_SPOT_TREE_RIGHT 0x9C
 #define MB_SECRET_BASE_SPOT_TREE_RIGHT_OPEN 0x9D
-#define MB_UNUSED_9E 0x9E
-#define MB_UNUSED_9F 0x9F
+#define MB_CABLE_CLUB_WIRELESS_MONITOR 0x9E // TODO: implement this
+#define MB_BATTLE_RECORDS 0x9F // TODO: implement this
 #define MB_BERRY_TREE_SOIL 0xA0
-#define MB_UNUSED_A1 0xA1
-#define MB_UNUSED_A2 0xA2
-#define MB_UNUSED_A3 0xA3
-#define MB_UNUSED_A4 0xA4
-#define MB_UNUSED_A5 0xA5
-#define MB_UNUSED_A6 0xA6
-#define MB_UNUSED_A7 0xA7
-#define MB_UNUSED_A8 0xA8
-#define MB_UNUSED_A9 0xA9
-#define MB_UNUSED_AA 0xAA
-#define MB_UNUSED_AB 0xAB
-#define MB_UNUSED_AC 0xAC
-#define MB_UNUSED_AD 0xAD
-#define MB_UNUSED_AE 0xAE
-#define MB_UNUSED_AF 0xAF
+#define MB_FOOD 0xA1 // TODO: implement this
+#define MB_INDIGO_PLATEAU_MARK_DPAD 0xA2 // TODO: implement this
+#define MB_INDIGO_PLATEAU_MARK_2_DPAD 0xA3 // TODO: implement this
+#define MB_BLUEPRINTS 0xA4 // TODO: implement this
+#define MB_PAINTING 0xA5
+#define MB_POWER_PLANT_MACHINE 0xA6 // TODO: implement this
+#define MB_TELEPHONE 0xA7 // TODO: implement this
+#define MB_COMPUTER 0xA8 // TODO: implement this
+#define MB_ADVERTISING_POSTER 0xA9 // TODO: implement this
+#define MB_FOOD_SMELLS_TASTY 0xAA // TODO: implement this
+#define MB_TRASH_BIN 0xAB // TODO: implement this
+#define MB_CUP 0xAC // TODO: implement this
+#define MB_BLINKING_LIGHTS 0xAD // TODO: implement this
+#define MB_NEATLY_LINED_UP_TOOLS 0xAE // TODO: implement this
+#define MB_IMPRESSIVE_MACHINE 0xAF // TODO: implement this
 #define MB_SECRET_BASE_PC 0xB0
 #define MB_SECRET_BASE_REGISTER_PC 0xB1
 #define MB_SECRET_BASE_SCENERY 0xB2
@@ -236,11 +236,12 @@
 #define MB_WIRELESS_BOX_RESULTS 0xE8
 #define MB_TRAINER_HILL_TIMER 0xE9
 #define MB_SKY_PILLAR_CLOSED_DOOR 0xEA
-#define MB_UP_RIGHT_STAIR_WARP 0xEB
-#define MB_UP_LEFT_STAIR_WARP 0xEC
-#define MB_DOWN_RIGHT_STAIR_WARP 0xED
-#define MB_DOWN_LEFT_STAIR_WARP 0xEE
-#define MB_UNUSED_EF 0xEF
+
+#define MB_VIDEO_GAME 0xEB // TODO: implement this
+#define MB_BURGLARY 0xEC // TODO: implement this
+#define MB_TRAINER_TOWER_MONITOR 0xED // TODO: implement this
+#define MB_CYCLING_ROAD_PULL_DOWN 0xEE // TODO: implement this
+#define MB_CYCLING_ROAD_PULL_DOWN_GRASS 0xEF // TODO: implement this
 
 #define NUM_METATILE_BEHAVIORS 0xF0
 

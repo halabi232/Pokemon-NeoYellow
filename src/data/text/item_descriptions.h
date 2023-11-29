@@ -3571,6 +3571,49 @@ static const u8 sHM08Desc[] = _(
     "the 1st turn, then\n"
     "attacks next turn.");
 
+
+//IV Itens
+
+static const u8 sHPCandyDesc[] = _(
+    "Raises a Pokémon's\n" 
+    "core HP stat.");
+
+static const u8 sAtkCandyDesc[] = _(
+    "Raises a Pokémon's\n" 
+    "core Attack\n"
+    "stat.");
+
+static const u8 sDefCandyDesc[] = _(
+    "Raises a Pokémon's\n" 
+    "core Defense\n"
+    "stat.");
+
+static const u8 sSpAtkCandyDesc[] = _(
+    "Raises a Pokémon's\n" 
+    "core Sp. Attack\n"
+    "stat.");
+
+static const u8 sSpDefCandyDesc[] = _(
+    "Raises a Pokémon's\n" 
+    "core Sp. Defense\n"
+    "stat.");
+
+static const u8 sSpeedCandyDesc[] = _(
+    "Raises a Pokémon's\n" 
+    "core Speed\n"
+    "stat.");
+
+static const u8 sMaxCandyDesc[] = _(
+    "Maximizes a \n"
+    "Pokémon's core\n" 
+    "stats.");
+
+static const u8 sResetCandyDesc[] = _(
+    "Neutralizes a \n"
+    "Pokémon's core\n" 
+    "stats.");
+
+
 // Charms
 static const u8 sOvalCharmDesc[] = _(
     "Raises the chance\n"

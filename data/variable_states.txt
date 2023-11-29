@@ -1,0 +1,47 @@
+Variable States:
+
+//Adventure Begins:
+0: Begin a new game
+1: Triggered intro cutscene, ready to meet Oak on Route 1
+2: Met Oak on Route 1, ready for Partner Pokemon scene
+3: Completed first rival battle, ready for Pokenav scene
+4: Got PokeNav from Mom, ready for Oak's Parcel scene
+5: Got Oak's Parcel
+6: Delivered Oak's Parcel
+7: Became Champ
+8: Mom explained following pokemon
+
+//Oak's Lab
+0: Player hasn't met Oak yet
+1: Player met Oak and warped back to lab
+2: Oak gave intro speech
+3: Rival grabbed Eevee
+4: Triggered Rival Battle
+5: Returned from Rival Battle
+6: Collected Oak's Parcel
+7: Received Pokedex
+8: Left Lab after getting Pokedex
+9: Registered Oak in Cell Phone. If you don't return to Oak, this is forced in Vermilion.
+
+//Fossil Selections
+1: Took Dome Fossil first (get Helix Fossil from quest later)
+2: Took Helix Fossil first (get Dome Fossil from quest later)
+
+//Mt. Moon State
+0: Nothing yet
+1: Battled Miguel
+2: Battled Jessie & James
+3: Encountered Looker
+
+//SS Anne State
+0: Nothing
+1: Battled Rival
+2: Ship ready to depart, collected cut
+3: Departed after collecting cut
+   -> Set the Ticket Check state to 2
+
+//Rooftop Rockets
+0: Will trigger the Rocket Grunt Battle
+1: Stops the Rocket Trigger.
+2: Will trigger the secret Jessie/James battle. Only seen if you didn't pick up the plans before completing the Rocket Hideout. 
+

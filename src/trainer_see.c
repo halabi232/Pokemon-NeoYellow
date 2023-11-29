@@ -59,9 +59,9 @@ bool8 gTrainerApproachedPlayer;
 EWRAM_DATA u8 gApproachingTrainerId = 0;
 
 // const rom data
-static const u8 sEmotion_ExclamationMarkGfx[] = INCBIN_U8("graphics/field_effects/pics/emotion_exclamation.4bpp");
-static const u8 sEmotion_QuestionMarkGfx[] = INCBIN_U8("graphics/field_effects/pics/emotion_question.4bpp");
-static const u8 sEmotion_HeartGfx[] = INCBIN_U8("graphics/field_effects/pics/emotion_heart.4bpp");
+static const u8 sEmotion_ExclamationMarkGfx[] = INCBIN_U8("graphics/misc/emotion_exclamation.4bpp");
+static const u8 sEmotion_QuestionMarkGfx[] = INCBIN_U8("graphics/misc/emotion_question.4bpp");
+static const u8 sEmotion_HeartGfx[] = INCBIN_U8("graphics/misc/emotion_heart.4bpp");
 // TODO: Credit https://www.spriters-resource.com/ds_dsi/pokemonheartgoldsoulsilver/sheet/30497/
 static const u8 sEmotion_Gfx[] = INCBIN_U8("graphics/misc/emotes.4bpp");
 
@@ -134,11 +134,11 @@ static const struct SpriteFrameImage sSpriteImageTable_ExclamationQuestionMark[]
 {
     {
         .data = sEmotion_ExclamationMarkGfx,
-        .size = sizeof(sEmotion_ExclamationMarkGfx)
+        .size = 0x80
     },
     {
         .data = sEmotion_QuestionMarkGfx,
-        .size = sizeof(sEmotion_QuestionMarkGfx)
+        .size = 0x80
     }
 };
 
@@ -146,7 +146,7 @@ static const struct SpriteFrameImage sSpriteImageTable_HeartIcon[] =
 {
     {
         .data = sEmotion_HeartGfx,
-        .size = sizeof(sEmotion_HeartGfx)
+        .size = 0x80
     }
 };
 
@@ -287,7 +287,7 @@ static const union AnimCmd *const sSpriteAnimTable_Emotes[] = {
 
 // TODO: Move these declarations into even_object_movement.h
 #define OBJ_EVENT_PAL_TAG_MAY 0x1110
-#define OBJ_EVENT_PAL_TAG_EMOTES 0x8003
+#define OBJ_EVENT_PAL_TAG_EMOTES 0x8002
 
 static const struct SpriteTemplate sSpriteTemplate_ExclamationQuestionMark =
 {
@@ -303,7 +303,7 @@ static const struct SpriteTemplate sSpriteTemplate_ExclamationQuestionMark =
 static const struct SpriteTemplate sSpriteTemplate_HeartIcon =
 {
     .tileTag = TAG_NONE,
-    .paletteTag = FLDEFF_PAL_TAG_NPC_1,
+    .paletteTag = FLDEFF_PAL_TAG_GENERAL_0,
     .oam = &sOamData_Icons,
     .anims = sSpriteAnimTable_Icons,
     .images = sSpriteImageTable_HeartIcon,

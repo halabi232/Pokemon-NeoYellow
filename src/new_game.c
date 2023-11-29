@@ -91,7 +91,7 @@ static void InitPlayerTrainerId(void)
 // L=A isnt set here for some reason.
 static void SetDefaultOptions(void)
 {
-    gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_MID;
+    gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_FAST;
     gSaveBlock2Ptr->optionsWindowFrameType = 0;
     gSaveBlock2Ptr->optionsSound = OPTIONS_SOUND_MONO;
     gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SHIFT;
@@ -127,7 +127,7 @@ static void ClearFrontierRecord(void)
 
 static void WarpToTruck(void)
 {
-    SetWarpDestination(MAP_GROUP(INSIDE_OF_TRUCK), MAP_NUM(INSIDE_OF_TRUCK), WARP_ID_NONE, -1, -1);
+    SetWarpDestination(MAP_GROUP(PALLET_TOWN_PLAYERS_HOUSE_2F), MAP_NUM(PALLET_TOWN_PLAYERS_HOUSE_2F), WARP_ID_NONE, 6, 6);
     WarpIntoMap();
 }
 
@@ -183,7 +183,6 @@ void NewGameInitData(void)
     ResetPokemonStorageSystem();
     ClearRoamerData();
     ClearRoamerLocationData();
-    //gSaveBlock1Ptr->registeredItem = 0;
     ClearBag();
     NewGameInitPCItems();
     ClearPokeblocks();
@@ -210,6 +209,10 @@ void NewGameInitData(void)
     
     gSaveBlock1Ptr->registeredItemL = 0;
     gSaveBlock1Ptr->registeredItemR = 0;
+    gSaveBlock2Ptr->costumeId = 0;
+    gSaveBlock2Ptr->optionsFollowerType = 0;
+    //gSaveBlock2Ptr->expShare = 0;
+    gSaveBlock2Ptr->surfMon = SPECIES_NONE;
 }
 
 static void ResetMiniGamesRecords(void)

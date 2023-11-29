@@ -241,7 +241,7 @@ Route11_EventScript_ItemGreatBall::
 	end
 
 Route11_EventScript_ItemXDefend::
-	finditem ITEM_X_DEFEND, 1
+	finditem ITEM_X_DEFENSE, 1
 	release
 	end
 

@@ -477,7 +477,7 @@
 #define TRAINER_CLASS_LORELEI        0x5d
 #define TRAINER_CLASS_BRUNO          0x5e
 #define TRAINER_CLASS_AGATHA         0x5f
-#define TRAINER_CLASS_LANCE          0x60
+#define TRAINER_CLASS_LANCE          0x60 
 
 #define TRAINER_CLASS_COUNT          0x61
 

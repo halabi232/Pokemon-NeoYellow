@@ -116,28 +116,30 @@ enum
 #define POKENAV_MENU_IDS_START 100000
 enum
 {
-    POKENAV_MAIN_MENU = POKENAV_MENU_IDS_START, // The main menu where the player selects Hoenn Map/Condition/Match Call/Ribbons
-    POKENAV_MAIN_MENU_CURSOR_ON_MAP,
-    POKENAV_CONDITION_MENU,                     // The first Condition screen where the player selects Party or Search
-    POKENAV_CONDITION_SEARCH_MENU,              // The Condition search menu where the player selects a search parameter
-    POKENAV_MAIN_MENU_CURSOR_ON_MATCH_CALL,
-    POKENAV_MAIN_MENU_CURSOR_ON_RIBBONS,
-    POKENAV_REGION_MAP,
-    POKENAV_CONDITION_GRAPH_PARTY,              // The Condition graph screen when Party has been selected
-    POKENAV_CONDITION_SEARCH_RESULTS,           // The list of results from a Condition search
-    POKENAV_CONDITION_GRAPH_SEARCH,             // The Condition graph screen when a search result has been selected
-    POKENAV_RETURN_CONDITION_SEARCH,            // Exited the graph screen back to the list of Condition search results
+	POKENAV_MAIN_MENU = POKENAV_MENU_IDS_START, // The main menu where the player selects Hoenn Map/Condition/Match Call/Ribbons 
+	POKENAV_MAIN_MENU_CURSOR_ON_MAP,
+    POKENAV_MAIN_MENU_CURSOR_ON_DEXNAV,
+	POKENAV_CONDITION_MENU,                     // The first Condition screen where the player selects Party or Search
+	POKENAV_CONDITION_SEARCH_MENU,              // The Condition search menu where the player selects a search parameter
+	POKENAV_MAIN_MENU_CURSOR_ON_MATCH_CALL,
+	POKENAV_MAIN_MENU_CURSOR_ON_RIBBONS,
+	POKENAV_REGION_MAP,
     POKENAV_MATCH_CALL,
-    POKENAV_RIBBONS_MON_LIST,                   // The list of Pokémon with ribbons
-    POKENAV_RIBBONS_SUMMARY_SCREEN,             // The ribbon summary screen shown when a Pokémon has been selected
-    POKENAV_RIBBONS_RETURN_TO_MON_LIST,         // Exited the summary screen back to the ribbon list
+    POKENAV_DEXNAV,
+	POKENAV_CONDITION_GRAPH_PARTY,              // The Condition graph screen when Party has been selected
+	POKENAV_CONDITION_SEARCH_RESULTS,           // The list of results from a Condition search
+	POKENAV_CONDITION_GRAPH_SEARCH,             // The Condition graph screen when a search result has been selected
+	POKENAV_RETURN_CONDITION_SEARCH,            // Exited the graph screen back to the list of Condition search results
+	POKENAV_RIBBONS_MON_LIST,                   // The list of Pokémon with ribbons
+	POKENAV_RIBBONS_SUMMARY_SCREEN,             // The ribbon summary screen shown when a Pokémon has been selected
+	POKENAV_RIBBONS_RETURN_TO_MON_LIST,         // Exited the summary screen back to the ribbon list
 };
 
 enum
 {
     POKENAV_MENU_TYPE_DEFAULT,
-    POKENAV_MENU_TYPE_UNLOCK_MC,
-    POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS,
+    POKENAV_MENU_TYPE_UNLOCK_DEXNAV,
+    POKENAV_MENU_TYPE_UNLOCK_DEXNAV_RIBBONS,
     POKENAV_MENU_TYPE_CONDITION,
     POKENAV_MENU_TYPE_CONDITION_SEARCH,
     POKENAV_MENU_TYPE_COUNT
@@ -148,8 +150,9 @@ enum
 enum
 {
     POKENAV_MENUITEM_MAP,
-    POKENAV_MENUITEM_CONDITION,
     POKENAV_MENUITEM_MATCH_CALL,
+    POKENAV_MENUITEM_DEXNAV,
+    POKENAV_MENUITEM_CONDITION,
     POKENAV_MENUITEM_RIBBONS,
     POKENAV_MENUITEM_SWITCH_OFF,
     POKENAV_MENUITEM_CONDITION_PARTY,
@@ -185,28 +188,14 @@ enum
 
 enum
 {
-    MC_HEADER_MR_STONE,
-    MC_HEADER_PROF_BIRCH,
-    MC_HEADER_BRENDAN,
-    MC_HEADER_MAY,
-    MC_HEADER_WALLY,
-    MC_HEADER_NORMAN,
     MC_HEADER_MOM,
-    MC_HEADER_STEVEN,
-    MC_HEADER_SCOTT,
-    MC_HEADER_ROXANNE,
-    MC_HEADER_BRAWLY,
-    MC_HEADER_WATTSON,
-    MC_HEADER_FLANNERY,
-    MC_HEADER_WINONA,
-    MC_HEADER_TATE_LIZA,
-    MC_HEADER_JUAN,
-    MC_HEADER_SIDNEY,
-    MC_HEADER_PHOEBE,
-    MC_HEADER_GLACIA,
-    MC_HEADER_DRAKE,
-    MC_HEADER_WALLACE,
-    MC_HEADER_COUNT
+    MC_HEADER_PROF_OAK,
+    MC_HEADER_RIVAL,
+    MC_HEADER_AIDE,
+	MC_HEADER_SCOTT,
+    MC_HEADER_LOOKER,
+	MC_HEADER_BILL,
+	MC_HEADER_COUNT
 };
 
 enum
@@ -246,6 +235,7 @@ enum RegionMapFuncIds
     POKENAV_MENU_FUNC_NO_RIBBON_WINNERS,
     POKENAV_MENU_FUNC_RESHOW_DESCRIPTION,
     POKENAV_MENU_FUNC_OPEN_FEATURE,
+    POKENAV_MENU_FUNC_OPEN_DEXNAV,
 };
 
 enum
@@ -394,6 +384,8 @@ int GetPokenavMenuType(void);
 int GetPokenavCursorPos(void);
 int GetCurrentMenuItemId(void);
 u16 GetHelpBarTextId(void);
+bool32 PokenavCallback_Init_MainMenuCursorOnDexNav(void);
+void FreePokenavResources(void);
 
 // pokenav_menu_handler_gfx.c
 bool32 OpenPokenavMenuInitial(void);

@@ -30,6 +30,7 @@ const struct MonCoords gMonFrontPicCoords[NUM_SPECIES + 1] =
     [SPECIES_EKANS]                        = { .size = MON_COORDS_SIZE(48, 48), .y_offset = 10 },
     [SPECIES_ARBOK]                        = { .size = MON_COORDS_SIZE(64, 64), .y_offset =  1 },
     [SPECIES_PIKACHU]                      = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
+    [SPECIES_PIKACHU_PARTNER]              = { .size = MON_COORDS_SIZE(48, 56), .y_offset =  9 },
     [SPECIES_RAICHU]                       = { .size = MON_COORDS_SIZE(64, 64), .y_offset =  3 },
     [SPECIES_SANDSHREW]                    = { .size = MON_COORDS_SIZE(48, 48), .y_offset = 11 },
     [SPECIES_SANDSLASH]                    = { .size = MON_COORDS_SIZE(64, 56), .y_offset =  6 },
@@ -1057,7 +1058,7 @@ const struct MonCoords gMonFrontPicCoords[NUM_SPECIES + 1] =
     [SPECIES_PIKACHU_UNOVA_CAP]            = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
     [SPECIES_PIKACHU_KALOS_CAP]            = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
     [SPECIES_PIKACHU_ALOLA_CAP]            = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
-    [SPECIES_PIKACHU_PARTNER_CAP]          = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
+    [SPECIES_PIKACHU_PART_CAP]          = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
     [SPECIES_PIKACHU_WORLD_CAP]            = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
     // Pichu
     [SPECIES_PICHU_SPIKY_EARED]            = { .size = MON_COORDS_SIZE(32, 40), .y_offset = 14 },

@@ -12,6 +12,7 @@
 #include "battle_tv.h"
 #include "cable_club.h"
 #include "event_object_movement.h"
+#include "field_specials.h"
 #include "link.h"
 #include "link_rfu.h"
 #include "palette.h"
@@ -2930,6 +2931,8 @@ static bool32 TwoMonsAtSendOut(u32 battler)
 static bool8 ShouldDoSlideInAnim(void) {
     struct ObjectEvent *followerObj = GetFollowerObject();
     if (!followerObj || followerObj->invisible)
+        return FALSE;
+    if (GetMonData(&gPlayerParty[GetLeadMonIndex()], MON_DATA_SPECIES) != SPECIES_PIKACHU_PARTNER)
         return FALSE;
     if (gBattleTypeFlags & (
         BATTLE_TYPE_LINK | BATTLE_TYPE_DOUBLE | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_FIRST_BATTLE |

@@ -158,7 +158,8 @@ static const TaskFunc sStaticCountdownFuncs[][4] =
 #define sId             data[4] // Never read
 #define sNumberSpriteId data[5] // Never read
 
-static u32 UNUSED CreateStaticCountdownTask(u8 funcSetId, u8 taskPriority)
+// Unused
+static u32 CreateStaticCountdownTask(u8 funcSetId, u8 taskPriority)
 {
     u8 taskId = CreateTask(Task_StaticCountdown, taskPriority);
     struct Task *task = &gTasks[taskId];
@@ -169,7 +170,7 @@ static u32 UNUSED CreateStaticCountdownTask(u8 funcSetId, u8 taskPriority)
     return taskId;
 }
 
-static bool32 UNUSED StartStaticCountdown(void)
+static bool32 StartStaticCountdown(void)
 {
     u8 taskId = FindTaskIdByFunc(Task_StaticCountdown);
     if (taskId == TASK_NONE)
@@ -179,7 +180,7 @@ static bool32 UNUSED StartStaticCountdown(void)
     return TRUE;
 }
 
-static bool32 UNUSED IsStaticCountdownRunning(void)
+static bool32 IsStaticCountdownRunning(void)
 {
     return FuncIsActiveTask(Task_StaticCountdown);
 }
@@ -314,7 +315,7 @@ static void Task_StaticCountdown_Run(u8 taskId)
     u16 packet[RFU_PACKET_SIZE];
     s16 *data = gTasks[taskId].data;
 
-    if (gReceivedRemoteLinkPlayers)
+    if (gReceivedRemoteLinkPlayers != 0)
     {
         // Read link timer
         if (gRecvCmds[0][1] == LINKCMD_COUNTDOWN)
@@ -617,7 +618,7 @@ static const struct OamData sOamData_Numbers =
     .y = 0,
     .affineMode = ST_OAM_AFFINE_DOUBLE,
     .objMode = ST_OAM_OBJ_NORMAL,
-    .mosaic = FALSE,
+    .mosaic = 0,
     .bpp = ST_OAM_4BPP,
     .shape = SPRITE_SHAPE(32x32),
     .x = 0,
@@ -634,7 +635,7 @@ static const struct OamData sOamData_Start =
     .y = 0,
     .affineMode = ST_OAM_AFFINE_OFF,
     .objMode = ST_OAM_OBJ_NORMAL,
-    .mosaic = FALSE,
+    .mosaic = 0,
     .bpp = ST_OAM_4BPP,
     .shape = SPRITE_SHAPE(64x32),
     .x = 0,

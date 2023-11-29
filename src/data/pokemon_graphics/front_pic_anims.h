@@ -278,6 +278,25 @@ static const union AnimCmd sAnim_Pikachu_2[] =
     ANIMCMD_END,
 };
 
+static const union AnimCmd sAnim_Pikachu_Partner_1[] =
+{
+    ANIMCMD_FRAME(0, 15),
+    ANIMCMD_FRAME(1, 20),
+    ANIMCMD_FRAME(0, 15),
+    ANIMCMD_FRAME(1, 20),
+    ANIMCMD_FRAME(0, 15),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_Pikachu_Partner_2[] =
+{
+    ANIMCMD_FRAME(0, 20),
+    ANIMCMD_FRAME(2, 20),
+    ANIMCMD_FRAME(0, 20),
+    ANIMCMD_FRAME(2, 20),
+    ANIMCMD_END,
+};
+
 static const union AnimCmd sAnim_Raichu_1[] =
 {
     ANIMCMD_FRAME(0, 15),
@@ -10736,6 +10755,7 @@ SINGLE_ANIMATION(Fearow);
 SINGLE_ANIMATION(Ekans);
 SINGLE_ANIMATION(Arbok);
 DOUBLE_ANIMATION(Pikachu);
+DOUBLE_ANIMATION(Pikachu_Partner);
 DOUBLE_ANIMATION(Raichu);
 DOUBLE_ANIMATION(Sandshrew);
 DOUBLE_ANIMATION(Sandslash);
@@ -11908,6 +11928,7 @@ const union AnimCmd *const *const gMonFrontAnimsPtrTable[NUM_SPECIES + 1] =
     [SPECIES_EKANS]                          = sAnims_Ekans,
     [SPECIES_ARBOK]                          = sAnims_Arbok,
     [SPECIES_PIKACHU]                        = sAnims_Pikachu,
+    [SPECIES_PIKACHU_PARTNER]                = sAnims_Pikachu_Partner,
     [SPECIES_RAICHU]                         = sAnims_Raichu,
     [SPECIES_SANDSHREW]                      = sAnims_Sandshrew,
     [SPECIES_SANDSLASH]                      = sAnims_Sandslash,
@@ -12934,7 +12955,7 @@ const union AnimCmd *const *const gMonFrontAnimsPtrTable[NUM_SPECIES + 1] =
     [SPECIES_PIKACHU_UNOVA_CAP]              = sAnims_PikachuUnovaCap,
     [SPECIES_PIKACHU_KALOS_CAP]              = sAnims_PikachuKalosCap,
     [SPECIES_PIKACHU_ALOLA_CAP]              = sAnims_PikachuAlolaCap,
-    [SPECIES_PIKACHU_PARTNER_CAP]            = sAnims_PikachuPartnerCap,
+    [SPECIES_PIKACHU_PART_CAP]            = sAnims_PikachuPartnerCap,
     [SPECIES_PIKACHU_WORLD_CAP]              = sAnims_PikachuWorldCap,
     [SPECIES_PICHU_SPIKY_EARED]              = sAnims_PichuSpikyEared,
     [SPECIES_UNOWN_B]                        = sAnims_UnownB,

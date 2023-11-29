@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"mystery_gift_menu.h": "c",
+			"main.h": "c",
+			"mystery_gift.h": "c",
+			"palette.h": "c",
+			"decompress.h": "c"
+		}
+	}
+}

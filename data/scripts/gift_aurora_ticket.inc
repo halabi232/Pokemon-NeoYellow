@@ -3,7 +3,6 @@ MysteryGiftScript_AuroraTicket::
 	lock
 	faceplayer
 	vgoto_if_set FLAG_RECEIVED_AURORA_TICKET, AuroraTicket_Obtained
-	vgoto_if_set FLAG_BATTLED_DEOXYS, AuroraTicket_Obtained
 	checkitem ITEM_AURORA_TICKET
 	vgoto_if_eq VAR_RESULT, TRUE, AuroraTicket_Obtained
 	vmessage sText_AuroraTicketForYou
@@ -35,23 +34,23 @@ AuroraTicket_Obtained:
 	end
 
 sText_AuroraTicketForYou:
-	.string "Thank you for using the MYSTERY\n"
-	.string "GIFT System.\p"
+	.string "Thank you for using the Mystery\n"
+	.string "Gift System.\p"
 	.string "You must be {PLAYER}.\n"
 	.string "There is a ticket here for you.$"
 
 sText_AuroraTicketUseAtPort:
 	.string "It appears to be for use at the\n"
-	.string "LILYCOVE CITY port.\p"
+	.string "Lilycove City port.\p"
 	.string "Why not give it a try and see what\n"
 	.string "it is about?$"
 
 sText_AuroraTicketThankYou:
-	.string "Thank you for using the MYSTERY\n"
-	.string "GIFT System.$"
+	.string "Thank you for using the Mystery\n"
+	.string "Gift System.$"
 
 sText_AuroraTicketBagFull:
 	.string "Oh, I'm sorry, {PLAYER}.\n"
-	.string "Your BAG's KEY ITEMS POCKET is full.\p"
+	.string "Your bag's Key Items Pocket is full.\p"
 	.string "Please store something on your PC,\n"
 	.string "then come back for this.$"

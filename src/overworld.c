@@ -68,6 +68,7 @@
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
 #include "constants/weather.h"
+#include "constants/metatile_behaviors.h"
 
 struct CableClubPlayer
 {
@@ -185,9 +186,12 @@ static u16 (*sPlayerKeyInterceptCallback)(u32);
 static bool8 sReceivingFromLink;
 static u8 sRfuKeepAliveTimer;
 
+static u16 sTimeUpdateCounter; // playTimeVBlanks will eventually overflow, so this is used to update TOD
+
 u16 *gOverworldTilemapBuffer_Bg2;
 u16 *gOverworldTilemapBuffer_Bg1;
 u16 *gOverworldTilemapBuffer_Bg3;
+
 u16 gHeldKeyCodeToSend;
 void (*gFieldCallback)(void);
 bool8 (*gFieldCallback2)(void);
@@ -386,6 +390,7 @@ void Overworld_ResetStateAfterFly(void)
     FlagClear(FLAG_SYS_SAFARI_MODE);
     FlagClear(FLAG_SYS_USE_STRENGTH);
     FlagClear(FLAG_SYS_USE_FLASH);
+    VarSet(VAR_SAFARI_ZONE_STATE,0);
 }
 
 void Overworld_ResetStateAfterTeleport(void)
@@ -396,7 +401,7 @@ void Overworld_ResetStateAfterTeleport(void)
     FlagClear(FLAG_SYS_SAFARI_MODE);
     FlagClear(FLAG_SYS_USE_STRENGTH);
     FlagClear(FLAG_SYS_USE_FLASH);
-    RunScriptImmediately(EventScript_ResetMrBriney);
+    VarSet(VAR_SAFARI_ZONE_STATE,0);
 }
 
 void Overworld_ResetStateAfterDigEscRope(void)
@@ -407,6 +412,7 @@ void Overworld_ResetStateAfterDigEscRope(void)
     FlagClear(FLAG_SYS_SAFARI_MODE);
     FlagClear(FLAG_SYS_USE_STRENGTH);
     FlagClear(FLAG_SYS_USE_FLASH);
+    VarSet(VAR_SAFARI_ZONE_STATE,0);
 }
 
 #if B_RESET_FLAGS_VARS_AFTER_WHITEOUT  == TRUE
@@ -436,6 +442,7 @@ static void Overworld_ResetStateAfterWhiteOut(void)
     FlagClear(FLAG_SYS_SAFARI_MODE);
     FlagClear(FLAG_SYS_USE_STRENGTH);
     FlagClear(FLAG_SYS_USE_FLASH);
+    VarSet(VAR_SAFARI_ZONE_STATE,0);
     if (B_RESET_FLAGS_VARS_AFTER_WHITEOUT == TRUE)
         Overworld_ResetBattleFlagsAndVars();
     // If you were defeated by Kyogre/Groudon and the step counter has
@@ -450,6 +457,7 @@ static void Overworld_ResetStateAfterWhiteOut(void)
 static void UpdateMiscOverworldStates(void)
 {
     FlagClear(FLAG_SYS_SAFARI_MODE);
+    VarSet(VAR_SAFARI_ZONE_STATE,0);
     ChooseAmbientCrySpecies();
     ResetCyclingRoadChallengeData();
     UpdateLocationHistoryForRoamer();
@@ -502,13 +510,27 @@ void ApplyNewEncryptionKeyToGameStats(u32 newKey)
 
 void LoadObjEventTemplatesFromHeader(void)
 {
-    // Clear map object templates
-    CpuFill32(0, gSaveBlock1Ptr->objectEventTemplates, sizeof(gSaveBlock1Ptr->objectEventTemplates));
+    u8 i;
 
-    // Copy map header events to save block
-    CpuCopy32(gMapHeader.events->objectEvents,
-              gSaveBlock1Ptr->objectEventTemplates,
-              gMapHeader.events->objectEventCount * sizeof(struct ObjectEventTemplate));
+    for (i = 0; i < gMapHeader.events->objectEventCount; i++)
+    {
+        if (gMapHeader.events->objectEvents[i].inConnection == 0xFF)
+        {
+            gSaveBlock1Ptr->objectEventTemplates[i] = Overworld_GetMapHeaderByGroupAndId(gMapHeader.events->objectEvents[i].trainerRange_berryTreeId, gMapHeader.events->objectEvents[i].trainerType)->events->objectEvents[gMapHeader.events->objectEvents[i].elevation - 1];
+            gSaveBlock1Ptr->objectEventTemplates[i].localId = gMapHeader.events->objectEvents[i].localId;
+            gSaveBlock1Ptr->objectEventTemplates[i].x = gMapHeader.events->objectEvents[i].x;
+            gSaveBlock1Ptr->objectEventTemplates[i].y = gMapHeader.events->objectEvents[i].y;
+            // set up object for seamless map transitions
+            gSaveBlock1Ptr->objectEventTemplates[i].elevation = gMapHeader.events->objectEvents[i].elevation;
+            gSaveBlock1Ptr->objectEventTemplates[i].trainerType = gMapHeader.events->objectEvents[i].trainerType;
+              gSaveBlock1Ptr->objectEventTemplates[i].trainerRange_berryTreeId = gMapHeader.events->objectEvents[i].trainerRange_berryTreeId;
+            gSaveBlock1Ptr->objectEventTemplates[i].inConnection = 0xFF;
+        }
+        else
+        {
+            gSaveBlock1Ptr->objectEventTemplates[i] = gMapHeader.events->objectEvents[i];
+        }
+    }
 }
 
 void LoadSaveblockObjEventScripts(void)
@@ -911,6 +933,7 @@ static void LoadMapFromWarp(bool32 a1)
 
 void ResetInitialPlayerAvatarState(void)
 {
+    gSaveBlock2Ptr->surfMon = SPECIES_NONE;
     sInitialPlayerAvatarState.direction = DIR_SOUTH;
     sInitialPlayerAvatarState.transitionFlags = PLAYER_AVATAR_FLAG_ON_FOOT;
 }
@@ -949,6 +972,8 @@ static u8 GetAdjustedInitialTransitionFlags(struct InitialPlayerAvatarState *pla
         return PLAYER_AVATAR_FLAG_ON_FOOT;
     else if (mapType == MAP_TYPE_UNDERWATER)
         return PLAYER_AVATAR_FLAG_UNDERWATER;
+else if (MetatileBehavior_IsSurfableInSeafoamIslands(metatileBehavior) == TRUE)
+        return PLAYER_AVATAR_FLAG_ON_FOOT;
     else if (MetatileBehavior_IsSurfableWaterOrUnderwater(metatileBehavior) == TRUE)
         return PLAYER_AVATAR_FLAG_SURFING;
     else if (Overworld_IsBikingAllowed() != TRUE)
@@ -959,6 +984,18 @@ static u8 GetAdjustedInitialTransitionFlags(struct InitialPlayerAvatarState *pla
         return PLAYER_AVATAR_FLAG_ON_FOOT;
     else
         return PLAYER_AVATAR_FLAG_ACRO_BIKE;
+}
+
+bool8 MetatileBehavior_IsSurfableInSeafoamIslands(u16 metatileBehavior)
+{
+    if (MetatileBehavior_IsSurfableWaterOrUnderwater(metatileBehavior) != TRUE)
+        return FALSE;
+    if ((gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SEAFOAM_ISLANDS_B3F)
+          && gSaveBlock1Ptr->location.mapNum == MAP_NUM(SEAFOAM_ISLANDS_B3F))
+     || (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SEAFOAM_ISLANDS_B4F)
+          && gSaveBlock1Ptr->location.mapNum == MAP_NUM(SEAFOAM_ISLANDS_B4F)))
+        return TRUE;
+    return FALSE;
 }
 
 static u8 GetAdjustedInitialDirection(struct InitialPlayerAvatarState *playerStruct, u8 transitionFlags, u16 metatileBehavior, u8 mapType)
@@ -1050,72 +1087,48 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
 {
     if (!FlagGet(FLAG_SYS_WEATHER_CTRL))
         return FALSE;
-    if (warp->mapGroup == 0)
-    {
-        switch (warp->mapNum)
-        {
-        case MAP_NUM(LILYCOVE_CITY):
-        case MAP_NUM(MOSSDEEP_CITY):
-        case MAP_NUM(SOOTOPOLIS_CITY):
-        case MAP_NUM(EVER_GRANDE_CITY):
-        case MAP_NUM(ROUTE124):
-        case MAP_NUM(ROUTE125):
-        case MAP_NUM(ROUTE126):
-        case MAP_NUM(ROUTE127):
-        case MAP_NUM(ROUTE128):
-            return TRUE;
-        default:
-            if (VarGet(VAR_SOOTOPOLIS_CITY_STATE) < 4)
-                return FALSE;
-            switch (warp->mapNum)
-            {
-            case MAP_NUM(ROUTE129):
-            case MAP_NUM(ROUTE130):
-            case MAP_NUM(ROUTE131):
-                return TRUE;
-            }
-        }
-    }
+    //if (warp->mapGroup == 0)
+    //{
+    //    switch (warp->mapNum)
+    //    {
+    //    case MAP_NUM(LILYCOVE_CITY):
+    //    case MAP_NUM(MOSSDEEP_CITY):
+    //    case MAP_NUM(SOOTOPOLIS_CITY):
+    //    case MAP_NUM(EVER_GRANDE_CITY):
+    //    case MAP_NUM(ROUTE124):
+    //    case MAP_NUM(ROUTE125):
+    //    case MAP_NUM(ROUTE126):
+    //    case MAP_NUM(ROUTE127):
+    //    case MAP_NUM(ROUTE128):
+    //        return TRUE;
+    //    default:
+    //        /*if (VarGet(VAR_SOOTOPOLIS_CITY_STATE) < 4)
+    //            return FALSE;*/
+    //        switch (warp->mapNum)
+    //        {
+    //        case MAP_NUM(ROUTE129):
+    //        case MAP_NUM(ROUTE130):
+    //        case MAP_NUM(ROUTE131):
+    //            return TRUE;
+    //        }
+    //    }
+    //}
     return FALSE;
 }
 
 static bool16 NoMusicInSotopolisWithLegendaries(struct WarpData *warp)
 {
-    if (VarGet(VAR_SKY_PILLAR_STATE) != 1)
-        return FALSE;
-    else if (warp->mapGroup != MAP_GROUP(SOOTOPOLIS_CITY))
-        return FALSE;
-    else if (warp->mapNum == MAP_NUM(SOOTOPOLIS_CITY))
-        return TRUE;
-    else
-        return FALSE;
+    return FALSE; //Removed function, SkyPillar unused in PokeClassic
 }
 
 static bool16 IsInfiltratedWeatherInstitute(struct WarpData *warp)
 {
-    if (VarGet(VAR_WEATHER_INSTITUTE_STATE))
-        return FALSE;
-    else if (warp->mapGroup != MAP_GROUP(ROUTE119_WEATHER_INSTITUTE_1F))
-        return FALSE;
-    else if (warp->mapNum == MAP_NUM(ROUTE119_WEATHER_INSTITUTE_1F)
-     || warp->mapNum == MAP_NUM(ROUTE119_WEATHER_INSTITUTE_2F))
-        return TRUE;
-    else
-        return FALSE;
+    return FALSE; //Removed function, Weather Institute unused in PokeClassic
 }
 
 static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
 {
-    if (VarGet(VAR_MOSSDEEP_CITY_STATE) == 0)
-        return FALSE;
-    else if (VarGet(VAR_MOSSDEEP_CITY_STATE) > 2)
-        return FALSE;
-    else if (warp->mapGroup != MAP_GROUP(MOSSDEEP_CITY_SPACE_CENTER_1F))
-        return FALSE;
-    else if (warp->mapNum == MAP_NUM(MOSSDEEP_CITY_SPACE_CENTER_1F)
-     || warp->mapNum == MAP_NUM(MOSSDEEP_CITY_SPACE_CENTER_2F))
-        return TRUE;
-    return FALSE;
+    return FALSE; //Removed function, Mossdeep unused in PokeClassic
 }
 
 u16 GetLocationMusic(struct WarpData *warp)
@@ -1137,10 +1150,10 @@ u16 GetCurrLocationDefaultMusic(void)
     u16 music;
 
     // Play the desert music only when the sandstorm is active on Route 111.
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE111)
-     && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE111)
-     && GetSavedWeather() == WEATHER_SANDSTORM)
-        return MUS_DESERT;
+    //if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE111)
+    // && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE111)
+    // && GetSavedWeather() == WEATHER_SANDSTORM)
+    //    return MUS_ROUTE111;
 
     music = GetLocationMusic(&gSaveBlock1Ptr->location);
     if (music != MUS_ROUTE118)
@@ -1165,10 +1178,10 @@ u16 GetWarpDestinationMusic(void)
     }
     else
     {
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAUVILLE_CITY)
-         && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAUVILLE_CITY))
-            return MUS_ROUTE110;
-        else
+        //if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAUVILLE_CITY)
+        // && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAUVILLE_CITY))
+        //    return MUS_ROUTE110;
+        //else
             return MUS_ROUTE119;
     }
 }
@@ -1258,15 +1271,15 @@ void TryFadeOutOldMapMusic(void)
     u16 warpMusic = GetWarpDestinationMusic();
     if (FlagGet(FLAG_DONT_TRANSITION_MUSIC) != TRUE && warpMusic != GetCurrentMapMusic())
     {
-        if (currentMusic == MUS_SURF
-            && VarGet(VAR_SKY_PILLAR_STATE) == 2
-            && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SOOTOPOLIS_CITY)
-            && gSaveBlock1Ptr->location.mapNum == MAP_NUM(SOOTOPOLIS_CITY)
-            && sWarpDestination.mapGroup == MAP_GROUP(SOOTOPOLIS_CITY)
-            && sWarpDestination.mapNum == MAP_NUM(SOOTOPOLIS_CITY)
-            && sWarpDestination.x == 29
-            && sWarpDestination.y == 53)
-            return;
+        //if (currentMusic == MUS_SURF
+        //    //&& VarGet(VAR_SKY_PILLAR_STATE) == 2
+        //    && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SOOTOPOLIS_CITY)
+        //    && gSaveBlock1Ptr->location.mapNum == MAP_NUM(SOOTOPOLIS_CITY)
+        //    && sWarpDestination.mapGroup == MAP_GROUP(SOOTOPOLIS_CITY)
+        //    && sWarpDestination.mapNum == MAP_NUM(SOOTOPOLIS_CITY)
+        //    && sWarpDestination.x == 29
+        //    && sWarpDestination.y == 53)
+        //    return;
         FadeOutMapMusic(GetMapMusicFadeoutSpeed());
     }
 }
@@ -1355,19 +1368,19 @@ void UpdateAmbientCry(s16 *state, u16 *delayCounter)
 
 static void ChooseAmbientCrySpecies(void)
 {
-    if ((gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE130)
-     && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE130))
-     && !IsMirageIslandPresent())
-    {
-        // Only play water pokemon cries on this route
-        // when Mirage Island is not present
-        sIsAmbientCryWaterMon = TRUE;
-        sAmbientCrySpecies = GetLocalWaterMon();
-    }
-    else
-    {
+    //if ((gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE130)
+    // && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE130))
+    // && !IsMirageIslandPresent())
+    //{
+    //    // Only play water pokemon cries on this route
+    //    // when Mirage Island is not present
+    //    sIsAmbientCryWaterMon = TRUE;
+    //    sAmbientCrySpecies = GetLocalWaterMon();
+    //}
+    //else
+    //{
         sAmbientCrySpecies = GetLocalWildMon(&sIsAmbientCryWaterMon);
-    }
+    //}
 }
 
 u8 GetMapTypeByGroupAndId(s8 mapGroup, s8 mapNum)
@@ -1716,7 +1729,7 @@ void CB2_NewGame(void)
     PlayTimeCounter_Start();
     ScriptContext_Init();
     UnlockPlayerFieldControls();
-    gFieldCallback = ExecuteTruckSequence;
+    //gFieldCallback = ExecuteTruckSequence;
     gFieldCallback2 = NULL;
     DoMapLoadLoop(&gMain.state);
     SetFieldVBlankCallback();

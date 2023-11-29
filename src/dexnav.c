@@ -58,6 +58,7 @@
 #include "constants/rgb.h"
 #include "constants/region_map_sections.h"
 #include "gba/m4a_internal.h"
+#include "pokenav.h"
 
 // Defines
 enum WindowIds
@@ -176,15 +177,15 @@ static const u32 sHiddenMonIconGfx[] = INCBIN_U32("graphics/dexnav/hidden.4bpp.l
 // strings
 static const u8 sText_DexNav_NoInfo[] = _("--------");
 static const u8 sText_DexNav_CaptureToSee[] = _("Capture first!");
-static const u8 sText_DexNav_PressRToRegister[] = _("R TO REGISTER!");
+static const u8 sText_DexNav_PressRToRegister[] = _("SELECT to Register!");
 static const u8 sText_DexNav_SearchForRegisteredSpecies[] = _("Search {STR_VAR_1}");
 static const u8 sText_DexNav_NotFoundHere[] = _("This Pokémon cannot be found here!");
 static const u8 sText_ThreeQmarks[] = _("???");
-static const u8 sText_SearchLevel[] = _("SEARCH {LV}. {STR_VAR_1}");
+static const u8 sText_SearchLevel[] = _("Search {LV}. {STR_VAR_1}");
 static const u8 sText_MonLevel[] = _("{LV}. {STR_VAR_1}");
-static const u8 sText_EggMove[] = _("MOVE: {STR_VAR_1}");
+static const u8 sText_EggMove[] = _("Move: {STR_VAR_1}");
 static const u8 sText_HeldItem[] = _("{STR_VAR_1}");
-static const u8 sText_StartExit[] = _("{START_BUTTON} EXIT");
+static const u8 sText_StartExit[] = _("{START_BUTTON} Exit");
 static const u8 sText_DexNavChain[] = _("{NO} {STR_VAR_1}");
 static const u8 sText_DexNavChainLong[] = _("{NO}{STR_VAR_1}");
 
@@ -1894,6 +1895,7 @@ static void Task_DexNavFadeAndExit(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        FreePokenavResources();
         SetMainCallback2(sDexNavUiDataPtr->savedCallback);
         DexNavGuiFreeResources();
         DestroyTask(taskId);
@@ -2354,6 +2356,23 @@ void Task_OpenDexNavFromStartMenu(u8 taskId)
     }
 }
 
+u32 PokeNavMenuDexNavCallback(void)
+{
+    FlagSet(FLAG_TEMP_1);
+    CreateTask(Task_OpenDexNavFromPokenav, 0);
+    return TRUE;
+}
+
+void Task_OpenDexNavFromPokenav(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        DexNavGuiInit(CB2_InitPokeNav);
+        DestroyTask(taskId);
+    }
+}
+
 static void Task_DexNavWaitFadeIn(u8 taskId)
 {
     if (!gPaletteFade.active)
@@ -2466,7 +2485,7 @@ static void Task_DexNavMain(u8 taskId)
         PlaySE(SE_RG_BAG_CURSOR);
         UpdateCursorPosition();
     }
-    else if (JOY_NEW(R_BUTTON))
+    else if (JOY_NEW(SELECT_BUTTON))
     {
         // check selection is valid. Play sound if invalid
         species = DexNavGetSpecies();
@@ -2697,12 +2716,12 @@ bool8 DexNavTryMakeShinyMon(void)
         shinyRate += searchLevel - 200;
         searchLevel = 200;
     }
-    if (searchLevel > 100)
+    else if (searchLevel > 100)
     {
         shinyRate += (searchLevel * 2) - 200;
         searchLevel = 100;
     }
-    if (searchLevel > 0)
+    else if (searchLevel > 0)
     {
         shinyRate += searchLevel * 6;
     }

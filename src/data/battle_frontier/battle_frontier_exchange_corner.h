@@ -1,26 +1,34 @@
-static const u16 sFrontierExchangeCorner_Decor1[] =
+static const u16 sFrontierExchangeCorner_Mints[] =
 {
-    DECOR_KISS_POSTER,
-    DECOR_KISS_CUSHION,
-    DECOR_SMOOCHUM_DOLL,
-    DECOR_TOGEPI_DOLL,
-    DECOR_MEOWTH_DOLL,
-    DECOR_CLEFAIRY_DOLL,
-    DECOR_DITTO_DOLL,
-    DECOR_CYNDAQUIL_DOLL,
-    DECOR_CHIKORITA_DOLL,
-    DECOR_TOTODILE_DOLL,
-    ITEM_LIST_END
+    ITEM_ADAMANT_MINT,
+    ITEM_BOLD_MINT,
+    ITEM_BRAVE_MINT,
+    ITEM_CALM_MINT,
+    ITEM_CAREFUL_MINT,
+    ITEM_GENTLE_MINT,
+    ITEM_HASTY_MINT,
+    ITEM_IMPISH_MINT,
+    ITEM_JOLLY_MINT,
+    ITEM_LAX_MINT,
+    ITEM_LONELY_MINT,
+    ITEM_MILD_MINT,
+    ITEM_MODEST_MINT,
+    ITEM_NAIVE_MINT,
+    ITEM_NAUGHTY_MINT,
+    ITEM_QUIET_MINT,
+    ITEM_RASH_MINT,
+    ITEM_RELAXED_MINT,
+    ITEM_SASSY_MINT,
+    ITEM_SERIOUS_MINT,
+    ITEM_TIMID_MINT,
+    0xFFFF
 };
 
-static const u16 sFrontierExchangeCorner_Decor2[] =
+static const u16 sFrontierExchangeCorner_Ability[] =
 {
-    DECOR_LAPRAS_DOLL,
-    DECOR_SNORLAX_DOLL,
-    DECOR_VENUSAUR_DOLL,
-    DECOR_CHARIZARD_DOLL,
-    DECOR_BLASTOISE_DOLL,
-    ITEM_LIST_END
+    ITEM_ABILITY_CAPSULE,
+    ITEM_ABILITY_PATCH,
+    0xFFFF
 };
 
 static const u16 sFrontierExchangeCorner_Vitamins[] =
@@ -31,7 +39,20 @@ static const u16 sFrontierExchangeCorner_Vitamins[] =
     ITEM_ZINC,
     ITEM_CARBOS,
     ITEM_HP_UP,
-    ITEM_LIST_END
+    0xFFFF
+};
+
+static const u16 sFrontierExchangeCorner_Candy[] =
+{
+    ITEM_HP_CANDY,
+    ITEM_ATK_CANDY,
+    ITEM_DEF_CANDY,
+    ITEM_SPATK_CANDY,
+    ITEM_SPDEF_CANDY,
+    ITEM_SPEED_CANDY,
+    ITEM_MAX_CANDY,
+    ITEM_RESET_CANDY,
+    0xFFFF
 };
 
 static const u16 sFrontierExchangeCorner_HoldItems[] =
@@ -45,31 +66,76 @@ static const u16 sFrontierExchangeCorner_HoldItems[] =
     ITEM_KINGS_ROCK,
     ITEM_FOCUS_BAND,
     ITEM_SCOPE_LENS,
-    ITEM_LIST_END
+    0xFFFF
 };
 
-static const u8 *const sFrontierExchangeCorner_Decor1Descriptions[] =
+static const u16 sFrontierExchangeCorner_HoldItems2[] =
 {
-    BattleFrontier_ExchangeServiceCorner_Text_KissPosterDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_KissCushionDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_SmoochumDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_TogepiDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_MeowthDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_ClefairyDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_DittoDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_CyndaquilDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_ChikoritaDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_TotodileDollDesc,
+    ITEM_RAZOR_FANG,
+    ITEM_RAZOR_CLAW,
+    ITEM_CHOICE_SPECS,
+    ITEM_CHOICE_SCARF,
+    ITEM_MUSCLE_BAND,
+    ITEM_LIFE_ORB,
+    ITEM_POWER_HERB,
+    ITEM_WISE_GLASSES,
+    ITEM_RED_CARD,
+    ITEM_TOXIC_ORB,
+    ITEM_FLAME_ORB,
+    ITEM_FOCUS_SASH,
+    ITEM_ZOOM_LENS,
+    ITEM_GRIP_CLAW,
+    ITEM_STICKY_BARB,
+    ITEM_AIR_BALLOON,
+    ITEM_BINDING_BAND,
+    ITEM_EJECT_BUTTON,
+    ITEM_WEAKNESS_POLICY,
+    ITEM_ASSAULT_VEST,
+    ITEM_SAFETY_GOGGLES,
+    0xFFFF
+};
+
+static const u16 sFrontierExchangeCorner_PowerItems[] =
+{
+    ITEM_POWER_ANKLET,
+    ITEM_POWER_BRACER,
+    ITEM_POWER_BELT,
+    ITEM_POWER_BAND,
+    ITEM_POWER_WEIGHT,
+    ITEM_POWER_LENS,
+    0xFFFF
+};
+
+static const u8 *const sFrontierExchangeCorner_MintsDescriptions[] =
+{
+    BattleFrontier_ExchangeServiceCorner_Text_AdamantMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_BoldMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_BraveMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_CalmMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_CarefulMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_GentleMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_HastyMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_ImpishMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_JollyMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_LaxMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_LonelyMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_MildMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_ModestMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_NaiveMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_NaughtyMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_QuietMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_RashMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_RelaxedMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_SassyMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_SeriousMintDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_TimidMintDesc,
     gText_Exit,
 };
 
-static const u8 *const sFrontierExchangeCorner_Decor2Descriptions[] =
+static const u8 *const sFrontierExchangeCorner_AbilityDescriptions[] =
 {
-    BattleFrontier_ExchangeServiceCorner_Text_LargeDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_LargeDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_LargeDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_LargeDollDesc,
-    BattleFrontier_ExchangeServiceCorner_Text_LargeDollDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_AbilityCapsuleDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_AbilityPatchDesc,
     gText_Exit
 };
 
@@ -95,5 +161,55 @@ static const u8 *const sFrontierExchangeCorner_HoldItemsDescriptions[] =
     BattleFrontier_ExchangeServiceCorner_Text_KingsRockDesc,
     BattleFrontier_ExchangeServiceCorner_Text_FocusBandDesc,
     BattleFrontier_ExchangeServiceCorner_Text_ScopeLensDesc,
+    gText_Exit
+};
+
+static const u8 *const sFrontierExchangeCorner_HoldItemsDescriptions2[] =
+{
+    BattleFrontier_ExchangeServiceCorner_Text_RazorFang,
+    BattleFrontier_ExchangeServiceCorner_Text_RazorClaw,
+    BattleFrontier_ExchangeServiceCorner_Text_ChoiceSpecs,
+    BattleFrontier_ExchangeServiceCorner_Text_ChoiceScarf,
+    BattleFrontier_ExchangeServiceCorner_Text_MuscleBand,
+    BattleFrontier_ExchangeServiceCorner_Text_LifeOrb,
+    BattleFrontier_ExchangeServiceCorner_Text_PowerHerb,
+    BattleFrontier_ExchangeServiceCorner_Text_WiseGlasses,
+    BattleFrontier_ExchangeServiceCorner_Text_RedCard,
+    BattleFrontier_ExchangeServiceCorner_Text_ToxicOrb,
+    BattleFrontier_ExchangeServiceCorner_Text_FlameOrb,
+    BattleFrontier_ExchangeServiceCorner_Text_FocusSash,
+    BattleFrontier_ExchangeServiceCorner_Text_ZoomLens,
+    BattleFrontier_ExchangeServiceCorner_Text_GripClaw,
+    BattleFrontier_ExchangeServiceCorner_Text_StickyBarb,
+    BattleFrontier_ExchangeServiceCorner_Text_AirBalloon,
+    BattleFrontier_ExchangeServiceCorner_Text_BindingBand,
+    BattleFrontier_ExchangeServiceCorner_Text_EjectButton,
+    BattleFrontier_ExchangeServiceCorner_Text_WeaknessPolicy,
+    BattleFrontier_ExchangeServiceCorner_Text_AssaultVest,
+    BattleFrontier_ExchangeServiceCorner_Text_SafetyGoggles,
+    gText_Exit
+};
+
+static const u8 *const sFrontierExchangeCorner_PowerItemsDescriptions[] =
+{
+    BattleFrontier_ExchangeServiceCorner_Text_PowerAnklet,
+    BattleFrontier_ExchangeServiceCorner_Text_PowerBracer,
+    BattleFrontier_ExchangeServiceCorner_Text_PowerBelt,
+    BattleFrontier_ExchangeServiceCorner_Text_PowerBand,
+    BattleFrontier_ExchangeServiceCorner_Text_PowerWeight,
+    BattleFrontier_ExchangeServiceCorner_Text_PowerLens,
+    gText_Exit
+};
+
+static const u8 *const sFrontierExchangeCorner_CandyDescriptions[] =
+{
+    BattleFrontier_ExchangeServiceCorner_Text_HPCandy,
+    BattleFrontier_ExchangeServiceCorner_Text_ATKCandy,
+    BattleFrontier_ExchangeServiceCorner_Text_DEFCandy,
+    BattleFrontier_ExchangeServiceCorner_Text_SPATKCandy,
+    BattleFrontier_ExchangeServiceCorner_Text_SPDEFCandy,
+    BattleFrontier_ExchangeServiceCorner_Text_SPEEDCandy,
+    BattleFrontier_ExchangeServiceCorner_Text_MAXCandy,
+    BattleFrontier_ExchangeServiceCorner_Text_RESETCandy,
     gText_Exit
 };

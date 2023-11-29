@@ -276,7 +276,7 @@
 	.2byte SPECIAL_\function
 	.endm
 
-	@ Blocks script execution until a command or C code manually unblocks it. Generally used with specific
+	@ Blocks script execution until a command or C code manually unblocks it. Generally used with specific 
 	@ commands and specials. Calling ScriptContext_Enable for instance will allow execution to continue.
 	.macro waitstate
 	.byte 0x27
@@ -469,7 +469,7 @@
 	formatwarp \map, \a, \b, \c
 	.endm
 
-	@ Sets the dynamic warp destination. Warps with a destination map of MAP_DYNAMIC will target this destination.
+	@ Sets the dynamic warp destination. Warps with a destination map of MAP_NONE will target this destination.
 	@ Warp commands can be given either the id of which warp location to go to on the destination map
 	@ or a pair of x/y coordinates to go to directly on the destination map.
 	.macro setdynamicwarp map:req, a, b, c
@@ -732,6 +732,12 @@
 	.elseif \type == TRAINER_BATTLE_HILL
 		.4byte \pointer1 @ text
 		.4byte \pointer2 @ text
+	.elseif \type == TRAINER_BATTLE_NO_WHITEOUT_CONTINUE_SCRIPT
+		.4byte \pointer1 @ text
+		.4byte \pointer2 @ text
+		.4byte \pointer3 @ event script
+	.elseif \type == TRAINER_BATTLE_NO_INTRO_NO_WHITEOUT
+		.4byte \pointer1 @ text
 	.endif
 	.endm
 
@@ -774,6 +780,17 @@
 	@ Starts a trainer battle, skipping intro text. Takes a trainer and loss text
 	.macro trainerbattle_no_intro trainer:req, lose_text:req
 	trainerbattle TRAINER_BATTLE_SINGLE_NO_INTRO_TEXT, \trainer, 0, \lose_text
+	.endm
+
+	@ Starts a single trainer battle. Takes a trainer, intro text, loss text, and an event script which continues after the battle,regardless of the result.
+	@ When used with an event script, you can also pass in an optional flag to disable music
+    .macro trainerbattle_no_whiteout_continue_script trainer:req, intro_text:req, lose_text:req, event_script:req
+    trainerbattle TRAINER_BATTLE_NO_WHITEOUT_CONTINUE_SCRIPT, \trainer, 0, \intro_text, \lose_text, \event_script
+	.endm
+
+	@ Starts a trainer battle, skipping intro text. Takes a trainer and loss text. Does not warp the player to last heal location if they lose. 
+	.macro trainerbattle_no_intro_no_whiteout trainer:req, lose_text:req
+	trainerbattle TRAINER_BATTLE_NO_INTRO_NO_WHITEOUT, \trainer, 0, \lose_text
 	.endm
 
 
@@ -985,7 +1002,7 @@
 	.endm
 
 	@ Gives the player a Pokémon of the specified species and level, holding the specified item. The trailing 0s are unused parameters.
-	@ VAR_RESULT will be set to MON_GIVEN_TO_PARTY, MON_GIVEN_TO_PC, or MON_CANT_GIVE depending on the outcome.
+	@ VAR_RESULT will be set to MON_GIVEN_TO_PARTY, MON_GIVEN_TO_PC, or MON_CANT_GIVE depending on the outcome. 
 	.macro givemon species:req, level:req, item=ITEM_NONE
 	.byte 0x79
 	.2byte \species
@@ -997,7 +1014,7 @@
 	.endm
 
 	@ Gives the player an Egg of the specified species.
-	@ VAR_RESULT will be set to MON_GIVEN_TO_PARTY, MON_GIVEN_TO_PC, or MON_CANT_GIVE depending on the outcome.
+	@ VAR_RESULT will be set to MON_GIVEN_TO_PARTY, MON_GIVEN_TO_PC, or MON_CANT_GIVE depending on the outcome. 
 	.macro giveegg species:req
 	.byte 0x7a
 	.2byte \species
@@ -1415,7 +1432,7 @@
 	.2byte \out
 	.endm
 
-	@ Gives 'count' coins to the player, up to a total of MAX_COINS.
+	@ Gives 'count' coins to the player, up to a total of MAX_COINS. 
 	@ If the player already has MAX_COINS then VAR_RESULT is set to TRUE, otherwise it is set to FALSE.
 	.macro addcoins count:req
 	.byte 0xb4
@@ -1682,11 +1699,9 @@
 
 	@ Equivalent to fadescreen but copies gPlttBufferUnfaded to gPaletteDecompressionBuffer on the fade out
 	@ and the reverse on the fade in, in effect saving gPlttBufferUnfaded to restore it.
-  @ If nowait set, does not wait for the fade to complete
-	.macro fadescreenswapbuffers mode:req, nowait=0
+	.macro fadescreenswapbuffers mode:req
 	.byte 0xdc
 	.byte \mode
-  .byte \nowait
 	.endm
 
 	@ Buffers the specified trainer's class name to the given string var.
@@ -1900,7 +1915,7 @@
 
 	@ Gives 'amount' of the specified 'item' to the player and prints a message with fanfare.
 	@ If the player doesn't have space for all the items then as many are added as possible, the
-	@ message indicates there is no room, and VAR_RESULT is set to FALSE.
+	@ message indicates there is no room, and VAR_RESULT is set to FALSE. 
 	@ Otherwise VAR_RESULT is set to TRUE, and the message indicates they have received the item(s).
 	.macro giveitem item:req, amount=1
 	setorcopyvar VAR_0x8000, \item
@@ -2014,21 +2029,11 @@
 	settotemboost \battler, 0, 0, 0, 0, 0, 0, 2
 	.endm
 
-	@ Attempts to trigger a special evolution method in the overworld.
-	@ There may be other conditions required which are coded for in GetEvolutionTargetSpecies.
-	@ EX: tryspecialevo EVO_WATER_SCROLL, FALSE, FALSE triggers Kubfu's EVO_WATER_SCROLL evolution
-	@ 	  method, cannot be cancelled in the evolution scene, and will only evolve one Kubfu if there
-	@	  are multiple in the player's party.
-	.macro tryspecialevo evoMethod:req, canStopEvo=TRUE, tryMultiple=TRUE
-	setvar VAR_0x8000, \evoMethod
-	setvar VAR_0x8001, \canStopEvo
-	setvar VAR_0x8002, \tryMultiple
-	special TrySpecialOverworldEvo
+	@ Writes the name of the item at index item to the specified buffer. If the specified index is larger than the number of items in the game (0x176), the name of item 0 ("????????") is buffered instead.
+	.macro getitemname out:req, item:req
+	.byte 0x80
+	.byte \out
+	.2byte \item
 	.endm
-	
-	.macro ai_vs_ai_battle trainer1:req, trainer2:req
-	setflag B_FLAG_AI_VS_AI_BATTLE
-	setvar VAR_0x8004, \trainer1
-	callnative CreateTrainerPartyForPlayer
-	trainerbattle_no_intro \trainer2, NULL
-	.endm
+
+

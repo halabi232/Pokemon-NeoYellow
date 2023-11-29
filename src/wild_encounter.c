@@ -17,6 +17,7 @@
 #include "battle_debug.h"
 #include "battle_pike.h"
 #include "battle_pyramid.h"
+#include "config/battle.h"
 #include "constants/abilities.h"
 #include "constants/game_stat.h"
 #include "constants/item.h"
@@ -118,58 +119,58 @@ static u16 GetFeebasFishingSpotId(s16 targetX, s16 targetY, u8 section)
 
 static bool8 CheckFeebas(void)
 {
-    u8 i;
-    u16 feebasSpots[NUM_FEEBAS_SPOTS];
-    s16 x, y;
-    u8 route119Section = 0;
-    u16 spotId;
+    //u8 i;
+    //u16 feebasSpots[NUM_FEEBAS_SPOTS];
+    //s16 x, y;
+    //u8 route119Section = 0;
+    //u16 spotId;
 
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE119)
-     && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE119))
-    {
-        GetXYCoordsOneStepInFrontOfPlayer(&x, &y);
-        x -= MAP_OFFSET;
-        y -= MAP_OFFSET;
+    //if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE119)
+    // && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE119))
+    //{
+    //    GetXYCoordsOneStepInFrontOfPlayer(&x, &y);
+    //    x -= MAP_OFFSET;
+    //    y -= MAP_OFFSET;
 
-        // Get which third of the map the player is in
-        if (y >= sRoute119WaterTileData[3 * 0 + 0] && y <= sRoute119WaterTileData[3 * 0 + 1])
-            route119Section = 0;
-        if (y >= sRoute119WaterTileData[3 * 1 + 0] && y <= sRoute119WaterTileData[3 * 1 + 1])
-            route119Section = 1;
-        if (y >= sRoute119WaterTileData[3 * 2 + 0] && y <= sRoute119WaterTileData[3 * 2 + 1])
-            route119Section = 2;
+    //    // Get which third of the map the player is in
+    //    if (y >= sRoute119WaterTileData[3 * 0 + 0] && y <= sRoute119WaterTileData[3 * 0 + 1])
+    //        route119Section = 0;
+    //    if (y >= sRoute119WaterTileData[3 * 1 + 0] && y <= sRoute119WaterTileData[3 * 1 + 1])
+    //        route119Section = 1;
+    //    if (y >= sRoute119WaterTileData[3 * 2 + 0] && y <= sRoute119WaterTileData[3 * 2 + 1])
+    //        route119Section = 2;
 
-        // 50% chance of encountering Feebas (assuming this is a Feebas spot)
-        if (Random() % 100 > 49)
-            return FALSE;
+    //    // 50% chance of encountering Feebas (assuming this is a Feebas spot)
+    //    if (Random() % 100 > 49)
+    //        return FALSE;
 
-        FeebasSeedRng(gSaveBlock1Ptr->dewfordTrends[0].rand);
+    //    FeebasSeedRng(gSaveBlock1Ptr->dewfordTrends[0].rand);
 
-        // Assign each Feebas spot to a random fishing spot.
-        // Randomness is fixed depending on the seed above.
-        for (i = 0; i != NUM_FEEBAS_SPOTS;)
-        {
-            feebasSpots[i] = FeebasRandom() % NUM_FISHING_SPOTS;
-            if (feebasSpots[i] == 0)
-                feebasSpots[i] = NUM_FISHING_SPOTS;
+    //    // Assign each Feebas spot to a random fishing spot.
+    //    // Randomness is fixed depending on the seed above.
+    //    for (i = 0; i != NUM_FEEBAS_SPOTS;)
+    //    {
+    //        feebasSpots[i] = FeebasRandom() % NUM_FISHING_SPOTS;
+    //        if (feebasSpots[i] == 0)
+    //            feebasSpots[i] = NUM_FISHING_SPOTS;
 
-            // < 1 below is a pointless check, it will never be TRUE.
-            // >= 4 to skip fishing spots 1-3, because these are inaccessible
-            // spots at the top of the map, at (9,7), (7,13), and (15,16).
-            // The first accessible fishing spot is spot 4 at (18,18).
-            if (feebasSpots[i] < 1 || feebasSpots[i] >= 4)
-                i++;
-        }
+    //        // < 1 below is a pointless check, it will never be TRUE.
+    //        // >= 4 to skip fishing spots 1-3, because these are inaccessible
+    //        // spots at the top of the map, at (9,7), (7,13), and (15,16).
+    //        // The first accessible fishing spot is spot 4 at (18,18).
+    //        if (feebasSpots[i] < 1 || feebasSpots[i] >= 4)
+    //            i++;
+    //    }
 
-        // Check which fishing spot the player is at, and see if
-        // it matches any of the Feebas spots.
-        spotId = GetFeebasFishingSpotId(x, y, route119Section);
-        for (i = 0; i < NUM_FEEBAS_SPOTS; i++)
-        {
-            if (spotId == feebasSpots[i])
-                return TRUE;
-        }
-    }
+    //    // Check which fishing spot the player is at, and see if
+    //    // it matches any of the Feebas spots.
+    //    spotId = GetFeebasFishingSpotId(x, y, route119Section);
+    //    for (i = 0; i < NUM_FEEBAS_SPOTS; i++)
+    //    {
+    //        if (spotId == feebasSpots[i])
+    //            return TRUE;
+    //    }
+    //}
     return FALSE;
 }
 
@@ -366,15 +367,144 @@ u16 GetCurrentMapWildMonHeaderId(void)
         if (gWildMonHeaders[i].mapGroup == gSaveBlock1Ptr->location.mapGroup &&
             gWildMonHeaders[i].mapNum == gSaveBlock1Ptr->location.mapNum)
         {
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ALTERING_CAVE) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ALTERING_CAVE))
-            {
-                u16 alteringCaveId = VarGet(VAR_ALTERING_CAVE_WILD_SET);
-                if (alteringCaveId >= NUM_ALTERING_CAVE_TABLES)
-                    alteringCaveId = 0;
+            //Routes
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE1) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE1))
+                i += VarGet(VAR_DAYNIGHT);
 
-                i += alteringCaveId;
-            }
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE2) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE2))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE3) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE3))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE4) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE4))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE5) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE5))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE6) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE6))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE7) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE7))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE8) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE8))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE9) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE9))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE10) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE10))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE11) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE11))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE12) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE12))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE13) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE13))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE14) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE14))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE15) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE15))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE16) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE16))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE17) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE17))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE18) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE18))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE19) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE19))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE20) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE20))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE21_NORTH) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE21_NORTH))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE21_SOUTH) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE21_SOUTH))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE22) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE22))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE23) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE23))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE24) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE24))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE25) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE25))
+                i += VarGet(VAR_DAYNIGHT);
+
+            //Dungeons
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(VIRIDIAN_FOREST) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(VIRIDIAN_FOREST))
+                i += VarGet(VAR_DAYNIGHT);
+
+            //Towns
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(PALLET_TOWN) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(PALLET_TOWN))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(VIRIDIAN_CITY) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(VIRIDIAN_CITY))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(VERMILION_CITY) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(VERMILION_CITY))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SSANNE_EXTERIOR) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SSANNE_EXTERIOR))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(CELADON_CITY) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(CELADON_CITY))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(FUCHSIA_CITY) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(FUCHSIA_CITY))
+                i += VarGet(VAR_DAYNIGHT);
+
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(CINNABAR_ISLAND) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(CINNABAR_ISLAND))
+                i += VarGet(VAR_DAYNIGHT);
 
             return i;
         }
@@ -621,13 +751,13 @@ static bool8 AllowWildCheckOnNewMetatile(void)
 
 static bool8 AreLegendariesInSootopolisPreventingEncounters(void)
 {
-    if (gSaveBlock1Ptr->location.mapGroup != MAP_GROUP(SOOTOPOLIS_CITY)
-     || gSaveBlock1Ptr->location.mapNum != MAP_NUM(SOOTOPOLIS_CITY))
-    {
-        return FALSE;
-    }
+    //if (gSaveBlock1Ptr->location.mapGroup != MAP_GROUP(SOOTOPOLIS_CITY)
+    // || gSaveBlock1Ptr->location.mapNum != MAP_NUM(SOOTOPOLIS_CITY))
+    //{
+    //    return FALSE;
+    //}
 
-    return FlagGet(FLAG_LEGENDARIES_IN_SOOTOPOLIS);
+    return FALSE; //Flag removed, Sootopolis inaccessible in PokeClassic
 }
 
 bool8 StandardWildEncounter(u16 curMetatileBehavior, u16 prevMetatileBehavior)
@@ -894,7 +1024,7 @@ void FishingWildEncounter(u8 rod)
     {
         species = GenerateFishingWildMon(gWildMonHeaders[GetCurrentMapWildMonHeaderId()].fishingMonsInfo, rod);
     }
-    IncrementGameStat(GAME_STAT_FISHING_ENCOUNTERS);
+    IncrementGameStat(GAME_STAT_FISHING_CAPTURES);
     SetPokemonAnglerSpecies(species);
     gIsFishingEncounter = TRUE;
     BattleSetup_StartWildBattle();

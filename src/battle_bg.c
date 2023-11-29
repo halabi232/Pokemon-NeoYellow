@@ -760,23 +760,23 @@ void DrawMainBattleBackground(void)
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
     {
-        switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
+switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
         {
         case SPECIES_GROUDON:
-            LZDecompressVram(gBattleTerrainTiles_Cave, (void*)(BG_CHAR_ADDR(2)));
-            LZDecompressVram(gBattleTerrainTilemap_Cave, (void*)(BG_SCREEN_ADDR(26)));
-            LoadCompressedPalette(gBattleTerrainPalette_Groudon, 0x20, 0x60);
-            break;
+        LZDecompressVram(gBattleTerrainTiles_Cave, (void*)(BG_CHAR_ADDR(2)));
+        LZDecompressVram(gBattleTerrainTilemap_Cave, (void*)(BG_SCREEN_ADDR(26)));
+        LoadCompressedPalette(gBattleTerrainPalette_Groudon, 0x20, 0x60);
+    break;
         case SPECIES_KYOGRE:
-            LZDecompressVram(gBattleTerrainTiles_Water, (void*)(BG_CHAR_ADDR(2)));
-            LZDecompressVram(gBattleTerrainTilemap_Water, (void*)(BG_SCREEN_ADDR(26)));
-            LoadCompressedPalette(gBattleTerrainPalette_Kyogre, 0x20, 0x60);
-            break;
+        LZDecompressVram(gBattleTerrainTiles_Water, (void*)(BG_CHAR_ADDR(2)));
+        LZDecompressVram(gBattleTerrainTilemap_Water, (void*)(BG_SCREEN_ADDR(26)));
+        LoadCompressedPalette(gBattleTerrainPalette_Kyogre, 0x20, 0x60);
+    break;
         case SPECIES_RAYQUAZA:
-            LZDecompressVram(gBattleTerrainTiles_Rayquaza, (void*)(BG_CHAR_ADDR(2)));
-            LZDecompressVram(gBattleTerrainTilemap_Rayquaza, (void*)(BG_SCREEN_ADDR(26)));
-            LoadCompressedPalette(gBattleTerrainPalette_Rayquaza, 0x20, 0x60);
-            break;
+        LZDecompressVram(gBattleTerrainTiles_Rayquaza, (void*)(BG_CHAR_ADDR(2)));
+        LZDecompressVram(gBattleTerrainTilemap_Rayquaza, (void*)(BG_SCREEN_ADDR(26)));
+        LoadCompressedPalette(gBattleTerrainPalette_Rayquaza, 0x20, 0x60);
+break;
         }
     }
     else
@@ -784,7 +784,15 @@ void DrawMainBattleBackground(void)
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
             u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
-            if (trainerClass == TRAINER_CLASS_LEADER)
+            if (trainerClass == TRAINER_CLASS_LEADER  \
+            || trainerClass == TRAINER_CLASS_BROCK    \
+            || trainerClass == TRAINER_CLASS_MISTY    \
+            || trainerClass == TRAINER_CLASS_LTSURGE  \
+            || trainerClass == TRAINER_CLASS_ERIKA    \
+            || trainerClass == TRAINER_CLASS_KOGA     \
+            || trainerClass == TRAINER_CLASS_SABRINA  \
+            || trainerClass == TRAINER_CLASS_BLAINE   \
+            || trainerClass == TRAINER_CLASS_GIOVANNI )
             {
                 LZDecompressVram(gBattleTerrainTiles_Building, (void *)(BG_CHAR_ADDR(2)));
                 LZDecompressVram(gBattleTerrainTilemap_Building, (void *)(BG_SCREEN_ADDR(26)));
@@ -863,7 +871,7 @@ void LoadBattleTextboxAndBackground(void)
         DrawTerrainTypeBattleBackground();
     else
         DrawMainBattleBackground();
-}
+    }
 
 static void DrawLinkBattleParticipantPokeballs(u8 taskId, u8 multiplayerId, u8 bgId, u8 destX, u8 destY)
 {
@@ -1160,20 +1168,20 @@ void DrawBattleEntryBackground(void)
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
     {
-        switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
+switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
         {
         case SPECIES_GROUDON:
-            LZDecompressVram(gBattleTerrainAnimTiles_Cave, (void*)(BG_CHAR_ADDR(1)));
-            LZDecompressVram(gBattleTerrainAnimTilemap_Cave, (void*)(BG_SCREEN_ADDR(28)));
-            break;
+        LZDecompressVram(gBattleTerrainAnimTiles_Cave, (void*)(BG_CHAR_ADDR(1)));
+        LZDecompressVram(gBattleTerrainAnimTilemap_Cave, (void*)(BG_SCREEN_ADDR(28)));
+    break;
         case SPECIES_KYOGRE:
-            LZDecompressVram(gBattleTerrainAnimTiles_Underwater, (void*)(BG_CHAR_ADDR(1)));
-            LZDecompressVram(gBattleTerrainAnimTilemap_Underwater, (void*)(BG_SCREEN_ADDR(28)));
-            break;
+        LZDecompressVram(gBattleTerrainAnimTiles_Underwater, (void*)(BG_CHAR_ADDR(1)));
+        LZDecompressVram(gBattleTerrainAnimTilemap_Underwater, (void*)(BG_SCREEN_ADDR(28)));
+    break;
         case SPECIES_RAYQUAZA:
-            LZDecompressVram(gBattleTerrainAnimTiles_Rayquaza, (void*)(BG_CHAR_ADDR(1)));
-            LZDecompressVram(gBattleTerrainAnimTilemap_Rayquaza, (void*)(BG_SCREEN_ADDR(28)));
-            break;
+        LZDecompressVram(gBattleTerrainAnimTiles_Rayquaza, (void*)(BG_CHAR_ADDR(1)));
+        LZDecompressVram(gBattleTerrainAnimTilemap_Rayquaza, (void*)(BG_SCREEN_ADDR(28)));
+break;
         }
     }
     else
@@ -1181,7 +1189,15 @@ void DrawBattleEntryBackground(void)
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
             u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
-            if (trainerClass == TRAINER_CLASS_LEADER)
+            if (trainerClass == TRAINER_CLASS_LEADER  \
+            || trainerClass == TRAINER_CLASS_BROCK    \
+            || trainerClass == TRAINER_CLASS_MISTY    \
+            || trainerClass == TRAINER_CLASS_LTSURGE  \
+            || trainerClass == TRAINER_CLASS_ERIKA    \
+            || trainerClass == TRAINER_CLASS_KOGA     \
+            || trainerClass == TRAINER_CLASS_SABRINA  \
+            || trainerClass == TRAINER_CLASS_BLAINE   \
+            || trainerClass == TRAINER_CLASS_GIOVANNI )
             {
                 LZDecompressVram(gBattleTerrainAnimTiles_Building, (void *)(BG_CHAR_ADDR(1)));
                 LZDecompressVram(gBattleTerrainAnimTilemap_Building, (void *)(BG_SCREEN_ADDR(28)));
@@ -1231,11 +1247,11 @@ bool8 LoadChosenBattleElement(u8 caseId)
         }
         else if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
         {
-            switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
+switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
             {
             case SPECIES_GROUDON:
-                LZDecompressVram(gBattleTerrainTiles_Cave, (void*)(BG_CHAR_ADDR(2)));
-                break;
+            LZDecompressVram(gBattleTerrainTiles_Cave, (void*)(BG_CHAR_ADDR(2)));
+break;
             case SPECIES_KYOGRE:
                 LZDecompressVram(gBattleTerrainTilemap_Water, (void*)(BG_SCREEN_ADDR(2)));
                 break;
@@ -1246,7 +1262,15 @@ bool8 LoadChosenBattleElement(u8 caseId)
             if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
             {
                 u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
-                if (trainerClass == TRAINER_CLASS_LEADER)
+                if (trainerClass == TRAINER_CLASS_LEADER  \
+                || trainerClass == TRAINER_CLASS_BROCK    \
+                || trainerClass == TRAINER_CLASS_MISTY    \
+                || trainerClass == TRAINER_CLASS_LTSURGE  \
+                || trainerClass == TRAINER_CLASS_ERIKA    \
+                || trainerClass == TRAINER_CLASS_KOGA     \
+                || trainerClass == TRAINER_CLASS_SABRINA  \
+                || trainerClass == TRAINER_CLASS_BLAINE   \
+                || trainerClass == TRAINER_CLASS_GIOVANNI )
                 {
                     LZDecompressVram(gBattleTerrainTiles_Building, (void *)(BG_CHAR_ADDR(2)));
                     break;
@@ -1308,7 +1332,15 @@ bool8 LoadChosenBattleElement(u8 caseId)
             if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
             {
                 u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
-                if (trainerClass == TRAINER_CLASS_LEADER)
+                if (trainerClass == TRAINER_CLASS_LEADER  \
+                || trainerClass == TRAINER_CLASS_BROCK    \
+                || trainerClass == TRAINER_CLASS_MISTY    \
+                || trainerClass == TRAINER_CLASS_LTSURGE  \
+                || trainerClass == TRAINER_CLASS_ERIKA    \
+                || trainerClass == TRAINER_CLASS_KOGA     \
+                || trainerClass == TRAINER_CLASS_SABRINA  \
+                || trainerClass == TRAINER_CLASS_BLAINE   \
+                || trainerClass == TRAINER_CLASS_GIOVANNI )
                 {
                     LZDecompressVram(gBattleTerrainTilemap_Building, (void *)(BG_SCREEN_ADDR(26)));
                     break;
@@ -1370,7 +1402,15 @@ bool8 LoadChosenBattleElement(u8 caseId)
             if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
             {
                 u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
-                if (trainerClass == TRAINER_CLASS_LEADER)
+                if (trainerClass == TRAINER_CLASS_LEADER  \
+                || trainerClass == TRAINER_CLASS_BROCK    \
+                || trainerClass == TRAINER_CLASS_MISTY    \
+                || trainerClass == TRAINER_CLASS_LTSURGE  \
+                || trainerClass == TRAINER_CLASS_ERIKA    \
+                || trainerClass == TRAINER_CLASS_KOGA     \
+                || trainerClass == TRAINER_CLASS_SABRINA  \
+                || trainerClass == TRAINER_CLASS_BLAINE   \
+                || trainerClass == TRAINER_CLASS_GIOVANNI )
                 {
                     LoadCompressedPalette(gBattleTerrainPalette_BuildingLeader, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
                     break;

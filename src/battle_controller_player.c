@@ -1881,7 +1881,7 @@ static void PlayerHandleDrawTrainerPic(u32 battler)
     // Use front pic table for any tag battles unless your partner is Steven or a custom partner.
     if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && gPartnerTrainerId != TRAINER_STEVEN_PARTNER && gPartnerTrainerId < TRAINER_CUSTOM_PARTNER)
     {
-        trainerPicId = PlayerGenderToFrontTrainerPicId(gSaveBlock2Ptr->playerGender);
+        trainerPicId = GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(gSaveBlock2Ptr->costumeId, gSaveBlock2Ptr->playerGender);
         isFrontPic = TRUE;
     }
     else // Use back pic in all the other usual circumstances.

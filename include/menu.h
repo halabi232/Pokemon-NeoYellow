@@ -83,6 +83,7 @@ void ClearScheduledBgCopiesToVram(void);
 void AddTextPrinterParameterized4(u8 windowId, u8 fontId, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, const u8 *color, s8 speed, const u8 *str);
 void AddTextPrinterParameterized4Signed(u8 windowId, u8 fontId, u8 x, s8 y, u8 letterSpacing, u8 lineSpacing, const u8 *color, s8 speed, const u8 *str);
 void DrawDialogFrameWithCustomTileAndPalette(u8 windowId, bool8 copyToVram, u16 tileNum, u8 paletteNum);
+//void DrawDialogFrameWithCustomTileAndPalette(u8 windowId, bool8 copyToVram, u16 a2, u8 a3);
 void PrintMenuActionTextsInUpperLeftCorner(u8 windowId, u8 optionsNo, const struct MenuAction *actions, const u8 *actionIds);
 void ClearDialogWindowAndFrameToTransparent(u8 windowId, bool8 copyToVram);
 void *malloc_and_decompress(const void *src, u32 *sizeOut);
@@ -125,5 +126,7 @@ void AddTextPrinterWithCustomSpeedForMessage(bool8 allowSkippingDelayWithButtonP
 void EraseYesNoWindow(void);
 void PrintMenuActionTextsAtPos(u8 windowId, u8 fontId, u8 left, u8 top, u8 lineHeight, u8 itemCount, const struct MenuAction *strs);
 void Menu_LoadStdPal(void);
+void StartBlendTask(u8 eva_start, u8 evb_start, u8 eva_end, u8 evb_end, u8 ev_step, u8 priority);
+bool8 IsBlendTaskActive(void);
 
 #endif // GUARD_MENU_H

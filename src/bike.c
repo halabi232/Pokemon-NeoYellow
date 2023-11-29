@@ -982,8 +982,8 @@ void GetOnOffBike(u8 transitionFlags)
     else
     {
         SetPlayerAvatarTransitionFlags(transitionFlags);
-        Overworld_SetSavedMusic(MUS_CYCLING);
-        Overworld_ChangeMusicTo(MUS_CYCLING);
+        Overworld_SetSavedMusic(MUS_RG_CYCLING);
+        Overworld_ChangeMusicTo(MUS_RG_CYCLING);
     }
 }
 
@@ -997,6 +997,7 @@ void BikeClearState(int newDirHistory, int newAbStartHistory)
     gPlayerAvatar.bikeSpeed = PLAYER_SPEED_STANDING;
     gPlayerAvatar.directionHistory = newDirHistory;
     gPlayerAvatar.abStartSelectHistory = newAbStartHistory;
+    gPlayerAvatar.lastSpinTile = 0;
 
     for (i = 0; i < ARRAY_COUNT(gPlayerAvatar.dirTimerHistory); i++)
         gPlayerAvatar.dirTimerHistory[i] = 0;

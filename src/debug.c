@@ -1044,22 +1044,18 @@ static u8 Debug_CheckToggleFlags(u8 id)
             result = FlagGet(FLAG_SYS_B_DASH);
             break;
         case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_LOCATIONS:
-            result = FlagGet(FLAG_VISITED_LITTLEROOT_TOWN) &&
-                FlagGet(FLAG_VISITED_OLDALE_TOWN) &&
-                FlagGet(FLAG_VISITED_DEWFORD_TOWN) &&
-                FlagGet(FLAG_VISITED_LAVARIDGE_TOWN) &&
-                FlagGet(FLAG_VISITED_FALLARBOR_TOWN) &&
-                FlagGet(FLAG_VISITED_VERDANTURF_TOWN) &&
-                FlagGet(FLAG_VISITED_PACIFIDLOG_TOWN) &&
-                FlagGet(FLAG_VISITED_PETALBURG_CITY) &&
-                FlagGet(FLAG_VISITED_SLATEPORT_CITY) &&
-                FlagGet(FLAG_VISITED_MAUVILLE_CITY) &&
-                FlagGet(FLAG_VISITED_RUSTBORO_CITY) &&
-                FlagGet(FLAG_VISITED_FORTREE_CITY) &&
-                FlagGet(FLAG_VISITED_LILYCOVE_CITY) &&
-                FlagGet(FLAG_VISITED_MOSSDEEP_CITY) &&
-                FlagGet(FLAG_VISITED_SOOTOPOLIS_CITY) &&
-                FlagGet(FLAG_VISITED_EVER_GRANDE_CITY) &&
+            result = FlagGet(FLAG_VISITED_PALLET_TOWN) &&
+                FlagGet(FLAG_VISITED_VIRIDIAN_CITY) &&
+                FlagGet(FLAG_VISITED_PEWTER_CITY) &&
+                FlagGet(FLAG_VISITED_CERULEAN_CITY) &&
+                FlagGet(FLAG_VISITED_VERMILION_CITY) &&
+                FlagGet(FLAG_VISITED_LAVENDER_TOWN) &&
+                FlagGet(FLAG_VISITED_CELADON_CITY) &&
+                FlagGet(FLAG_VISITED_SAFFRON_CITY) &&
+                FlagGet(FLAG_VISITED_FUCHSIA_CITY) &&
+                FlagGet(FLAG_VISITED_CINNABAR_ISLAND) &&
+                FlagGet(FLAG_VISITED_INDIGO_PLATEAU ) &&
+                FlagGet(FLAG_VISITED_BATTLE_FRONTIER) &&
                 FlagGet(FLAG_LANDMARK_POKEMON_LEAGUE) &&
                 FlagGet(FLAG_LANDMARK_BATTLE_FRONTIER);
             break;
@@ -1577,22 +1573,18 @@ static void DebugAction_Util_HealParty(u8 taskId)
 }
 static void DebugAction_Util_Fly(u8 taskId)
 {
-    FlagSet(FLAG_VISITED_LITTLEROOT_TOWN);
-    FlagSet(FLAG_VISITED_OLDALE_TOWN);
-    FlagSet(FLAG_VISITED_DEWFORD_TOWN);
-    FlagSet(FLAG_VISITED_LAVARIDGE_TOWN);
-    FlagSet(FLAG_VISITED_FALLARBOR_TOWN);
-    FlagSet(FLAG_VISITED_VERDANTURF_TOWN);
-    FlagSet(FLAG_VISITED_PACIFIDLOG_TOWN);
-    FlagSet(FLAG_VISITED_PETALBURG_CITY);
-    FlagSet(FLAG_VISITED_SLATEPORT_CITY);
-    FlagSet(FLAG_VISITED_MAUVILLE_CITY);
-    FlagSet(FLAG_VISITED_RUSTBORO_CITY);
-    FlagSet(FLAG_VISITED_FORTREE_CITY);
-    FlagSet(FLAG_VISITED_LILYCOVE_CITY);
-    FlagSet(FLAG_VISITED_MOSSDEEP_CITY);
-    FlagSet(FLAG_VISITED_SOOTOPOLIS_CITY);
-    FlagSet(FLAG_VISITED_EVER_GRANDE_CITY);
+    FlagSet(FLAG_VISITED_PALLET_TOWN);
+    FlagSet(FLAG_VISITED_VIRIDIAN_CITY);
+    FlagSet(FLAG_VISITED_PEWTER_CITY);
+    FlagSet(FLAG_VISITED_CERULEAN_CITY);
+    FlagSet(FLAG_VISITED_VERMILION_CITY);
+    FlagSet(FLAG_VISITED_LAVENDER_TOWN);
+    FlagSet(FLAG_VISITED_CELADON_CITY);
+    FlagSet(FLAG_VISITED_SAFFRON_CITY);
+    FlagSet(FLAG_VISITED_FUCHSIA_CITY);
+    FlagSet(FLAG_VISITED_CINNABAR_ISLAND);
+    FlagSet(FLAG_VISITED_INDIGO_PLATEAU );
+    FlagSet(FLAG_VISITED_BATTLE_FRONTIER);
     FlagSet(FLAG_LANDMARK_POKEMON_LEAGUE);
     FlagSet(FLAG_LANDMARK_BATTLE_FRONTIER);
     Debug_DestroyMenu_Full(taskId);
@@ -2430,22 +2422,22 @@ static void DebugAction_FlagsVars_ToggleFlyFlags(u8 taskId)
     {
         PlaySE(SE_PC_OFF);
 
-        FlagClear(FLAG_VISITED_LITTLEROOT_TOWN);
-        FlagClear(FLAG_VISITED_OLDALE_TOWN);
-        FlagClear(FLAG_VISITED_DEWFORD_TOWN);
-        FlagClear(FLAG_VISITED_LAVARIDGE_TOWN);
-        FlagClear(FLAG_VISITED_FALLARBOR_TOWN);
-        FlagClear(FLAG_VISITED_VERDANTURF_TOWN);
-        FlagClear(FLAG_VISITED_PACIFIDLOG_TOWN);
-        FlagClear(FLAG_VISITED_PETALBURG_CITY);
-        FlagClear(FLAG_VISITED_SLATEPORT_CITY);
-        FlagClear(FLAG_VISITED_MAUVILLE_CITY);
-        FlagClear(FLAG_VISITED_RUSTBORO_CITY);
-        FlagClear(FLAG_VISITED_FORTREE_CITY);
-        FlagClear(FLAG_VISITED_LILYCOVE_CITY);
-        FlagClear(FLAG_VISITED_MOSSDEEP_CITY);
-        FlagClear(FLAG_VISITED_SOOTOPOLIS_CITY);
-        FlagClear(FLAG_VISITED_EVER_GRANDE_CITY);
+        //FlagClear(FLAG_VISITED_LITTLEROOT_TOWN);
+        //FlagClear(FLAG_VISITED_OLDALE_TOWN);
+        //FlagClear(FLAG_VISITED_DEWFORD_TOWN);
+        //FlagClear(FLAG_VISITED_LAVARIDGE_TOWN);
+        //FlagClear(FLAG_VISITED_FALLARBOR_TOWN);
+        //FlagClear(FLAG_VISITED_VERDANTURF_TOWN);
+        //FlagClear(FLAG_VISITED_PACIFIDLOG_TOWN);
+        //FlagClear(FLAG_VISITED_PETALBURG_CITY);
+        //FlagClear(FLAG_VISITED_SLATEPORT_CITY);
+        //FlagClear(FLAG_VISITED_MAUVILLE_CITY);
+        //FlagClear(FLAG_VISITED_RUSTBORO_CITY);
+        //FlagClear(FLAG_VISITED_FORTREE_CITY);
+        //FlagClear(FLAG_VISITED_LILYCOVE_CITY);
+        //FlagClear(FLAG_VISITED_MOSSDEEP_CITY);
+        //FlagClear(FLAG_VISITED_SOOTOPOLIS_CITY);
+        //FlagClear(FLAG_VISITED_EVER_GRANDE_CITY);
         FlagClear(FLAG_LANDMARK_POKEMON_LEAGUE);
         FlagClear(FLAG_LANDMARK_BATTLE_FRONTIER);
     }
@@ -2453,22 +2445,22 @@ static void DebugAction_FlagsVars_ToggleFlyFlags(u8 taskId)
     {
         PlaySE(SE_PC_LOGIN);
 
-        FlagSet(FLAG_VISITED_LITTLEROOT_TOWN);
-        FlagSet(FLAG_VISITED_OLDALE_TOWN);
-        FlagSet(FLAG_VISITED_DEWFORD_TOWN);
-        FlagSet(FLAG_VISITED_LAVARIDGE_TOWN);
-        FlagSet(FLAG_VISITED_FALLARBOR_TOWN);
-        FlagSet(FLAG_VISITED_VERDANTURF_TOWN);
-        FlagSet(FLAG_VISITED_PACIFIDLOG_TOWN);
-        FlagSet(FLAG_VISITED_PETALBURG_CITY);
-        FlagSet(FLAG_VISITED_SLATEPORT_CITY);
-        FlagSet(FLAG_VISITED_MAUVILLE_CITY);
-        FlagSet(FLAG_VISITED_RUSTBORO_CITY);
-        FlagSet(FLAG_VISITED_FORTREE_CITY);
-        FlagSet(FLAG_VISITED_LILYCOVE_CITY);
-        FlagSet(FLAG_VISITED_MOSSDEEP_CITY);
-        FlagSet(FLAG_VISITED_SOOTOPOLIS_CITY);
-        FlagSet(FLAG_VISITED_EVER_GRANDE_CITY);
+        //FlagSet(FLAG_VISITED_LITTLEROOT_TOWN);
+        //FlagSet(FLAG_VISITED_OLDALE_TOWN);
+        //FlagSet(FLAG_VISITED_DEWFORD_TOWN);
+        //FlagSet(FLAG_VISITED_LAVARIDGE_TOWN);
+        //FlagSet(FLAG_VISITED_FALLARBOR_TOWN);
+        //FlagSet(FLAG_VISITED_VERDANTURF_TOWN);
+        //FlagSet(FLAG_VISITED_PACIFIDLOG_TOWN);
+        //FlagSet(FLAG_VISITED_PETALBURG_CITY);
+        //FlagSet(FLAG_VISITED_SLATEPORT_CITY);
+        //FlagSet(FLAG_VISITED_MAUVILLE_CITY);
+        //FlagSet(FLAG_VISITED_RUSTBORO_CITY);
+        //FlagSet(FLAG_VISITED_FORTREE_CITY);
+        //FlagSet(FLAG_VISITED_LILYCOVE_CITY);
+        //FlagSet(FLAG_VISITED_MOSSDEEP_CITY);
+        //FlagSet(FLAG_VISITED_SOOTOPOLIS_CITY);
+        //FlagSet(FLAG_VISITED_EVER_GRANDE_CITY);
         FlagSet(FLAG_LANDMARK_POKEMON_LEAGUE);
         FlagSet(FLAG_LANDMARK_BATTLE_FRONTIER);
     }

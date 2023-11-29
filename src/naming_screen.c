@@ -29,6 +29,8 @@
 #include "main.h"
 #include "constants/event_objects.h"
 #include "constants/rgb.h"
+#include "random.h"
+
 
 enum {
     INPUT_NONE,
@@ -181,11 +183,21 @@ struct NamingScreenData
 };
 
 EWRAM_DATA static struct NamingScreenData *sNamingScreen = NULL;
+extern u16 gKeyRepeatStartDelay;
 
-static const u8 sPCIconOff_Gfx[] = INCBIN_U8("graphics/naming_screen/pc_icon_off.4bpp");
-static const u8 sPCIconOn_Gfx[] = INCBIN_U8("graphics/naming_screen/pc_icon_on.4bpp");
+// extern text
+extern const u8 gText_MoveOkBack[];
+extern const u8 gText_YourName[];
+extern const u8 gText_BoxName[];
+extern const u8 gText_PkmnsNickname[];
+extern const u8 gText_TellHimTheWords[];
+
+
+// start of .rodata
+static const u8 sPCIconOff_Gfx[] = INCBIN_U8("graphics/naming_screen/pc_icon/off.4bpp");
+static const u8 sPCIconOn_Gfx[] = INCBIN_U8("graphics/naming_screen/pc_icon/on.4bpp");
 static const u16 sKeyboard_Pal[] = INCBIN_U16("graphics/naming_screen/keyboard.gbapal");
-static const u16 sRival_Pal[] = INCBIN_U16("graphics/naming_screen/rival.gbapal"); // Unused, leftover from FRLG rival
+static const u16 sUnused_Pal[] = INCBIN_U16("graphics/naming_screen/unused.gbapal");
 
 static const u8 *const sTransferredToPCMessages[] =
 {
@@ -303,12 +315,25 @@ static const u8 sPageColumnCounts[KBPAGE_COUNT] = {
     [KEYBOARD_LETTERS_UPPER] = KBCOL_COUNT,
     [KEYBOARD_SYMBOLS]       = 6
 };
-static const u8 sPageColumnXPos[KBPAGE_COUNT][KBCOL_COUNT] = {
-    [KEYBOARD_LETTERS_LOWER] = {0, 12, 24, 56, 68, 80, 92, 123},
-    [KEYBOARD_LETTERS_UPPER] = {0, 12, 24, 56, 68, 80, 92, 123},
-    [KEYBOARD_SYMBOLS]       = {0, 22, 44, 66, 88, 110}
+static const u8 sPageColumnXPos[KBPAGE_COUNT * KBCOL_COUNT] = {
+    0, 12, 24, 56, 68, 80, 92, 123, // KEYBOARD_LETTERS_LOWER
+    0, 12, 24, 56, 68, 80, 92, 123, // KEYBOARD_LETTERS_UPPER
+    0, 22, 44, 66, 88, 110          // KEYBOARD_SYMBOLS
 };
 
+static const u8 *const gRivalPresetNames[] = {
+    gText_RivalNameGary,
+    gText_RivalNameBlue,
+    gText_RivalNameJohn,
+    gText_RivalNameKaz,
+    gText_RivalNameToru,
+    gText_RivalNameKene,
+    gText_RivalNameGeki,
+    gText_RivalNameSatoru,
+    gText_RivalNameKen
+};
+
+// forward declarations
 static const struct NamingScreenTemplate *const sNamingScreenTemplates[];
 static const struct SubspriteTable sSubspriteTable_PageSwapFrame[];
 static const struct SubspriteTable sSubspriteTable_PageSwapText[];
@@ -724,13 +749,13 @@ static void DisplaySentToPCMessage(void)
         stringToDisplay = 2;
     }
 
-    if (FlagGet(FLAG_SYS_PC_LANETTE))
+    if (FlagGet(FLAG_SYS_PC_BILL))
         stringToDisplay++;
 
     StringExpandPlaceholders(gStringVar4, sTransferredToPCMessages[stringToDisplay]);
     DrawDialogueFrame(0, FALSE);
     gTextFlags.canABSpeedUpPrint = TRUE;
-    AddTextPrinterParameterized2(0, FONT_NORMAL, gStringVar4, GetPlayerTextSpeedDelay(), 0, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
+    AddTextPrinterParameterized2(0, FONT_NORMAL, gStringVar4, GetPlayerTextSpeedDelay(), 0, 2, 1, 3);
     CopyWindowToVram(0, COPYWIN_FULL);
 }
 
@@ -1132,7 +1157,7 @@ static void SetCursorPos(s16 x, s16 y)
     struct Sprite *cursorSprite = &gSprites[sNamingScreen->cursorSpriteId];
 
     if (x < sPageColumnCounts[CurrentPageToKeyboardId()])
-        cursorSprite->x = sPageColumnXPos[CurrentPageToKeyboardId()][x] + 38;
+        cursorSprite->x = sPageColumnXPos[x + CurrentPageToKeyboardId() * KBCOL_COUNT] + 38;
     else
         cursorSprite->x = 0;
 
@@ -1373,6 +1398,7 @@ static void NamingScreen_CreatePlayerIcon(void);
 static void NamingScreen_CreatePCIcon(void);
 static void NamingScreen_CreateMonIcon(void);
 static void NamingScreen_CreateWaldaDadIcon(void);
+static void NamingScreen_CreateRivalIcon(void);
 
 static void (*const sIconFunctions[])(void) =
 {
@@ -1381,6 +1407,7 @@ static void (*const sIconFunctions[])(void) =
     NamingScreen_CreatePCIcon,
     NamingScreen_CreateMonIcon,
     NamingScreen_CreateWaldaDadIcon,
+    NamingScreen_CreateRivalIcon,
 };
 
 static void CreateInputTargetIcon(void)
@@ -1395,11 +1422,9 @@ static void NamingScreen_NoIcon(void)
 
 static void NamingScreen_CreatePlayerIcon(void)
 {
-    u16 rivalGfxId;
     u8 spriteId;
 
-    rivalGfxId = GetRivalAvatarGraphicsIdByStateIdAndGender(PLAYER_AVATAR_STATE_NORMAL, sNamingScreen->monSpecies);
-    spriteId = CreateObjectGraphicsSprite(rivalGfxId, SpriteCallbackDummy, 56, 37, 0);
+    spriteId = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_RED_NORMAL, SpriteCallbackDummy, 56, 37, 0);
     gSprites[spriteId].oam.priority = 3;
     StartSpriteAnim(&gSprites[spriteId], ANIM_STD_GO_SOUTH);
 }
@@ -1427,6 +1452,15 @@ static void NamingScreen_CreateWaldaDadIcon(void)
     u8 spriteId;
 
     spriteId = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_MAN_1, SpriteCallbackDummy, 56, 37, 0);
+    gSprites[spriteId].oam.priority = 3;
+    StartSpriteAnim(&gSprites[spriteId], ANIM_STD_GO_SOUTH);
+}
+
+static void NamingScreen_CreateRivalIcon(void)
+{
+    u8 spriteId;
+
+    spriteId = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_BLUE, SpriteCallbackDummy, 56, 37, 0);
     gSprites[spriteId].oam.priority = 3;
     StartSpriteAnim(&gSprites[spriteId], ANIM_STD_GO_SOUTH);
 }
@@ -1479,6 +1513,9 @@ static bool8 KeyboardKeyHandler_Character(u8 input)
     if (input == INPUT_A_BUTTON)
     {
         bool8 textFull = AddTextCharacter();
+
+        if (sNamingScreen->currentPage == KBPAGE_LETTERS_UPPER && GetTextEntryPosition() == 1)
+            MainState_StartPageSwap();
 
         SquishCursor();
         if (textFull)
@@ -1712,7 +1749,7 @@ static void DrawMonTextEntryBox(void)
 {
     u8 buffer[32];
 
-    StringCopy(buffer, GetSpeciesName(sNamingScreen->monSpecies));
+    StringCopy(buffer, gSpeciesNames[sNamingScreen->monSpecies]);
     StringAppendN(buffer, sNamingScreen->template->title, 15);
     FillWindowPixelBuffer(sNamingScreen->windows[WIN_TEXT_ENTRY_BOX], PIXEL_FILL(1));
     AddTextPrinterParameterized(sNamingScreen->windows[WIN_TEXT_ENTRY_BOX], FONT_NORMAL, buffer, 8, 1, 0, 0);
@@ -1726,6 +1763,7 @@ static void (*const sDrawTextEntryBoxFuncs[])(void) =
     [NAMING_SCREEN_CAUGHT_MON] = DrawMonTextEntryBox,
     [NAMING_SCREEN_NICKNAME]   = DrawMonTextEntryBox,
     [NAMING_SCREEN_WALDA]      = DrawNormalTextEntryBox,
+    [NAMING_SCREEN_RIVAL]      = DrawNormalTextEntryBox,
 };
 
 static void DrawTextEntryBox(void)
@@ -1880,9 +1918,9 @@ static void CreateHelperTasks(void)
 
 static void LoadPalettes(void)
 {
-    LoadPalette(gNamingScreenMenu_Pal, BG_PLTT_ID(0), sizeof(gNamingScreenMenu_Pal));
-    LoadPalette(sKeyboard_Pal, BG_PLTT_ID(10), sizeof(sKeyboard_Pal));
-    LoadPalette(GetTextWindowPalette(2), BG_PLTT_ID(11), PLTT_SIZE_4BPP);
+    LoadPalette(gNamingScreenMenu_Pal, 0, 0xC0);
+    LoadPalette(sKeyboard_Pal, 0xA0, sizeof(sKeyboard_Pal));
+    LoadPalette(GetTextWindowPalette(2), 0xB0, 0x20);
 }
 
 static void DrawBgTilemap(u8 bg, const void *src)
@@ -2079,6 +2117,13 @@ static void UNUSED Debug_NamingScreenNickname(void)
     DoNamingScreen(NAMING_SCREEN_NICKNAME, gSaveBlock2Ptr->playerName, gSaveBlock2Ptr->playerGender, 0, 0, CB2_ReturnToFieldWithOpenMenu);
 }
 
+void NameRival(void)
+{
+    
+    StringCopy(gSaveBlock2Ptr->rivalName, gRivalPresetNames[Random() % NELEMS(gRivalPresetNames)]);
+    DoNamingScreen(NAMING_SCREEN_RIVAL, gSaveBlock2Ptr->rivalName, 0, 0, 0, CB2_ReturnToFieldContinueScript);
+}
+
 //--------------------------------------------------
 // Forward-declared variables
 //--------------------------------------------------
@@ -2128,6 +2173,18 @@ static const struct NamingScreenTemplate sWaldaWordsScreenTemplate =
     .title = gText_TellHimTheWords,
 };
 
+static const u8 sText_RivalsName[] = _("Rival's Name?");
+static const struct NamingScreenTemplate sRivalNamingScreenTemplate =
+{
+    .copyExistingString = FALSE,
+    .maxChars = PLAYER_NAME_LENGTH,
+    .iconFunction = 5,
+    .addGenderIcon = FALSE,
+    .initialPage = KBPAGE_LETTERS_UPPER,
+    .unused = 35,
+    .title = sText_RivalsName,
+};
+
 static const struct NamingScreenTemplate *const sNamingScreenTemplates[] =
 {
     [NAMING_SCREEN_PLAYER]     = &sPlayerNamingScreenTemplate,
@@ -2135,6 +2192,7 @@ static const struct NamingScreenTemplate *const sNamingScreenTemplates[] =
     [NAMING_SCREEN_CAUGHT_MON] = &sMonNamingScreenTemplate,
     [NAMING_SCREEN_NICKNAME]   = &sMonNamingScreenTemplate,
     [NAMING_SCREEN_WALDA]      = &sWaldaWordsScreenTemplate,
+    [NAMING_SCREEN_RIVAL]      = &sRivalNamingScreenTemplate,
 };
 
 static const struct OamData sOam_8x8 =
@@ -2557,31 +2615,31 @@ static const u8 *const sNamingScreenKeyboardText[KBPAGE_COUNT][KBROW_COUNT] =
 
 static const struct SpriteSheet sSpriteSheets[] =
 {
-    {gNamingScreenBackButton_Gfx,     0x1E0,  GFXTAG_BACK_BUTTON},
-    {gNamingScreenOKButton_Gfx,       0x1E0,  GFXTAG_OK_BUTTON},
-    {gNamingScreenPageSwapFrame_Gfx,  0x280,  GFXTAG_PAGE_SWAP_FRAME},
-    {gNamingScreenPageSwapButton_Gfx, 0x100,  GFXTAG_PAGE_SWAP_BUTTON},
-    {gNamingScreenPageSwapUpper_Gfx,  0x060,  GFXTAG_PAGE_SWAP_UPPER},
-    {gNamingScreenPageSwapLower_Gfx,  0x060,  GFXTAG_PAGE_SWAP_LOWER},
-    {gNamingScreenPageSwapOthers_Gfx, 0x060,  GFXTAG_PAGE_SWAP_OTHERS},
-    {gNamingScreenCursor_Gfx,         0x080,  GFXTAG_CURSOR},
-    {gNamingScreenCursorSquished_Gfx, 0x080,  GFXTAG_CURSOR_SQUISHED},
-    {gNamingScreenCursorFilled_Gfx,   0x080,  GFXTAG_CURSOR_FILLED},
-    {gNamingScreenInputArrow_Gfx,     0x020,  GFXTAG_INPUT_ARROW},
-    {gNamingScreenUnderscore_Gfx,     0x020,  GFXTAG_UNDERSCORE},
+    {gNamingScreenRWindow_Gfx + 0x280,          0x1E0,  GFXTAG_BACK_BUTTON},
+    {gNamingScreenRWindow_Gfx + 0x460,          0x1E0,  GFXTAG_OK_BUTTON},
+    {gNamingScreenRWindow_Gfx,                  0x280,  GFXTAG_PAGE_SWAP_FRAME},
+    {gNamingScreenPageButton_Gfx + 0x20,        0x100,  GFXTAG_PAGE_SWAP_BUTTON},
+    {gNamingScreenROptions_Gfx,                 0x060,  GFXTAG_PAGE_SWAP_UPPER},
+    {gNamingScreenROptions_Gfx + 0xA0,          0x060,  GFXTAG_PAGE_SWAP_LOWER},
+    {gNamingScreenROptions_Gfx + 0x140,         0x060,  GFXTAG_PAGE_SWAP_OTHERS},
+    {gNamingScreenCursor_Gfx,                   0x080,  GFXTAG_CURSOR},
+    {gNamingScreenCursor_Gfx + 0xA0,            0x080,  GFXTAG_CURSOR_SQUISHED},
+    {gNamingScreenCursor_Gfx + 0x140,           0x080,  GFXTAG_CURSOR_FILLED},
+    {gNamingScreenInputArrow_Gfx,               0x020,  GFXTAG_INPUT_ARROW},
+    {gNamingScreenUnderscore_Gfx,               0x020,  GFXTAG_UNDERSCORE},
     {}
 };
 
 static const struct SpritePalette sSpritePalettes[] =
 {
-    {gNamingScreenMenu_Pal[0], PALTAG_MENU},
-    {gNamingScreenMenu_Pal[1], PALTAG_PAGE_SWAP_UPPER},
-    {gNamingScreenMenu_Pal[2], PALTAG_PAGE_SWAP_LOWER},
-    {gNamingScreenMenu_Pal[3], PALTAG_PAGE_SWAP_OTHERS},
-    {gNamingScreenMenu_Pal[4], PALTAG_PAGE_SWAP},
-    {gNamingScreenMenu_Pal[5], PALTAG_CURSOR},
-    {gNamingScreenMenu_Pal[4], PALTAG_BACK_BUTTON},
-    {gNamingScreenMenu_Pal[4], PALTAG_OK_BUTTON},
+    {gNamingScreenMenu_Pal,         PALTAG_MENU},
+    {gNamingScreenMenu_Pal + 0x10,  PALTAG_PAGE_SWAP_UPPER},
+    {gNamingScreenMenu_Pal + 0x20,  PALTAG_PAGE_SWAP_LOWER},
+    {gNamingScreenMenu_Pal + 0x30,  PALTAG_PAGE_SWAP_OTHERS},
+    {gNamingScreenMenu_Pal + 0x40,  PALTAG_PAGE_SWAP},
+    {gNamingScreenMenu_Pal + 0x50,  PALTAG_CURSOR},
+    {gNamingScreenMenu_Pal + 0x40,  PALTAG_BACK_BUTTON},
+    {gNamingScreenMenu_Pal + 0x40,  PALTAG_OK_BUTTON},
     {}
 };
 

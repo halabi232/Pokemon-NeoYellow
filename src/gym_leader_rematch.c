@@ -8,35 +8,19 @@ static void UpdateGymLeaderRematchFromArray(const u16 *data, size_t size, u32 ma
 static s32 GetRematchIndex(u32 trainerIdx);
 
 static const u16 GymLeaderRematches_AfterNewMauville[] = {
-    REMATCH_ROXANNE,
-    REMATCH_BRAWLY,
-    REMATCH_WATTSON,
-    REMATCH_FLANNERY,
-    REMATCH_NORMAN,
-    REMATCH_WINONA,
-    REMATCH_TATE_AND_LIZA,
-    REMATCH_JUAN
+    REMATCH_SPECIAL_TRAINER,
 };
 
 static const u16 GymLeaderRematches_BeforeNewMauville[] = {
-    REMATCH_ROXANNE,
-    REMATCH_BRAWLY,
-    // Wattson isn't available at this time
-    REMATCH_FLANNERY,
-    REMATCH_NORMAN,
-    REMATCH_WINONA,
-    REMATCH_TATE_AND_LIZA,
-    REMATCH_JUAN
+    REMATCH_SPECIAL_TRAINER,
 };
 
 void UpdateGymLeaderRematch(void)
 {
-    if (FlagGet(FLAG_SYS_GAME_CLEAR) && (Random() % 100) <= 30)
+    //NOTE: This flag will never be enabled. It's only here to prevent Gym Leader Match Calls.
+    if (FlagGet(FLAG_SYS_GYM_LEADER_MATCH_CALL_ENABLED) && (Random() % 100) <= 30)
     {
-        if (FlagGet(FLAG_WATTSON_REMATCH_AVAILABLE))
-            UpdateGymLeaderRematchFromArray(GymLeaderRematches_AfterNewMauville, ARRAY_COUNT(GymLeaderRematches_AfterNewMauville), 5);
-        else
-            UpdateGymLeaderRematchFromArray(GymLeaderRematches_BeforeNewMauville, ARRAY_COUNT(GymLeaderRematches_BeforeNewMauville), 1);
+        UpdateGymLeaderRematchFromArray(GymLeaderRematches_AfterNewMauville, ARRAY_COUNT(GymLeaderRematches_AfterNewMauville), 5);
     }
 }
 

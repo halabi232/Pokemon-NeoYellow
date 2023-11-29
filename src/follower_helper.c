@@ -96,14 +96,14 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     {
     .text = sCondMsg06,
     .script = EventScript_FollowerFaceUp,
-    .mm = {.map = {.mapNum = MAP_NUM(EVER_GRANDE_CITY), .mapGroup = MAP_GROUP(EVER_GRANDE_CITY)}},
+    .mm = {.map = {.mapNum = MAP_NUM(INDIGO_PLATEAU_EXTERIOR), .mapGroup = MAP_GROUP(INDIGO_PLATEAU_EXTERIOR)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_HAPPY,
     },
     [COND_MSG_ROUTE_112] =
     {
     .text = sCondMsg07,
-    .mm = {.map = {.mapNum = MAP_NUM(ROUTE112), .mapGroup = MAP_GROUP(ROUTE112)}},
+    .mm = {.map = {.mapNum = MAP_NUM(ROUTE20), .mapGroup = MAP_GROUP(ROUTE20)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_HAPPY,
     },
@@ -111,7 +111,7 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     {
     .text = sCondMsg08,
     .script = EventScript_FollowerNostalgia,
-    .mm = {.map = {.mapNum = MAP_NUM(ROUTE117_POKEMON_DAY_CARE), .mapGroup = MAP_GROUP(ROUTE117_POKEMON_DAY_CARE)}},
+    .mm = {.map = {.mapNum = MAP_NUM(ROUTE5_POKEMON_DAY_CARE), .mapGroup = MAP_GROUP(ROUTE5_POKEMON_DAY_CARE)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_NEUTRAL,
     },
@@ -134,14 +134,14 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     [COND_MSG_BIKE_SHOP] =
     {
     .text = sCondMsg12,
-    .mm = {.map = {.mapNum = MAP_NUM(MAUVILLE_CITY_BIKE_SHOP), .mapGroup = MAP_GROUP(MAUVILLE_CITY_BIKE_SHOP)}},
+    .mm = {.map = {.mapNum = MAP_NUM(CERULEAN_CITY_BIKE_SHOP), .mapGroup = MAP_GROUP(CERULEAN_CITY_BIKE_SHOP)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_PENSIVE,
     },
     [COND_MSG_MACHINES] =
     {
     .text = (u8*)sMachineTexts,
-    .mm = {.map = {.mapNum = MAP_NUM(NEW_MAUVILLE_INSIDE), .mapGroup = MAP_GROUP(NEW_MAUVILLE_INSIDE)}},
+    .mm = {.map = {.mapNum = MAP_NUM(POWER_PLANT), .mapGroup = MAP_GROUP(POWER_PLANT)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_MUSIC,
     .textSpread = 1,
@@ -188,7 +188,7 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     {
     .text = (u8*)sElevatorTexts,
     .textSpread = 1,
-    .mm = {.map = {.mapNum = MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_ELEVATOR), .mapGroup = MAP_GROUP(LILYCOVE_CITY_DEPARTMENT_STORE_ELEVATOR)}},
+    .mm = {.map = {.mapNum = MAP_NUM(CELADON_CITY_DEPARTMENT_STORE_ELEVATOR), .mapGroup = MAP_GROUP(CELADON_CITY_DEPARTMENT_STORE_ELEVATOR)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_SURPRISE,
     },
@@ -196,14 +196,14 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     {
     .text = (u8*)sColdTexts,
     .textSpread = 1,
-    .mm = {.map = {.mapNum = MAP_NUM(SHOAL_CAVE_LOW_TIDE_ICE_ROOM), .mapGroup = MAP_GROUP(SHOAL_CAVE_LOW_TIDE_ICE_ROOM)}},
+    .mm = {.map = {.mapNum = MAP_NUM(SEAFOAM_ISLANDS_B4F), .mapGroup = MAP_GROUP(SEAFOAM_ISLANDS_B4F)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_SURPRISE,
     },
     [COND_MSG_ROUTE_117] =
     {
     .text = sCondMsg27,
-    .mm = {.map = {.mapNum = MAP_NUM(ROUTE117), .mapGroup = MAP_GROUP(ROUTE117)}},
+    .mm = {.map = {.mapNum = MAP_NUM(ROUTE5), .mapGroup = MAP_GROUP(ROUTE5)}},
     .mmFlags = MM_FLAGS_MAP,
     .emotion = FOLLOWER_EMOTION_SURPRISE,
     },
@@ -212,7 +212,7 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     .text = sCondMsg28,
     .st = {.types = {.type1 = TYPE_DRAGON, .type2 = TYPE_DRAGON}},
     .stFlags = ST_FLAGS_TYPE,
-    .mm = {.mapSec = {.mapSec = MAPSEC_SKY_PILLAR}},
+    .mm = {.mapSec = {.mapSec = MAPSEC_VICTORY_ROAD}},
     .mmFlags = MM_FLAGS_MAPSEC,
     .emotion = FOLLOWER_EMOTION_UPSET,
     },
@@ -222,7 +222,7 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     .textSpread = 1,
     .st = {.types = {.type1 = TYPE_GHOST, .type2 = TYPE_NOT_TYPE1}},
     .stFlags = ST_FLAGS_TYPE,
-    .mm = {.mapSec = {.mapSec = MAPSEC_MT_PYRE}},
+    .mm = {.mapSec = {.mapSec = MAPSEC_POKEMON_TOWER}},
     .mmFlags = MM_FLAGS_MAPSEC,
     .wt = {.song = MUS_MT_PYRE},
     .wtFlags = WT_FLAGS_MUSIC,
@@ -281,7 +281,7 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     [COND_MSG_LEAVES] =
     {
     .text = sCondMsg39,
-    .mm = {.mapSec = {.mapSec = MAPSEC_PETALBURG_WOODS}},
+    .mm = {.mapSec = {.mapSec = MAPSEC_VIRIDIAN_FOREST}},
     .mmFlags = MM_FLAGS_MAPSEC,
     .emotion = FOLLOWER_EMOTION_PENSIVE,
     },

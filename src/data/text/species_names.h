@@ -1,3 +1,4 @@
+#include "constants/species.h"
 const u8 gSpeciesNames[NUM_SPECIES][POKEMON_NAME_LENGTH + 1] = {
     [SPECIES_NONE] = _("??????????"),
     [SPECIES_BULBASAUR] = _("Bulbasaur"),
@@ -25,6 +26,7 @@ const u8 gSpeciesNames[NUM_SPECIES][POKEMON_NAME_LENGTH + 1] = {
     [SPECIES_EKANS] = _("Ekans"),
     [SPECIES_ARBOK] = _("Arbok"),
     [SPECIES_PIKACHU] = _("Pikachu"),
+    [SPECIES_PIKACHU_PARTNER] = ("Pikachu"),
     [SPECIES_RAICHU] = _("Raichu"),
     [SPECIES_SANDSHREW] = _("Sandshrew"),
     [SPECIES_SANDSLASH] = _("Sandslash"),
@@ -1056,7 +1058,7 @@ const u8 gSpeciesNames[NUM_SPECIES][POKEMON_NAME_LENGTH + 1] = {
     [SPECIES_PIKACHU_UNOVA_CAP] = _("Pikachu"),
     [SPECIES_PIKACHU_KALOS_CAP] = _("Pikachu"),
     [SPECIES_PIKACHU_ALOLA_CAP] = _("Pikachu"),
-    [SPECIES_PIKACHU_PARTNER_CAP] = _("Pikachu"),
+    [SPECIES_PIKACHU_PART_CAP] = _("Pikachu"),
     [SPECIES_PIKACHU_WORLD_CAP] = _("Pikachu"),
     // Pichu
     [SPECIES_PICHU_SPIKY_EARED] = _("Pichu"),

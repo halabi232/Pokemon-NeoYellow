@@ -28,19 +28,19 @@
 #define FREE_LINK_BATTLE_RECORDS        //frees link battle record data. 88 bytes
                                         // saveblock1 total: 1846 bytes
 //free saveblock 2 defines
-//#define FREE_BATTLE_TOWER_E_READER    //frees up battle tower e reader trainer data. 188 bytes.        WARNING THIS HAS BEEN SHOWN TO BREAK THE POKÉ MARTS' QUESTIONNAIRE
+#define FREE_BATTLE_TOWER_E_READER    //frees up battle tower e reader trainer data. 188 bytes.        WARNING THIS HAS BEEN SHOWN TO BREAK THE POKÉ MARTS' QUESTIONNAIRE
 #define FREE_POKEMON_JUMP               //frees up pokemon jump data. 16 bytes
 #define FREE_RECORD_MIXING_HALL_RECORDS //frees up hall records for record mixing. 1032 bytes
                                         // saveblock2 total: 1236 bytes
                                         
                                         //grand total: 3082
-#define FREE_BATTLE_TOWER_E_READER
 #define FREE_MYSTERY_EVENT_BUFFERS
 #define FREE_TRAINER_HILL
 // Prevent cross-jump optimization.
 #define BLOCK_CROSS_JUMP asm("");
 
 // to help in decompiling
+#define asm_comment(x) asm volatile("@ -- " x " -- ")
 #define asm_unified(x) asm(".syntax unified\n" x "\n.syntax divided")
 #define NAKED __attribute__((naked))
 
@@ -522,6 +522,7 @@ struct SaveBlock2
     /*0x14*/ u16 optionsTextSpeed:3; // OPTIONS_TEXT_SPEED_[SLOW/MID/FAST]
              u16 optionsWindowFrameType:5; // Specifies one of the 20 decorative borders for text boxes
              u16 optionsSound:1; // OPTIONS_SOUND_[MONO/STEREO]
+             bool8 optionsAutorun; //OPTIONS_AUTORUN
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
              u16 optionsBattleSceneOff:1; // whether battle animations are disabled
              u16 regionMapZoom:1; // whether the map is zoomed in
@@ -546,6 +547,11 @@ struct SaveBlock2
     #endif
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
+    /*0xF2C*/ u8 rivalName[PLAYER_NAME_LENGTH + 1];
+              u8 costumeId;
+              u16 optionsFollowerType:3; //Follower Type: 0= Pikachu, 1=Any, 2=Off
+              //u16 expShare:1;
+              u16 surfMon;
 }; // sizeof=0xF2C
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;

@@ -64,7 +64,9 @@ extern void (*gFieldCallback)(void);
 extern bool8 (*gFieldCallback2)(void);
 extern u8 gLocalLinkPlayerId;
 extern u8 gFieldLinkPlayerCount;
+
 extern bool8 gExitStairsMovementDisabled;
+
 extern u8 gTimeOfDay;
 extern u16 gTimeUpdateCounter;
 
@@ -176,5 +178,6 @@ bool32 Overworld_RecvKeysFromLinkIsRunning(void);
 bool32 Overworld_SendKeysToLinkIsRunning(void);
 bool32 IsSendingKeysOverCable(void);
 void ClearLinkPlayerObjectEvents(void);
+bool8 MetatileBehavior_IsSurfableInSeafoamIslands(u16 metatileBehavior);
 
 #endif // GUARD_OVERWORLD_H

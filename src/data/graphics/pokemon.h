@@ -7726,3 +7726,17 @@ const u8 gMonFootprint_Calyrex[] = INCBIN_U8("graphics/pokemon/calyrex/footprint
 //const u8 gMonFootprint_Overqwil[] = INCBIN_U8("graphics/pokemon/overqwil/footprint.1bpp");
 //const u8 gMonFootprint_Enamorus[] = INCBIN_U8("graphics/pokemon/enamorus/footprint.1bpp");
 #endif
+
+const u32 gMonFrontPic_Annihilape[] = INCBIN_U32("graphics/pokemon/annihilape/anim_front.4bpp.lz");
+const u32 gMonPalette_Annihilape[] = INCBIN_U32("graphics/pokemon/annihilape/normal.gbapal.lz");
+const u32 gMonBackPic_Annihilape[] = INCBIN_U32("graphics/pokemon/annihilape/back.4bpp.lz");
+const u32 gMonShinyPalette_Annihilape[] = INCBIN_U32("graphics/pokemon/annihilape/shiny.gbapal.lz");
+const u8 gMonIcon_Annihilape[] = INCBIN_U8("graphics/pokemon/annihilape/icon.4bpp");
+const u8 gMonFootprint_Annihilape[] = INCBIN_U8("graphics/pokemon/annihilape/footprint.1bpp");
+
+const u32 gMonFrontPic_PikachuPartner[] = INCBIN_U32("graphics/pokemon/pikachu_partner/front.4bpp.lz");
+const u32 gMonPalette_PikachuPartner[] = INCBIN_U32("graphics/pokemon/pikachu/normal.gbapal.lz");
+const u32 gMonBackPic_PikachuPartner[] = INCBIN_U32("graphics/pokemon/pikachu_partner/back.4bpp.lz");
+const u32 gMonShinyPalette_PikachuPartner[] = INCBIN_U32("graphics/pokemon/pikachu/shiny.gbapal.lz");
+const u8 gMonIcon_PikachuPartner[] = INCBIN_U8("graphics/pokemon/pikachu/icon.4bpp");
+const u8 gMonFootprint_PikachuPartner[] = INCBIN_U8("graphics/pokemon/pikachu/footprint.1bpp");

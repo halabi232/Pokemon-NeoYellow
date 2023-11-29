@@ -26,6 +26,7 @@ const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
     [SPECIES_EKANS] = sEkansLevelUpLearnset,
     [SPECIES_ARBOK] = sArbokLevelUpLearnset,
     [SPECIES_PIKACHU] = sPikachuLevelUpLearnset,
+    [SPECIES_PIKACHU_PARTNER] = sPikachuPartnerLevelUpLearnset,
     [SPECIES_RAICHU] = sRaichuLevelUpLearnset,
     [SPECIES_SANDSHREW] = sSandshrewLevelUpLearnset,
     [SPECIES_SANDSLASH] = sSandslashLevelUpLearnset,
@@ -1053,7 +1054,7 @@ const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
     [SPECIES_PIKACHU_UNOVA_CAP] = sPikachuLevelUpLearnset,
     [SPECIES_PIKACHU_KALOS_CAP] = sPikachuLevelUpLearnset,
     [SPECIES_PIKACHU_ALOLA_CAP] = sPikachuLevelUpLearnset,
-    [SPECIES_PIKACHU_PARTNER_CAP] = sPikachuLevelUpLearnset,
+    [SPECIES_PIKACHU_PART_CAP] = sPikachuLevelUpLearnset,
     [SPECIES_PIKACHU_WORLD_CAP] = sPikachuLevelUpLearnset,
     // Pichu
     [SPECIES_PICHU_SPIKY_EARED] = sPichuLevelUpLearnset,

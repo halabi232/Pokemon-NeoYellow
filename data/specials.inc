@@ -231,11 +231,13 @@ gSpecials::
 	def_special DoLotteryCornerComputerEffect
 	def_special EndLotteryCornerComputerEffect
 	def_special ChooseMonForMoveRelearner
+	def_special ChooseMonForEggMoveRelearner
 	def_special MoveDeleterChooseMoveToForget
 	def_special MoveDeleterForgetMove
 	def_special BufferMoveDeleterNicknameAndMove
 	def_special GetNumMovesSelectedMonHas
 	def_special TeachMoveRelearnerMove
+	def_special TeachEggMoveRelearnerMove
 	def_special GetRecordedCyclingRoadResults
 	def_special Special_BeginCyclingRoadChallenge
 	def_special GetPlayerAvatarBike
@@ -258,7 +260,7 @@ gSpecials::
 	def_special CallSlateportTentFunction
 	def_special ChoosePartyForBattleFrontier
 	def_special ValidateEReaderTrainer
-	def_special GetBattleTowerSinglesStreak
+	def_special GetBestBattleTowerStreak
 	def_special ReducePlayerPartyToSelectedMons
 	def_special BedroomPC
 	def_special PlayerPC
@@ -275,7 +277,7 @@ gSpecials::
 	def_special SetTrickHouseNuggetFlag
 	def_special ScriptMenu_CreatePCMultichoice
 	def_special AccessHallOfFamePC
-	def_special Special_ShowDiploma
+	def_special ShowDiploma
 	def_special CheckLeadMonCool
 	def_special CheckLeadMonBeauty
 	def_special CheckLeadMonCute
@@ -311,7 +313,7 @@ gSpecials::
 	def_special TryUpdateRusturfTunnelState
 	def_special IsGrassTypeInParty
 	def_special DoContestHallWarp
-	def_special LoadWallyZigzagoon
+	def_special PutZigzagoonInPlayerParty
 	def_special IsStarterInParty
 	def_special CopyCurSecretBaseOwnerName_StrVar1
 	def_special ScriptCheckFreePokemonStorageSpace
@@ -535,4 +537,26 @@ gSpecials::
 	def_special CloseDeptStoreElevatorWindow
 	def_special TrySetBattleTowerLinkType
 	def_special SetTotemBoost
-	def_special TrySpecialOverworldEvo
+	def_special GetDayOrNight
+	def_special NameRival
+	def_special SwapPlayersCostume
+	def_special GetPlayerCostumeId
+	def_special DaisyMassageServices
+	def_special OpenMuseumFossilPic
+	def_special CloseMuseumFossilPic
+	def_special IsPartnerInParty
+	def_special AnimateTeleporterHousing
+	def_special AnimateTeleporterCable
+	def_special SetSeenMon
+	def_special SetVermilionTrashCans
+	def_special DoSSAnneDepartureCutscene
+	def_special DoesPlayerPartyContainSpecies
+	def_special GetMagikarpSizeRecordInfo
+	def_special CompareMagikarpSize
+	def_special NameRaterWasNicknameChanged
+	def_special IsMonOTNameNotPlayers
+	def_special ForcePlayerOntoBike
+	def_special SeafoamIslandsB4F_CurrentDumpsPlayerOnLand
+	def_special ForcePlayerToStartSurfing
+	def_special DoPokemonLeagueLightingEffect
+	

@@ -26,6 +26,7 @@ const u16 *const gTeachableLearnsets[NUM_SPECIES] =
     [SPECIES_EKANS] = sEkansTeachableLearnset,
     [SPECIES_ARBOK] = sArbokTeachableLearnset,
     [SPECIES_PIKACHU] = sPikachuTeachableLearnset,
+    [SPECIES_PIKACHU_PARTNER] = sPikachuTeachableLearnset,
     [SPECIES_RAICHU] = sRaichuTeachableLearnset,
     [SPECIES_SANDSHREW] = sSandshrewTeachableLearnset,
     [SPECIES_SANDSLASH] = sSandslashTeachableLearnset,
@@ -1053,7 +1054,7 @@ const u16 *const gTeachableLearnsets[NUM_SPECIES] =
     [SPECIES_PIKACHU_UNOVA_CAP] = sPikachuTeachableLearnset,
     [SPECIES_PIKACHU_KALOS_CAP] = sPikachuTeachableLearnset,
     [SPECIES_PIKACHU_ALOLA_CAP] = sPikachuTeachableLearnset,
-    [SPECIES_PIKACHU_PARTNER_CAP] = sPikachuTeachableLearnset,
+    [SPECIES_PIKACHU_PART_CAP] = sPikachuTeachableLearnset,
     [SPECIES_PIKACHU_WORLD_CAP] = sPikachuTeachableLearnset,
     // Pichu
     [SPECIES_PICHU_SPIKY_EARED] = sPichuTeachableLearnset,

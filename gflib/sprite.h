@@ -282,7 +282,7 @@ void FreeSpritePalette(struct Sprite *sprite);
 void FreeSpriteOamMatrix(struct Sprite *sprite);
 void DestroySpriteAndFreeResources(struct Sprite *sprite);
 void AnimateSprite(struct Sprite *sprite);
-void SetSpriteMatrixAnchor(struct Sprite *sprite, s16 x, s16 y);
+void SetSpriteMatrixAnchor(struct Sprite* sprite, s16 x, s16 y);
 void StartSpriteAnim(struct Sprite *sprite, u8 animNum);
 void StartSpriteAnimIfDifferent(struct Sprite *sprite, u8 animNum);
 void SeekSpriteAnim(struct Sprite *sprite, u8 animCmdIndex);
@@ -325,5 +325,6 @@ u8 SpriteTileAllocBitmapOp(u16 bit, u8 op);
 void ClearSpriteCopyRequests(void);
 void ResetAffineAnimData(void);
 void RequestSpriteFrameImageCopy(u16 index, u16 tileNum, const struct SpriteFrameImage *images);
+void obj_pos2_update_enable(struct Sprite* sprite, s16 xmod, s16 ymod);
 
 #endif //GUARD_SPRITE_H

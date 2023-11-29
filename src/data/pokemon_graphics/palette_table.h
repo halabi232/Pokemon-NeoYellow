@@ -26,6 +26,7 @@ const struct CompressedSpritePalette gMonPaletteTable[NUM_SPECIES + 1] =
     SPECIES_PAL(EKANS, gMonPalette_Ekans),
     SPECIES_PAL(ARBOK, gMonPalette_Arbok),
     SPECIES_PAL(PIKACHU, gMonPalette_Pikachu),
+    SPECIES_PAL(PIKACHU_PARTNER, gMonPalette_Pikachu),
     SPECIES_PAL(RAICHU, gMonPalette_Raichu),
     SPECIES_PAL(SANDSHREW, gMonPalette_Sandshrew),
     SPECIES_PAL(SANDSLASH, gMonPalette_Sandslash),
@@ -1051,7 +1052,7 @@ const struct CompressedSpritePalette gMonPaletteTable[NUM_SPECIES + 1] =
     SPECIES_PAL(PIKACHU_UNOVA_CAP, gMonPalette_PikachuUnovaCap),
     SPECIES_PAL(PIKACHU_KALOS_CAP, gMonPalette_PikachuKalosCap),
     SPECIES_PAL(PIKACHU_ALOLA_CAP, gMonPalette_PikachuAlolaCap),
-    SPECIES_PAL(PIKACHU_PARTNER_CAP, gMonPalette_PikachuPartnerCap),
+    SPECIES_PAL(PIKACHU_PART_CAP, gMonPalette_PikachuPartnerCap),
     SPECIES_PAL(PIKACHU_WORLD_CAP, gMonPalette_PikachuWorldCap),
 
     SPECIES_PAL(PICHU_SPIKY_EARED, gMonPalette_PichuSpikyEared),

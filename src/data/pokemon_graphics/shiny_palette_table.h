@@ -26,6 +26,7 @@ const struct CompressedSpritePalette gMonShinyPaletteTable[NUM_SPECIES + 1] =
     SPECIES_SHINY_PAL(EKANS, gMonShinyPalette_Ekans),
     SPECIES_SHINY_PAL(ARBOK, gMonShinyPalette_Arbok),
     SPECIES_SHINY_PAL(PIKACHU, gMonShinyPalette_Pikachu),
+    SPECIES_SHINY_PAL(PIKACHU_PARTNER, gMonShinyPalette_Pikachu),
     SPECIES_SHINY_PAL(RAICHU, gMonShinyPalette_Raichu),
     SPECIES_SHINY_PAL(SANDSHREW, gMonShinyPalette_Sandshrew),
     SPECIES_SHINY_PAL(SANDSLASH, gMonShinyPalette_Sandslash),
@@ -1052,7 +1053,7 @@ const struct CompressedSpritePalette gMonShinyPaletteTable[NUM_SPECIES + 1] =
     SPECIES_SHINY_PAL(PIKACHU_UNOVA_CAP, gMonShinyPalette_PikachuUnovaCap),
     SPECIES_SHINY_PAL(PIKACHU_KALOS_CAP, gMonShinyPalette_PikachuKalosCap),
     SPECIES_SHINY_PAL(PIKACHU_ALOLA_CAP, gMonShinyPalette_PikachuAlolaCap),
-    SPECIES_SHINY_PAL(PIKACHU_PARTNER_CAP, gMonShinyPalette_PikachuPartnerCap),
+    SPECIES_SHINY_PAL(PIKACHU_PART_CAP, gMonShinyPalette_PikachuPartnerCap),
     SPECIES_SHINY_PAL(PIKACHU_WORLD_CAP, gMonShinyPalette_PikachuWorldCap),
 
     SPECIES_SHINY_PAL(PICHU_SPIKY_EARED, gMonShinyPalette_PichuSpikyEared),

@@ -45,6 +45,7 @@
 #include "constants/metatile_labels.h"
 #include "constants/moves.h"
 #include "constants/region_map_sections.h"
+#include "constants/script_menu.h"
 
 #define LAST_TVSHOW_IDX (TV_SHOWS_COUNT - 1)
 
@@ -128,6 +129,7 @@ static void TVShowDone(void);
 static void InterviewAfter_FanClubLetter(void);
 static void InterviewAfter_RecentHappenings(void);
 static void InterviewAfter_PkmnFanClubOpinions(void);
+static void InterviewAfter_Dummy(void);
 static void InterviewAfter_BravoTrainerPokemonProfile(void);
 static void InterviewAfter_BravoTrainerBattleTowerProfile(void);
 static void InterviewAfter_ContestLiveUpdates(void);
@@ -198,31 +200,31 @@ static const struct {
         .species = SPECIES_SEEDOT,
         .moves = {MOVE_BIDE, MOVE_HARDEN, MOVE_LEECH_SEED},
         .level = 3,
-        .location = MAP_NUM(ROUTE102)
+        .location = MAP_NUM(ROUTE2)
     },
     {
         .species = SPECIES_NUZLEAF,
         .moves = {MOVE_HARDEN, MOVE_GROWTH, MOVE_NATURE_POWER, MOVE_LEECH_SEED},
         .level = 15,
-        .location = MAP_NUM(ROUTE114),
+        .location = MAP_NUM(ROUTE14),
     },
     {
         .species = SPECIES_SEEDOT,
         .moves = {MOVE_HARDEN, MOVE_GROWTH, MOVE_NATURE_POWER, MOVE_LEECH_SEED},
         .level = 13,
-        .location = MAP_NUM(ROUTE117),
+        .location = MAP_NUM(ROUTE17),
     },
     {
         .species = SPECIES_SEEDOT,
         .moves = {MOVE_GIGA_DRAIN, MOVE_FRUSTRATION, MOVE_SOLAR_BEAM, MOVE_LEECH_SEED},
         .level = 25,
-        .location = MAP_NUM(ROUTE120),
+        .location = MAP_NUM(ROUTE4),
     },
     {
         .species = SPECIES_SKITTY,
         .moves = {MOVE_GROWL, MOVE_TACKLE, MOVE_TAIL_WHIP, MOVE_ATTRACT},
         .level = 8,
-        .location = MAP_NUM(ROUTE116),
+        .location = MAP_NUM(ROUTE16),
     }
 };
 
@@ -835,17 +837,17 @@ void UpdateTVScreensOnMap(int width, int height)
         break;
 //  case PLAYERS_HOUSE_TV_NONE:
     default:
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(LILYCOVE_CITY_COVE_LILY_MOTEL_1F)
-         && gSaveBlock1Ptr->location.mapNum == MAP_NUM(LILYCOVE_CITY_COVE_LILY_MOTEL_1F))
-        {
-            // NPC in Lilycove Hotel is always watching TV
-            SetTVMetatilesOnMap(width, height, METATILE_Building_TV_On);
-        }
-        else if (FlagGet(FLAG_SYS_TV_START) && (FindAnyTVShowOnTheAir() != 0xFF || FindAnyPokeNewsOnTheAir() != 0xFF || IsGabbyAndTyShowOnTheAir()))
-        {
-            FlagClear(FLAG_SYS_TV_WATCH);
-            SetTVMetatilesOnMap(width, height, METATILE_Building_TV_On);
-        }
+        //if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(LILYCOVE_CITY_COVE_LILY_MOTEL_1F)
+        // && gSaveBlock1Ptr->location.mapNum == MAP_NUM(LILYCOVE_CITY_COVE_LILY_MOTEL_1F))
+        //{
+        //    // NPC in Lilycove Hotel is always watching TV
+        //    SetTVMetatilesOnMap(width, height, METATILE_Building_TV_On);
+        //}
+        //else if (FlagGet(FLAG_SYS_TV_START) && (FindAnyTVShowOnTheAir() != 0xFF || FindAnyPokeNewsOnTheAir() != 0xFF || IsGabbyAndTyShowOnTheAir()))
+        //{
+        //    FlagClear(FLAG_SYS_TV_WATCH);
+        //    SetTVMetatilesOnMap(width, height, METATILE_Building_TV_On);
+        //}
         break;
     }
 }
@@ -1125,11 +1127,11 @@ void TryPutPokemonTodayOnAir(void)
                     show->pokemonToday.kind = TVSHOW_POKEMON_TODAY_CAUGHT;
                     show->pokemonToday.active = FALSE; // NOTE: Show is not active until passed via Record Mix.
                     for (i = 0; i < POKEBALL_COUNT; i++)
-                        ballsUsed += gBattleResults.catchAttempts[i];
-                    if (ballsUsed > 255)
-                        ballsUsed = 255;
-                    itemLastUsed = gLastUsedItem;
-                    show->pokemonToday.nBallsUsed = ballsUsed;
+                            ballsUsed += gBattleResults.catchAttempts[i];
+                        if (ballsUsed > 255)
+                            ballsUsed = 255;
+                        itemLastUsed = gLastUsedItem;
+                                        show->pokemonToday.nBallsUsed = ballsUsed;
                     show->pokemonToday.ball = itemLastUsed;
                     StringCopy(show->pokemonToday.playerName, gSaveBlock2Ptr->playerName);
                     StringCopy(show->pokemonToday.nickname, gBattleResults.caughtMonNick);
@@ -1170,7 +1172,7 @@ static void TryPutPokemonTodayFailedOnTheAir(void)
 
     if (!rbernoulli(1, 1))
     {
-        for (i = 0, ballsUsed = 0; i < POKEBALL_COUNT; i++)
+        for (i = 0, ballsUsed = 0; i < POKEBALL_COUNT - 1; i++)
             ballsUsed += gBattleResults.catchAttempts[i];
         if (ballsUsed > 255)
             ballsUsed = 255;
@@ -1490,35 +1492,35 @@ static void InterviewAfter_BravoTrainerBattleTowerProfile(void)
 
 void TryPutSmartShopperOnAir(void)
 {
-    TVShow *show;
-    u8 i;
-
-    if (!(gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(TRAINER_HILL_ENTRANCE) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(TRAINER_HILL_ENTRANCE))
-     && !(gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(BATTLE_FRONTIER_MART) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(BATTLE_FRONTIER_MART))
-     && !rbernoulli(1, 3))
-    {
-        sCurTVShowSlot = FindFirstEmptyRecordMixTVShowSlot(gSaveBlock1Ptr->tvShows);
-        if (sCurTVShowSlot != -1 && IsRecordMixShowAlreadySpawned(TVSHOW_SMART_SHOPPER, FALSE) != TRUE)
-        {
-            SortPurchasesByQuantity();
-            if (gMartPurchaseHistory[0].quantity >= 20)
-            {
-                show = &gSaveBlock1Ptr->tvShows[sCurTVShowSlot];
-                show->smartshopperShow.kind = TVSHOW_SMART_SHOPPER;
-                show->smartshopperShow.active = FALSE; // NOTE: Show is not active until passed via Record Mix.
-                show->smartshopperShow.shopLocation = gMapHeader.regionMapSectionId;
-                for (i = 0; i < SMARTSHOPPER_NUM_ITEMS; i++)
-                {
-                    show->smartshopperShow.itemIds[i] = gMartPurchaseHistory[i].itemId;
-                    show->smartshopperShow.itemAmounts[i] = gMartPurchaseHistory[i].quantity;
-                }
-                show->smartshopperShow.priceReduced = IsPokeNewsActive(POKENEWS_SLATEPORT);
-                StringCopy(show->smartshopperShow.playerName, gSaveBlock2Ptr->playerName);
-                StorePlayerIdInRecordMixShow(show);
-                show->smartshopperShow.language = gGameLanguage;
-            }
-        }
-    }
+    //TVShow *show;
+    //u8 i;
+//
+    //if (!(gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(TRAINER_HILL_ENTRANCE) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(TRAINER_HILL_ENTRANCE))
+    // && !(gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(BATTLE_FRONTIER_MART) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(BATTLE_FRONTIER_MART))
+    // && !rbernoulli(1, 3))
+    //{
+    //    sCurTVShowSlot = FindFirstEmptyRecordMixTVShowSlot(gSaveBlock1Ptr->tvShows);
+    //    if (sCurTVShowSlot != -1 && IsRecordMixShowAlreadySpawned(TVSHOW_SMART_SHOPPER, FALSE) != TRUE)
+    //    {
+    //        SortPurchasesByQuantity();
+    //        if (gMartPurchaseHistory[0].quantity >= 20)
+    //        {
+    //            show = &gSaveBlock1Ptr->tvShows[sCurTVShowSlot];
+    //            show->smartshopperShow.kind = TVSHOW_SMART_SHOPPER;
+    //            show->smartshopperShow.active = FALSE; // NOTE: Show is not active until passed via Record Mix.
+    //            show->smartshopperShow.shopLocation = gMapHeader.regionMapSectionId;
+    //            for (i = 0; i < SMARTSHOPPER_NUM_ITEMS; i++)
+    //            {
+    //                show->smartshopperShow.itemIds[i] = gMartPurchaseHistory[i].itemId;
+    //                show->smartshopperShow.itemAmounts[i] = gMartPurchaseHistory[i].quantity;
+    //            }
+    //            show->smartshopperShow.priceReduced = IsPokeNewsActive(POKENEWS_SLATEPORT);
+    //            StringCopy(show->smartshopperShow.playerName, gSaveBlock2Ptr->playerName);
+    //            StorePlayerIdInRecordMixShow(show);
+    //            show->smartshopperShow.language = gGameLanguage;
+    //        }
+    //    }
+    //}
 }
 
 void PutNameRaterShowOnTheAir(void)
@@ -1624,6 +1626,11 @@ static void InterviewAfter_PkmnFanClubOpinions(void)
         show->fanclubOpinions.pokemonNameLanguage = LANGUAGE_JAPANESE;
     else
         show->fanclubOpinions.pokemonNameLanguage = GetMonData(&gPlayerParty[GetLeadMonIndex()], MON_DATA_LANGUAGE);
+}
+
+static void InterviewAfter_Dummy(void)
+{
+    TVShow *show = &gSaveBlock1Ptr->tvShows[sCurTVShowSlot];
 }
 
 static void TryStartRandomMassOutbreak(void)
@@ -2039,7 +2046,7 @@ static void SecretBaseVisit_CalculatePartyData(TVShow *show)
         {
             sTV_SecretBaseVisitMonsTemp[numPokemon].level = GetMonData(&gPlayerParty[i], MON_DATA_LEVEL);
             sTV_SecretBaseVisitMonsTemp[numPokemon].species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES);
-
+            
             // Check all the Pokémon's moves, then randomly select one to save
             numMoves = 0;
             move = GetMonData(&gPlayerParty[i], MON_DATA_MOVE1);
@@ -2074,7 +2081,7 @@ static void SecretBaseVisit_CalculatePartyData(TVShow *show)
     for (i = 0, sum = 0; i < numPokemon; i++)
         sum += sTV_SecretBaseVisitMonsTemp[i].level;
 
-    // Using the data calculated above, save the data to talk about on the show
+    // Using the data calculated above, save the data to talk about on the show 
     // (average level, and one randomly selected species / move)
     show->secretBaseVisit.avgLevel = sum / numPokemon;
     j = Random() % numPokemon;
@@ -2145,7 +2152,7 @@ void TryPutBreakingNewsOnAir(void)
         switch (show->breakingNews.outcome)
         {
         case 0:
-            show->breakingNews.caughtMonBall = gBattleResults.caughtMonBall;
+                            show->breakingNews.caughtMonBall = gBattleResults.caughtMonBall;
             show->breakingNews.balls = balls;
             break;
         case 1:
@@ -2620,7 +2627,7 @@ void DoPokeNews(void)
             // News event is upcoming, make comment about countdown to event
             u16 dayCountdown = gSaveBlock1Ptr->pokeNews[i].dayCountdown;
             ConvertIntToDecimalStringN(gStringVar1, dayCountdown, STR_CONV_MODE_LEFT_ALIGN, 1);
-
+            
             // Mark as inactive so the countdown TV airing doesn't repeat
             // Will be flagged as "upcoming" again by UpdatePokeNewsCountdown
             gSaveBlock1Ptr->pokeNews[i].state = POKENEWS_STATE_INACTIVE;
@@ -2659,15 +2666,15 @@ static bool8 ShouldApplyPokeNewsEffect(u8 newsKind)
     switch (newsKind)
     {
     case POKENEWS_SLATEPORT:
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SLATEPORT_CITY)
-         && gSaveBlock1Ptr->location.mapNum == MAP_NUM(SLATEPORT_CITY)
-         && gSpecialVar_LastTalked == LOCALID_SLATEPORT_ENERGY_GURU)
-            return TRUE;
+        //if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SLATEPORT_CITY)
+        // && gSaveBlock1Ptr->location.mapNum == MAP_NUM(SLATEPORT_CITY)
+        // && gSpecialVar_LastTalked == LOCALID_SLATEPORT_ENERGY_GURU)
+        //    return TRUE;
         return FALSE;
     case POKENEWS_LILYCOVE:
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(LILYCOVE_CITY_DEPARTMENT_STORE_ROOFTOP)
-         && gSaveBlock1Ptr->location.mapNum == MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_ROOFTOP))
-            return TRUE;
+        //if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(LILYCOVE_CITY_DEPARTMENT_STORE_ROOFTOP)
+        // && gSaveBlock1Ptr->location.mapNum == MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_ROOFTOP))
+        //    return TRUE;
         return FALSE;
     }
     return TRUE;
@@ -2825,7 +2832,7 @@ static bool8 IsRecordMixShowAlreadySpawned(u8 kind, bool8 delete)
 static void SortPurchasesByQuantity(void)
 {
     u8 i, j;
-
+    
     for (i = 0; i < SMARTSHOPPER_NUM_ITEMS - 1; i++)
     {
         for (j = i + 1; j < SMARTSHOPPER_NUM_ITEMS; j++)
@@ -3337,24 +3344,12 @@ u32 GetPlayerIDAsU32(void)
 
 u8 CheckForPlayersHouseNews(void)
 {
-    // Check if not in Littleroot house map group
-    if (gSaveBlock1Ptr->location.mapGroup != MAP_GROUP(LITTLEROOT_TOWN_BRENDANS_HOUSE_1F))
+    // Check if not in Pallet Town house map group
+    if (gSaveBlock1Ptr->location.mapGroup != MAP_GROUP(PALLET_TOWN_PLAYERS_HOUSE_1F))
         return PLAYERS_HOUSE_TV_NONE;
 
-    // Check if not in player's house (dependent on gender)
-    if (gSaveBlock2Ptr->playerGender == MALE)
-    {
-        if (gSaveBlock1Ptr->location.mapNum != MAP_NUM(LITTLEROOT_TOWN_BRENDANS_HOUSE_1F))
+    if (gSaveBlock1Ptr->location.mapNum != MAP_NUM(PALLET_TOWN_PLAYERS_HOUSE_1F))
             return PLAYERS_HOUSE_TV_NONE;
-    }
-    else
-    {
-        if (gSaveBlock1Ptr->location.mapNum != MAP_NUM(LITTLEROOT_TOWN_MAYS_HOUSE_1F))
-            return PLAYERS_HOUSE_TV_NONE;
-    }
-
-    if (FlagGet(FLAG_SYS_TV_LATIAS_LATIOS) == TRUE)
-        return PLAYERS_HOUSE_TV_LATI;
 
     if (FlagGet(FLAG_SYS_TV_HOME) == TRUE)
         return PLAYERS_HOUSE_TV_MOVIE;
@@ -3364,41 +3359,37 @@ u8 CheckForPlayersHouseNews(void)
 
 void GetMomOrDadStringForTVMessage(void)
 {
-    // If the player is checking the TV in their house it will only refer to their Mom.
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(LITTLEROOT_TOWN_BRENDANS_HOUSE_1F))
+    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(PALLET_TOWN_PLAYERS_HOUSE_1F))
     {
-        if (gSaveBlock2Ptr->playerGender == MALE)
-        {
-            if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(LITTLEROOT_TOWN_BRENDANS_HOUSE_1F))
+        if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(PALLET_TOWN_PLAYERS_HOUSE_1F))
             {
                 StringCopy(gStringVar1, gText_Mom);
                 VarSet(VAR_TEMP_3, 1);
             }
-        }
-        else
-        {
+    }
+            else
+            {
             if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(LITTLEROOT_TOWN_MAYS_HOUSE_1F))
             {
                 StringCopy(gStringVar1, gText_Mom);
                 VarSet(VAR_TEMP_3, 1);
             }
         }
-    }
     if (VarGet(VAR_TEMP_3) == 1)
     {
         StringCopy(gStringVar1, gText_Mom);
     }
     else if (VarGet(VAR_TEMP_3) == 2)
     {
-        StringCopy(gStringVar1, gText_Dad);
+        StringCopy(gStringVar1, gText_Mom);
     }
     else if (VarGet(VAR_TEMP_3) > 2)
     {
-        // Should only happen if VAR_TEMP_3 is already in use by something else.
+// Should only happen if VAR_TEMP_3 is already in use by something else.
         if (VarGet(VAR_TEMP_3) % 2 == 0)
             StringCopy(gStringVar1, gText_Mom);
         else
-            StringCopy(gStringVar1, gText_Dad);
+            StringCopy(gStringVar1, gText_Mom);
     }
     else
     {
@@ -3412,7 +3403,7 @@ void GetMomOrDadStringForTVMessage(void)
         }
         else
         {
-            StringCopy(gStringVar1, gText_Dad);
+            StringCopy(gStringVar1, gText_Mom);
             VarSet(VAR_TEMP_3, 2);
         }
     }
@@ -5270,7 +5261,7 @@ static void DoTVShowPokemonBattleUpdate(void)
         sTVShowState = 2;
         break;
     case 2:
-        TVShowConvertInternationalString(gStringVar1, show->battleUpdate.playerName, show->battleUpdate.language);
+         TVShowConvertInternationalString(gStringVar1, show->battleUpdate.playerName, show->battleUpdate.language);
         StringCopy(gStringVar2, GetSpeciesName(show->battleUpdate.speciesPlayer));
         StringCopy(gStringVar3, gMoveNames[show->battleUpdate.move]);
         sTVShowState = 3;
@@ -5538,11 +5529,11 @@ static void DoTVShowTodaysRivalTrainer(void)
         case MAPSEC_DYNAMIC:
             switch (show->rivalTrainer.mapLayoutId)
             {
-            case LAYOUT_SS_TIDAL_CORRIDOR:
-            case LAYOUT_SS_TIDAL_LOWER_DECK:
-            case LAYOUT_SS_TIDAL_ROOMS:
-                sTVShowState = 10;
-                break;
+            //case LAYOUT_SS_TIDAL_CORRIDOR:
+            //case LAYOUT_SS_TIDAL_LOWER_DECK:
+            //case LAYOUT_SS_TIDAL_ROOMS:
+            //    sTVShowState = 10;
+            //    break;
             default:
                 sTVShowState = 9;
                 break;
@@ -5699,11 +5690,11 @@ static void DoTVShowHoennTreasureInvestigators(void)
         {
             switch (show->treasureInvestigators.mapLayoutId)
             {
-            case LAYOUT_SS_TIDAL_CORRIDOR:
-            case LAYOUT_SS_TIDAL_LOWER_DECK:
-            case LAYOUT_SS_TIDAL_ROOMS:
-                sTVShowState = 2;
-                break;
+            //case LAYOUT_SS_TIDAL_CORRIDOR:
+            //case LAYOUT_SS_TIDAL_LOWER_DECK:
+            //case LAYOUT_SS_TIDAL_ROOMS:
+            //    sTVShowState = 2;
+            //    break;
             default:
                 sTVShowState = 1;
                 break;

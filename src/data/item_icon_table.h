@@ -421,7 +421,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_ULTRANECROZIUM_Z] = {gItemIcon_UltranecroziumZ, gItemIconPalette_UltranecroziumZ},
     // Species-specific Held Items
     [ITEM_LIGHT_BALL] = {gItemIcon_LightBall, gItemIconPalette_LightBall},
-    [ITEM_LEEK] = {gItemIcon_Leek, gItemIconPalette_Leek},
+    [ITEM_STICK] = {gItemIcon_Leek, gItemIconPalette_Leek},
     [ITEM_THICK_CLUB] = {gItemIcon_ThickClub, gItemIconPalette_ThickClub},
     [ITEM_LUCKY_PUNCH] = {gItemIcon_LuckyPunch, gItemIconPalette_LuckyPunch},
     [ITEM_METAL_POWDER] = {gItemIcon_MetalPowder, gItemIconPalette_MetalPowder},
@@ -736,6 +736,15 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_SHINY_CHARM] = {gItemIcon_ShinyCharm, gItemIconPalette_ShinyCharm},
     [ITEM_CATCHING_CHARM] = {gItemIcon_CatchingCharm, gItemIconPalette_CatchingCharm},
     [ITEM_EXP_CHARM] = {gItemIcon_ExpCharm, gItemIconPalette_ExpCharm},
+    //IV items
+    [ITEM_HP_CANDY]         = {gItemIcon_ExpCandyM, gItemIconPalette_HPCandy},
+    [ITEM_ATK_CANDY]        = {gItemIcon_ExpCandyM, gItemIconPalette_AtkCandy},
+    [ITEM_DEF_CANDY]        = {gItemIcon_ExpCandyM, gItemIconPalette_DefCandy},
+    [ITEM_SPATK_CANDY]      = {gItemIcon_ExpCandyM, gItemIconPalette_SpAtkCandy},
+    [ITEM_SPDEF_CANDY]      = {gItemIcon_ExpCandyM, gItemIconPalette_SpDefCandy},
+    [ITEM_SPEED_CANDY]      = {gItemIcon_ExpCandyM, gItemIconPalette_SpeedCandy},
+    [ITEM_MAX_CANDY]        = {gItemIcon_ExpCandyXL, gItemIconPalette_MaxCandy},
+    [ITEM_RESET_CANDY]      = {gItemIcon_ExpCandyXL, gItemIconPalette_ResetCandy},
     // Form-changing Key Items
     [ITEM_ROTOM_CATALOG] = {gItemIcon_RotomCatalog, gItemIconPalette_RotomCatalog},
     [ITEM_GRACIDEA] = {gItemIcon_Gracidea, gItemIconPalette_Gracidea},

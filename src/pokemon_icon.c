@@ -1,3 +1,4 @@
+#include "constants/species.h"
 #include "global.h"
 #include "graphics.h"
 #include "mail.h"
@@ -413,6 +414,8 @@ const u8 *const gMonIconTable[NUM_SPECIES + 1] =
     [SPECIES_JIRACHI] = gMonIcon_Jirachi,
     [SPECIES_DEOXYS_NORMAL] = gMonIcon_DeoxysNormal,
     [SPECIES_CHIMECHO] = gMonIcon_Chimecho,
+    [SPECIES_PIKACHU_PARTNER] = gMonIcon_Pikachu,
+    [SPECIES_RIVAL_EEVEE] = gMonIcon_Eevee,
 #if P_GEN_4_POKEMON == TRUE
     [SPECIES_TURTWIG] = gMonIcon_Turtwig,
     [SPECIES_GROTLE] = gMonIcon_Grotle,
@@ -1071,7 +1074,7 @@ const u8 *const gMonIconTable[NUM_SPECIES + 1] =
     [SPECIES_PIKACHU_UNOVA_CAP] = gMonIcon_PikachuUnovaCap,
     [SPECIES_PIKACHU_KALOS_CAP] = gMonIcon_PikachuKalosCap,
     [SPECIES_PIKACHU_ALOLA_CAP] = gMonIcon_PikachuAlolaCap,
-    [SPECIES_PIKACHU_PARTNER_CAP] = gMonIcon_PikachuPartnerCap,
+    [SPECIES_PIKACHU_PART_CAP] = gMonIcon_PikachuPartnerCap,
     [SPECIES_PIKACHU_WORLD_CAP] = gMonIcon_PikachuWorldCap,
     [SPECIES_PICHU_SPIKY_EARED] = gMonIcon_PichuSpikyEared,
     [SPECIES_UNOWN_B] = gMonIcon_UnownB,
@@ -1377,6 +1380,7 @@ const u8 gMonIconPaletteIndices[] =
     [SPECIES_EKANS] = 2,
     [SPECIES_ARBOK] = 2,
     [SPECIES_PIKACHU] = 2,
+    [SPECIES_PIKACHU_PARTNER] = 2,
     [SPECIES_RAICHU] = 0,
     [SPECIES_SANDSHREW] = 2,
     [SPECIES_SANDSLASH] = 2,
@@ -1485,6 +1489,7 @@ const u8 gMonIconPaletteIndices[] =
     [SPECIES_LAPRAS] = 2,
     [SPECIES_DITTO] = 2,
     [SPECIES_EEVEE] = 2,
+    [SPECIES_RIVAL_EEVEE] = 2,
     [SPECIES_VAPOREON] = 0,
     [SPECIES_JOLTEON] = 2,
     [SPECIES_FLAREON] = 3,
@@ -2372,7 +2377,7 @@ const u8 gMonIconPaletteIndices[] =
     [SPECIES_PIKACHU_UNOVA_CAP] = 0,
     [SPECIES_PIKACHU_KALOS_CAP] = 0,
     [SPECIES_PIKACHU_ALOLA_CAP] = 0,
-    [SPECIES_PIKACHU_PARTNER_CAP] = 0,
+    [SPECIES_PIKACHU_PART_CAP] = 0,
     [SPECIES_PIKACHU_WORLD_CAP] = 0,
     [SPECIES_PICHU_SPIKY_EARED] = 1,
     [SPECIES_UNOWN_B ... SPECIES_UNOWN_QMARK] = 0,
@@ -2599,6 +2604,7 @@ const u8 gMonIconPaletteIndices[] =
     [SPECIES_URSHIFU_RAPID_STRIKE_STYLE_GIGANTAMAX] = 0,
 #endif
     [SPECIES_EGG] = 1,
+    
 };
 
 const u8 gMonIconPaletteIndicesFemale[] =

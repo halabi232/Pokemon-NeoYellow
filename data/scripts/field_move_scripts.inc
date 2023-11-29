@@ -47,15 +47,15 @@ EventScript_CancelCut::
 
 Text_WantToCut:
 	.string "This tree looks like it can be\n"
-	.string "CUT down!\p"
-	.string "Would you like to CUT it?$"
+	.string "Cut down!\p"
+	.string "Would you like to Cut it?$"
 
 Text_MonUsedFieldMove:
 	.string "{STR_VAR_1} used {STR_VAR_2}!$"
 
 Text_CantCut:
 	.string "This tree looks like it can be\n"
-	.string "CUT down!$"
+	.string "Cut down!$"
 
 @ Use rock smash from party menu
 EventScript_UseRockSmash::
@@ -65,7 +65,7 @@ EventScript_UseRockSmash::
 @ Interact with smashable rock
 EventScript_RockSmash::
 	lockall
-	goto_if_unset FLAG_BADGE03_GET, EventScript_CantSmashRock
+	goto_if_unset FLAG_BADGE06_GET, EventScript_CantSmashRock
 	checkpartymove MOVE_ROCK_SMASH
 	goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_CantSmashRock
 	setfieldeffectargument 0, VAR_RESULT
@@ -82,14 +82,21 @@ EventScript_RockSmashCommon:
 	setfieldeffectargument 3, VAR_0x8004 @ skip pose if so
 	dofieldeffect FLDEFF_USE_ROCK_SMASH
 	waitstate
+	goto EventScript_SmashRock
+	end
+	
 EventScript_SmashRock:: @ fallthrough
 	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	call_if_eq VAR_0x8004, TRUE, EventScript_FollowerFieldMove
 	applymovement VAR_LAST_TALKED, Movement_SmashRock
 	waitmovement 0
 	removeobject VAR_LAST_TALKED
-	specialvar VAR_RESULT, TryUpdateRusturfTunnelState
-	goto_if_eq VAR_RESULT, TRUE, EventScript_EndSmash
+	random 4
+	goto_if_eq VAR_RESULT, 3, EventScript_RockHasItem
+	goto EventScript_SmashRockEncounter
+	end
+
+EventScript_SmashRockEncounter::
 	special RockSmashWildEncounter
 	goto_if_eq VAR_RESULT, FALSE, EventScript_EndSmash
 	waitstate
@@ -178,6 +185,88 @@ EventScript_EndSmash::
 	releaseall
 	end
 
+EventScript_RockHasItem::
+	goto_if_set FLAG_SYS_GAME_CLEAR, EventScript_RockHasItemPostgame
+	random 3
+	goto_if_eq VAR_RESULT, 0, EventScript_RockItem_CommonTreasure
+	goto_if_eq VAR_RESULT, 1, EventScript_RockItem_RareTreasure
+	goto_if_eq VAR_RESULT, 2, EventScript_RockItem_Stone
+	end
+
+EventScript_RockHasItemPostgame::
+	random 4
+	goto_if_eq VAR_RESULT, 0, EventScript_RockItem_CommonTreasure
+	goto_if_eq VAR_RESULT, 1, EventScript_RockItem_RareTreasure
+	goto_if_eq VAR_RESULT, 2, EventScript_RockItem_Stone
+	goto_if_eq VAR_RESULT, 3, EventScript_RockItem_Fossil
+	end
+
+EventScript_RockItem_CommonTreasure::
+	random 2
+	goto_if_eq VAR_RESULT, 0, EventScript_RockItem_Pearl
+	goto_if_eq VAR_RESULT, 1, EventScript_RockItem_Stardust
+	end
+
+EventScript_RockItem_Pearl::
+	giveitem ITEM_PEARL, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_Stardust::
+	giveitem ITEM_STARDUST, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_RareTreasure::
+	random 3
+	goto_if_eq VAR_RESULT, 0, EventScript_RockItem_Nugget
+	goto_if_eq VAR_RESULT, 1, EventScript_RockItem_BigPearl
+	goto_if_eq VAR_RESULT, 2, EventScript_RockItem_StarPiece
+	end
+
+EventScript_RockItem_Nugget::
+	giveitem ITEM_NUGGET, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_BigPearl::
+	giveitem ITEM_BIG_PEARL, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_StarPiece::
+	giveitem ITEM_STAR_PIECE, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_Stone::
+	random 2
+	goto_if_eq VAR_RESULT, 0, EventScript_RockItem_MoonStone
+	goto_if_eq VAR_RESULT, 1, EventScript_RockItem_PowerStone
+	end
+
+EventScript_RockItem_MoonStone::
+	giveitem ITEM_MOON_STONE, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_PowerStone::
+	giveitem ITEM_POWER_STONE, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_Fossil::
+	random 3
+	goto_if_eq VAR_RESULT, 0, EventScript_RockItem_HelixFossil
+	goto_if_eq VAR_RESULT, 1, EventScript_RockItem_DomeFossil
+	goto_if_eq VAR_RESULT, 2, EventScript_RockItem_OldAmber
+	end
+
+EventScript_RockItem_HelixFossil::
+	giveitem ITEM_HELIX_FOSSIL, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_DomeFossil::
+	giveitem ITEM_DOME_FOSSIL, 1
+	goto EventScript_SmashRockEncounter
+
+EventScript_RockItem_OldAmber::
+	giveitem ITEM_OLD_AMBER, 1
+	goto EventScript_SmashRockEncounter
+
 Movement_WalkUp:
 	walk_up
 	step_end
@@ -221,15 +310,16 @@ EventScript_CantSmashRock::
 
 EventScript_CancelSmash::
 	closemessage
+
 	releaseall
 	end
 
 Text_WantToSmash:
 	.string "This rock appears to be breakable.\n"
-	.string "Would you like to use ROCK SMASH?$"
+	.string "Would you like to use Rock Smash?$"
 
 Text_CantSmash:
-	.string "It's a rugged rock, but a POKéMON\n"
+	.string "It's a rugged rock, but a Pokémon\n"
 	.string "may be able to smash it.$"
 
 EventScript_StrengthBoulder::
@@ -276,21 +366,21 @@ EventScript_CancelStrength::
 	end
 
 Text_WantToStrength:
-	.string "It's a big boulder, but a POKéMON\n"
+	.string "It's a big boulder, but a Pokémon\n"
 	.string "may be able to push it aside.\p"
-	.string "Would you like to use STRENGTH?$"
+	.string "Would you like to use Strength?$"
 
 Text_MonUsedStrength:
-	.string "{STR_VAR_1} used STRENGTH!\p"
-	.string "{STR_VAR_1}'s STRENGTH made it\n"
+	.string "{STR_VAR_1} used Strength!\p"
+	.string "{STR_VAR_1}'s Strength made it\n"
 	.string "possible to move boulders around!$"
 
 Text_CantStrength:
-	.string "It's a big boulder, but a POKéMON\n"
+	.string "It's a big boulder, but a Pokémon\n"
 	.string "may be able to push it aside.$"
 
 Text_StrengthActivated:
-	.string "STRENGTH made it possible to move\n"
+	.string "Strength made it possible to move\n"
 	.string "boulders around.$"
 
 EventScript_UseWaterfall::
@@ -321,10 +411,10 @@ Text_CantWaterfall:
 
 Text_WantToWaterfall:
 	.string "It's a large waterfall.\n"
-	.string "Would you like to use WATERFALL?$"
+	.string "Would you like to use Waterfall?$"
 
 Text_MonUsedWaterfall:
-	.string "{STR_VAR_1} used WATERFALL.$"
+	.string "{STR_VAR_1} used Waterfall.$"
 
 EventScript_UseDive::
 	lockall
@@ -374,23 +464,23 @@ EventScript_EndSurface::
 	end
 
 Text_CantDive:
-	.string "The sea is deep here. A POKéMON\n"
+	.string "The sea is deep here. A Pokémon\n"
 	.string "may be able to go underwater.$"
 
 Text_WantToDive:
 	.string "The sea is deep here.\n"
-	.string "Would you like to use DIVE?$"
+	.string "Would you like to use Dive?$"
 
 Text_MonUsedDive:
-	.string "{STR_VAR_1} used DIVE.$"
+	.string "{STR_VAR_1} used Dive.$"
 
 Text_CantSurface:
 	.string "Light is filtering down from above.\n"
-	.string "A POKéMON may be able to surface.$"
+	.string "A Pokémon may be able to surface.$"
 
 Text_WantToSurface:
 	.string "Light is filtering down from above.\n"
-	.string "Would you like to use DIVE?$"
+	.string "Would you like to use Dive?$"
 
 EventScript_FailSweetScent::
 	msgbox Text_FailSweetScent, MSGBOX_SIGN

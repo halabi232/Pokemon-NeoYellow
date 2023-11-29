@@ -26,6 +26,7 @@ const struct CompressedSpriteSheet gMonFrontPicTable[NUM_SPECIES + 1] =
     SPECIES_SPRITE(EKANS, gMonFrontPic_Ekans),
     SPECIES_SPRITE(ARBOK, gMonFrontPic_Arbok),
     SPECIES_SPRITE(PIKACHU, gMonFrontPic_Pikachu),
+    SPECIES_SPRITE(PIKACHU_PARTNER, gMonFrontPic_PikachuPartner),
     SPECIES_SPRITE(RAICHU, gMonFrontPic_Raichu),
     SPECIES_SPRITE(SANDSHREW, gMonFrontPic_Sandshrew),
     SPECIES_SPRITE(SANDSLASH, gMonFrontPic_Sandslash),
@@ -1051,7 +1052,7 @@ const struct CompressedSpriteSheet gMonFrontPicTable[NUM_SPECIES + 1] =
     SPECIES_SPRITE(PIKACHU_UNOVA_CAP, gMonFrontPic_PikachuUnovaCap),
     SPECIES_SPRITE(PIKACHU_KALOS_CAP, gMonFrontPic_PikachuKalosCap),
     SPECIES_SPRITE(PIKACHU_ALOLA_CAP, gMonFrontPic_PikachuAlolaCap),
-    SPECIES_SPRITE(PIKACHU_PARTNER_CAP, gMonFrontPic_PikachuPartnerCap),
+    SPECIES_SPRITE(PIKACHU_PART_CAP, gMonFrontPic_PikachuPartnerCap),
     SPECIES_SPRITE(PIKACHU_WORLD_CAP, gMonFrontPic_PikachuWorldCap),
 
     SPECIES_SPRITE(PICHU_SPIKY_EARED, gMonFrontPic_PichuSpikyEared),

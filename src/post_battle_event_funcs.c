@@ -28,6 +28,8 @@ int GameClear(void)
     {
         gHasHallOfFameRecords = FALSE;
         FlagSet(FLAG_SYS_GAME_CLEAR);
+        FlagSet(FLAG_HIDE_CERULEAN_CAVE_GUARD);
+        FlagClear(FLAG_HIDE_VIRIDIAN_GYM_RIVAL);
     }
 
     if (GetGameStat(GAME_STAT_FIRST_HOF_PLAY_TIME) == 0)
@@ -35,10 +37,8 @@ int GameClear(void)
 
     SetContinueGameWarpStatus();
 
-    if (gSaveBlock2Ptr->playerGender == MALE)
-        SetContinueGameWarpToHealLocation(HEAL_LOCATION_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F);
-    else
-        SetContinueGameWarpToHealLocation(HEAL_LOCATION_LITTLEROOT_TOWN_MAYS_HOUSE_2F);
+    SetContinueGameWarpToHealLocation(HEAL_LOCATION_PLAYERS_HOUSE);
+  
 
     ribbonGet = FALSE;
 

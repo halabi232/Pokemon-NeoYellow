@@ -103,7 +103,6 @@ static const struct SecretBaseEntranceMetatiles sSecretBaseEntranceMetatiles[] =
     {.closedMetatileId = METATILE_General_YellowCaveIndent,     .openMetatileId = METATILE_General_YellowCaveOpen},
     {.closedMetatileId = METATILE_General_BlueCaveIndent,       .openMetatileId = METATILE_General_BlueCaveOpen},
     {.closedMetatileId = METATILE_Fallarbor_BrownCaveIndent,    .openMetatileId = METATILE_Fallarbor_BrownCaveOpen},
-    {.closedMetatileId = METATILE_Fortree_SecretBase_Shrub,     .openMetatileId = METATILE_Fortree_SecretBase_ShrubOpen},
 };
 
 // mapNum, warpId, x, y
@@ -1733,10 +1732,7 @@ void ReceiveSecretBasesData(void *secretBases, size_t recordSize, u8 linkIdx)
     struct SecretBaseRecordMixer mixers[3];
     u16 i;
 
-    if (linkIdx > 3)
-        return;
-
-    if (FlagGet(FLAG_RECEIVED_SECRET_POWER))
+    if (FlagGet(FLAG_SYS_GAME_CLEAR))
     {
         switch (GetLinkPlayerCount())
         {

@@ -53,10 +53,12 @@ struct MapLayout
 {
     /*0x00*/ s32 width;
     /*0x04*/ s32 height;
-    /*0x08*/ const u16 *border;
-    /*0x0C*/ const u16 *map;
-    /*0x10*/ const struct Tileset *primaryTileset;
-    /*0x14*/ const struct Tileset *secondaryTileset;
+    /*0x08*/ u16 *border;
+    /*0x0c*/ u16 *map;
+    /*0x10*/ struct Tileset *primaryTileset;
+    /*0x14*/ struct Tileset *secondaryTileset;
+    u8 borderWidth;
+    u8 borderHeight;
 };
 
 struct BackupMapLayout
@@ -66,24 +68,22 @@ struct BackupMapLayout
     u16 *map;
 };
 
-struct __attribute__((packed)) ObjectEventTemplate
+struct ObjectEventTemplate
 {
     /*0x00*/ u8 localId;
-    /*0x01*/ u16 graphicsId;
-    /*0x03*/ u8 kind; // Always OBJ_KIND_NORMAL in Emerald.
+    /*0x01*/ u8 inConnection; // Leftover from FRLG
+    /*0x02*/ u16 graphicsId;
     /*0x04*/ s16 x;
     /*0x06*/ s16 y;
     /*0x08*/ u8 elevation;
     /*0x09*/ u8 movementType;
     /*0x0A*/ u16 movementRangeX:4;
              u16 movementRangeY:4;
-             u16 unused:8;
     /*0x0C*/ u16 trainerType;
     /*0x0E*/ u16 trainerRange_berryTreeId;
     /*0x10*/ const u8 *script;
     /*0x14*/ u16 flagId;
-    /*0x16*/ u16 filler;
-}; // size = 0x18
+};
 
 struct WarpEvent
 {
@@ -257,6 +257,8 @@ enum {
     PLAYER_AVATAR_STATE_WATERING,
 };
 
+#define PLAYER_AVATAR_STATE_COUNT 8
+
 #define PLAYER_AVATAR_FLAG_ON_FOOT      (1 << 0)
 #define PLAYER_AVATAR_FLAG_MACH_BIKE    (1 << 1)
 #define PLAYER_AVATAR_FLAG_ACRO_BIKE    (1 << 2)
@@ -335,6 +337,7 @@ struct PlayerAvatar
     // these two are timer history arrays which [0] is the active timer for acro bike. every element is backed up to the next element upon update.
     /*0x14*/ u8 dirTimerHistory[8];
     /*0x1C*/ u8 abStartSelectTimerHistory[8];
+    /*0x24*/ u16 lastSpinTile;
 };
 
 struct Camera

@@ -9,11 +9,10 @@ EventScript_TrainerApproach::
 
 EventScript_TryDoNormalTrainerBattle::
 	lock
+	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	faceplayer
-  	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	applymovement VAR_LAST_TALKED, Movement_RevealTrainer
 	waitmovement 0
-	clearflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	specialvar VAR_RESULT, GetTrainerFlag
 	goto_if_ne VAR_RESULT, FALSE, EventScript_NoNormalTrainerBattle
 	special PlayTrainerEncounterMusic
@@ -25,12 +24,9 @@ EventScript_NoNormalTrainerBattle::
 
 EventScript_TryDoDoubleTrainerBattle::
 	lock
-	faceplayer
 	call EventScript_RevealTrainer
 	specialvar VAR_RESULT, GetTrainerFlag
 	goto_if_ne VAR_RESULT, FALSE, EventScript_NoDoubleTrainerBattle
-	special HasEnoughMonsForDoubleBattle
-	goto_if_ne VAR_RESULT, PLAYER_HAS_TWO_USABLE_MONS, EventScript_NotEnoughMonsForDoubleBattle
 	special PlayTrainerEncounterMusic
 	special SetTrainerFacingDirection
 	goto EventScript_ShowTrainerIntroMsg
@@ -46,10 +42,9 @@ EventScript_NoDoubleTrainerBattle::
 	gotopostbattlescript
 
 EventScript_DoNoIntroTrainerBattle::
-  	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
+	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	applymovement VAR_LAST_TALKED, Movement_RevealTrainer
 	waitmovement 0
-	clearflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	special PlayTrainerEncounterMusic
 	dotrainerbattle
 	gotopostbattlescript
@@ -74,8 +69,6 @@ EventScript_NoRematchTrainerBattle::
 EventScript_TryDoDoubleRematchBattle::
 	specialvar VAR_RESULT, IsTrainerReadyForRematch
 	goto_if_eq VAR_RESULT, FALSE, EventScript_NoDoubleRematchTrainerBattle
-	special HasEnoughMonsForDoubleBattle
-	goto_if_ne VAR_RESULT, PLAYER_HAS_TWO_USABLE_MONS, EventScript_NotEnoughMonsForDoubleRematchBattle
 	special PlayTrainerEncounterMusic
 	special SetTrainerFacingDirection
 	special ShowTrainerIntroSpeech
@@ -97,10 +90,9 @@ EventScript_NotEnoughMonsForDoubleRematchBattle::
 	end
 
 EventScript_RevealTrainer::
-  	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
+	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	applymovement VAR_LAST_TALKED, Movement_RevealTrainer
 	waitmovement 0
-	clearflag FLAG_SAFE_FOLLOWER_MOVEMENT
 	return
 
 Movement_RevealTrainer:
