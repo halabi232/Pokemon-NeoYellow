@@ -1620,7 +1620,7 @@ u8 CreateMonIcon(u16 species, void (*callback)(struct Sprite *), s16 x, s16 y, u
         .callback = callback,
         .paletteTag = POKE_ICON_BASE_PAL_TAG + gSpeciesInfo[specie].iconPalIndex,
     };
-
+    
     if (specie > NUM_SPECIES)
         iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG;
     else if (gSpeciesInfo[specie].iconSpriteFemale != NULL && IsPersonalityFemale(specie, personality))
