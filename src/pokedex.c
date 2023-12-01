@@ -280,6 +280,10 @@ static void ResetOtherVideoRegisters(u16);
 static u8 PrintCryScreenSpeciesName(u8, u16, u8, u8);
 static void PrintDecimalNum(u8 windowId, u16 num, u8 left, u8 top);
 static void DrawFootprint(u8 windowId, u16 dexNum);
+static u16 GetPokemonScaleFromNationalDexNumber(u16 nationalNum);
+static u16 GetPokemonOffsetFromNationalDexNumber(u16 nationalNum);
+static u16 GetTrainerScaleFromNationalDexNumber(u16 nationalNum);
+static u16 GetTrainerOffsetFromNationalDexNumber(u16 nationalNum);
 static u16 CreateSizeScreenTrainerPic(u16, s16, s16, s8);
 static u16 GetNextPosition(u8, u16, u16, u16);
 static u8 LoadSearchMenu(void);
@@ -852,9 +856,6 @@ static const u8 sText_TenDashes[] = _("----------");
 
 ALIGNED(4) static const u8 sExpandedPlaceholder_PokedexDescription[] = _("");
 
-#include "data/pokemon/pokedex_text.h"
-#include "data/pokemon/pokedex_entries.h"
-
 static const u16 sSizeScreenSilhouette_Pal[] = INCBIN_U16("graphics/pokedex/size_silhouette.gbapal");
 
 static const struct BgTemplate sInfoScreen_BgTemplate[] =
@@ -990,8 +991,6 @@ static const struct WindowTemplate sNewEntryInfoScreen_WindowTemplates[] =
 };
 
 static const u8 sText_TenDashes2[] = _("----------");
-
-#include "data/pokemon_graphics/footprint_table.h"
 
 // First character in range followed by number of characters in range for upper and lowercase
 static const u8 sLetterSearchRanges[][4] =
@@ -3810,8 +3809,8 @@ static void Task_LoadSizeScreen(u8 taskId)
         gSprites[spriteId].oam.affineMode = ST_OAM_AFFINE_NORMAL;
         gSprites[spriteId].oam.matrixNum = 1;
         gSprites[spriteId].oam.priority = 0;
-        gSprites[spriteId].y2 = gPokedexEntries[sPokedexListItem->dexNum].trainerOffset;
-        SetOamMatrix(1, gPokedexEntries[sPokedexListItem->dexNum].trainerScale, 0, 0, gPokedexEntries[sPokedexListItem->dexNum].trainerScale);
+        gSprites[spriteId].y2 = GetTrainerOffsetFromNationalDexNumber(sPokedexListItem->dexNum);
+        SetOamMatrix(1, GetTrainerScaleFromNationalDexNumber(sPokedexListItem->dexNum), 0, 0, GetTrainerScaleFromNationalDexNumber(sPokedexListItem->dexNum));
         LoadPalette(sSizeScreenSilhouette_Pal, OBJ_PLTT_ID2(gSprites[spriteId].oam.paletteNum), PLTT_SIZE_4BPP);
         gTasks[taskId].tTrainerSpriteId = spriteId;
         gMain.state++;
@@ -3821,8 +3820,8 @@ static void Task_LoadSizeScreen(u8 taskId)
         gSprites[spriteId].oam.affineMode = ST_OAM_AFFINE_NORMAL;
         gSprites[spriteId].oam.matrixNum = 2;
         gSprites[spriteId].oam.priority = 0;
-        gSprites[spriteId].y2 = gPokedexEntries[sPokedexListItem->dexNum].pokemonOffset;
-        SetOamMatrix(2, gPokedexEntries[sPokedexListItem->dexNum].pokemonScale, 0, 0, gPokedexEntries[sPokedexListItem->dexNum].pokemonScale);
+        gSprites[spriteId].y2 = GetPokemonOffsetFromNationalDexNumber(sPokedexListItem->dexNum);
+        SetOamMatrix(2, GetPokemonScaleFromNationalDexNumber(sPokedexListItem->dexNum), 0, 0, GetPokemonScaleFromNationalDexNumber(sPokedexListItem->dexNum));
         LoadPalette(sSizeScreenSilhouette_Pal, OBJ_PLTT_ID2(gSprites[spriteId].oam.paletteNum), PLTT_SIZE_4BPP);
         gTasks[taskId].tMonSpriteId = spriteId;
         CopyWindowToVram(WIN_INFO, COPYWIN_FULL);
@@ -4143,7 +4142,7 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
 {
     u8 str[0x10];
     u8 str2[0x30];
-    u16 natNum;
+    u16 species;
     const u8 *name;
     const u8 *category;
     const u8 *description;
@@ -4158,16 +4157,16 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
 
     ConvertIntToDecimalStringN(StringCopy(str, gText_NumberClear01), value, STR_CONV_MODE_LEADING_ZEROS, digitCount);
     PrintInfoScreenText(str, 0x60, 0x19);
-    natNum = NationalPokedexNumToSpecies(num);
-    if (natNum)
-        name = GetSpeciesName(natNum);
+    species = NationalPokedexNumToSpecies(num);
+    if (species)
+        name = GetSpeciesName(species);
     else
         name = sText_TenDashes2;
     PrintInfoScreenText(name, 114 + (6 * digitCount), 0x19);
 
     if (owned)
     {
-        CopyMonCategoryText(num, str2);
+        CopyMonCategoryText(species, str2);
         category = str2;
     }
     else
@@ -4179,8 +4178,8 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
     PrintInfoScreenText(gText_WTWeight, 0x60, 0x49);
     if (owned)
     {
-        PrintMonHeight(gPokedexEntries[num].height, 0x81, 0x39);
-        PrintMonWeight(gPokedexEntries[num].weight, 0x81, 0x49);
+        PrintMonHeight(GetSpeciesHeight(species), 0x81, 0x39);
+        PrintMonWeight(GetSpeciesWeight(species), 0x81, 0x49);
     }
     else
     {
@@ -4188,7 +4187,7 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
         PrintInfoScreenText(gText_UnkWeight, 0x81, 0x49);
     }
     if (owned)
-        description = gPokedexEntries[num].description;
+        description = GetSpeciesPokedexDescription(species);
     else
         description = sExpandedPlaceholder_PokedexDescription;
     PrintInfoScreenText(description, GetStringCenterAlignXOffset(FONT_NORMAL, description, DISPLAY_WIDTH), 95);
@@ -4283,24 +4282,6 @@ static void PrintMonWeight(u16 weight, u8 left, u8 top)
     buffer[i++] = CHAR_PERIOD;
     buffer[i++] = EOS;
     PrintInfoScreenText(buffer, left, top);
-}
-
-const u8 *GetPokedexCategoryName(u16 dexNum) // unused
-{
-    return gPokedexEntries[dexNum].categoryName;
-}
-
-u16 GetPokedexHeightWeight(u16 dexNum, u8 data)
-{
-    switch (data)
-    {
-    case 0:  // height
-        return gPokedexEntries[dexNum].height;
-    case 1:  // weight
-        return gPokedexEntries[dexNum].weight;
-    default:
-        return 1;
-    }
 }
 
 s8 GetSetPokedexFlag(u16 nationalDexNo, u8 caseID)
@@ -4430,7 +4411,7 @@ bool16 HasAllMons(void)
 
     for (i = 1; i < NATIONAL_DEX_COUNT + 1; i++)
     {
-        if (!(gSpeciesInfo[i].flags & SPECIES_FLAG_MYTHICAL) && !GetSetPokedexFlag(i, FLAG_GET_CAUGHT))
+        if (!(gSpeciesInfo[i].isMythical) && !GetSetPokedexFlag(i, FLAG_GET_CAUGHT))
             return FALSE;
     }
 
@@ -4587,7 +4568,7 @@ static void UNUSED PrintDecimalNum(u8 windowId, u16 num, u8 left, u8 top)
 static void DrawFootprint(u8 windowId, u16 dexNum)
 {
     u8 ALIGNED(4) footprint4bpp[TILE_SIZE_4BPP * NUM_FOOTPRINT_TILES];
-    const u8 *footprintGfx = gMonFootprintTable[NationalPokedexNumToSpecies(dexNum)];
+    const u8 *footprintGfx = gSpeciesInfo[NationalPokedexNumToSpecies(dexNum)].footprint;
     u32 i, j, tileIdx = 0;
 
     if (footprintGfx != NULL)
@@ -4676,6 +4657,30 @@ u16 CreateMonSpriteFromNationalDexNumber(u16 nationalNum, s16 x, s16 y, u16 pale
 {
     nationalNum = NationalPokedexNumToSpecies(nationalNum);
     return CreateMonPicSprite(nationalNum, SHINY_ODDS, GetPokedexMonPersonality(nationalNum), TRUE, x, y, paletteSlot, TAG_NONE);
+}
+
+static u16 GetPokemonScaleFromNationalDexNumber(u16 nationalNum)
+{
+    nationalNum = NationalPokedexNumToSpecies(nationalNum);
+    return gSpeciesInfo[nationalNum].pokemonScale;
+}
+
+static u16 GetPokemonOffsetFromNationalDexNumber(u16 nationalNum)
+{
+    nationalNum = NationalPokedexNumToSpecies(nationalNum);
+    return gSpeciesInfo[nationalNum].pokemonOffset;
+}
+
+static u16 GetTrainerScaleFromNationalDexNumber(u16 nationalNum)
+{
+    nationalNum = NationalPokedexNumToSpecies(nationalNum);
+    return gSpeciesInfo[nationalNum].trainerScale;
+}
+
+static u16 GetTrainerOffsetFromNationalDexNumber(u16 nationalNum)
+{
+    nationalNum = NationalPokedexNumToSpecies(nationalNum);
+    return gSpeciesInfo[nationalNum].trainerOffset;
 }
 
 static u16 CreateSizeScreenTrainerPic(u16 species, s16 x, s16 y, s8 paletteSlot)

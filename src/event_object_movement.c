@@ -190,6 +190,7 @@ static void CreateLevitateMovementTask(struct ObjectEvent *);
 static void DestroyLevitateMovementTask(u8);
 static bool8 GetFollowerInfo(u16 *species, u8 *form, u8 *shiny);
 static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny);
+static u32 GetFollowerPalette(u16 species, bool8 shiny);
 static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species, u8 form);
 static bool8 NpcTakeStep(struct Sprite *);
 static bool8 AreElevationsCompatible(u8, u8);
@@ -2114,7 +2115,7 @@ static void MakeSpriteTemplateFromObjectEventTemplate(const struct ObjectEventTe
 static u8 LoadDynamicFollowerPaletteFromGraphicsId(u16 graphicsId, bool8 shiny, struct SpriteTemplate *template) {
     u16 species = ((graphicsId & OBJ_EVENT_GFX_SPECIES_MASK) - OBJ_EVENT_GFX_MON_BASE);
     u8 form = (graphicsId >> OBJ_EVENT_GFX_SPECIES_BITS);
-    const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonPaletteTable)[species];
+    const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyFollowerPaletteTable : gMonFollowerPaletteTable)[species];
     u8 paletteNum = LoadDynamicFollowerPalette(species, form, shiny);
     if (template)
         template->paletteTag = spritePalette->tag;
@@ -2272,7 +2273,7 @@ static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny) {
     u8 paletteNum;
     // Note that the shiny palette tag is `species + SPECIES_SHINY_TAG`, which must be increased with more pokemon
     // so that palette tags do not overlap
-    const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonFollowerPaletteTable)[species];
+    const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyFollowerPaletteTable : gMonFollowerPaletteTable)[species];
     if ((paletteNum = IndexOfSpritePaletteTag(spritePalette->tag)) == 0xFF) { // Load compressed palette
         LoadCompressedSpritePalette(spritePalette);
         paletteNum = IndexOfSpritePaletteTag(spritePalette->tag); // Tag is always present

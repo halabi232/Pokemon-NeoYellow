@@ -1209,7 +1209,7 @@ static void PopulateSpeciesFromTrainerLocation(int matchCallId, u8 *destStr)
 
             if (numSpecies)
             {
-                StringCopy(destStr, gSpeciesNames[species[Random() % numSpecies]]);
+                StringCopy(destStr, gSpeciesInfo[species[Random() % numSpecies]].speciesName);
                 return;
             }
         }
