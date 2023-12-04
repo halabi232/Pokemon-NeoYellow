@@ -272,23 +272,23 @@ static const struct ListMenuTemplate sItemListMenu =
 };
 
 static const struct MenuAction sItemMenuActions[] = {
-    [ACTION_USE]               = {gMenuText_Use,      ItemMenu_UseOutOfBattle},
-    [ACTION_TOSS]              = {gMenuText_Toss,     ItemMenu_Toss},
-    [ACTION_REGISTER_L]        = {gMenuText_RegisterL, ItemMenu_RegisterL},
-    [ACTION_REGISTER_R]        = {gMenuText_RegisterR, ItemMenu_RegisterR},
-    [ACTION_GIVE]              = {gMenuText_Give,     ItemMenu_Give},
-    [ACTION_CANCEL]            = {gText_Cancel2,      ItemMenu_Cancel},
-    [ACTION_BATTLE_USE]        = {gMenuText_Use,      ItemMenu_UseInBattle},
-    [ACTION_CHECK]             = {gMenuText_Check,    ItemMenu_UseOutOfBattle},
-    [ACTION_WALK]              = {gMenuText_Walk,     ItemMenu_UseOutOfBattle},
-    [ACTION_DESELECT_L]        = {gMenuText_Deselect, ItemMenu_RegisterL},
-    [ACTION_DESELECT_R]        = {gMenuText_Deselect, ItemMenu_RegisterR},
-    [ACTION_CHECK_TAG]         = {gMenuText_CheckTag, ItemMenu_CheckTag},
-    [ACTION_CONFIRM]           = {gMenuText_Confirm,  Task_FadeAndCloseBagMenu},
-    [ACTION_SHOW]              = {gMenuText_Show,     ItemMenu_Show},
-    [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,    ItemMenu_GiveFavorLady},
-    [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,  ItemMenu_ConfirmQuizLady},
-    [ACTION_DUMMY]             = {gText_EmptyString2, NULL}
+    [ACTION_USE]               = {gMenuText_Use,       {ItemMenu_UseOutOfBattle}},
+    [ACTION_TOSS]              = {gMenuText_Toss,      {ItemMenu_Toss}},
+    [ACTION_REGISTER_L]        = {gMenuText_RegisterL, {ItemMenu_RegisterL}},
+    [ACTION_REGISTER_R]        = {gMenuText_RegisterR, {ItemMenu_RegisterR}},
+    [ACTION_GIVE]              = {gMenuText_Give,      {ItemMenu_Give}},
+    [ACTION_CANCEL]            = {gText_Cancel2,       {ItemMenu_Cancel}},
+    [ACTION_BATTLE_USE]        = {gMenuText_Use,       {ItemMenu_UseInBattle}},
+    [ACTION_CHECK]             = {gMenuText_Check,     {ItemMenu_UseOutOfBattle}},
+    [ACTION_WALK]              = {gMenuText_Walk,      {ItemMenu_UseOutOfBattle}},
+    [ACTION_DESELECT_L]        = {gMenuText_Deselect,  {ItemMenu_RegisterL}},
+    [ACTION_DESELECT_R]        = {gMenuText_Deselect,  {ItemMenu_RegisterR}},
+    [ACTION_CHECK_TAG]         = {gMenuText_CheckTag,  {ItemMenu_CheckTag}},
+    [ACTION_CONFIRM]           = {gMenuText_Confirm,   {Task_FadeAndCloseBagMenu}},
+    [ACTION_SHOW]              = {gMenuText_Show,      {ItemMenu_Show}},
+    [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,     {ItemMenu_GiveFavorLady}},
+    [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,   {ItemMenu_ConfirmQuizLady}},
+    [ACTION_DUMMY]             = {gText_EmptyString2,  {NULL}}
 };
 
 // these are all 2D arrays with a width of 2 but are represented as 1D arrays

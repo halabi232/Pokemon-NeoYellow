@@ -1056,6 +1056,7 @@ static u16 GetPrizeItemId(void)
     u8 i;
     const u16 *prizeList;
     s32 trainerNumSum = 0, prizeListSetId, minutes, id;
+    id = 0;
 
     // First determine which set of prize lists to use. The sets of lists only differ in
     // what TMs they can offer as the "grand prize" for a time under 12 minutes.

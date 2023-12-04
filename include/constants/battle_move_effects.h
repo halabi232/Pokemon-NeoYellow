@@ -167,7 +167,7 @@
 #define EFFECT_MEMENTO                      163
 #define EFFECT_FACADE                       164
 #define EFFECT_FOCUS_PUNCH                  165
-#define EFFECT_SMELLINGSALT                 166
+#define EFFECT_SMELLING_SALTS               166
 #define EFFECT_FOLLOW_ME                    167
 #define EFFECT_NATURE_POWER                 168
 #define EFFECT_CHARGE                       169
@@ -417,7 +417,9 @@
 #define EFFECT_SYRUP_BOMB                   411
 #define EFFECT_IVY_CUDGEL                   412
 #define EFFECT_MAX_MOVE                     413
+#define EFFECT_GLAIVE_RUSH                  414
+#define EFFECT_RAGING_BULL                  415
 
-#define NUM_BATTLE_MOVE_EFFECTS             414
+#define NUM_BATTLE_MOVE_EFFECTS             416
 
 #endif  // GUARD_CONSTANTS_BATTLE_MOVE_EFFECTS_H
