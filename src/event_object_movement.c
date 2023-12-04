@@ -7306,19 +7306,26 @@ bool8 MovementAction_ExitPokeball_Step1(struct ObjectEvent *objectEvent, struct 
         return TRUE;
     // Set graphics, palette, and affine animation
     } else if ((duration == 0 && sprite->data[3] == 3) || (duration == 1 && sprite->data[3] == 7)) {
-      FollowerSetGraphics(objectEvent, OW_SPECIES(objectEvent), OW_FORM(objectEvent), objectEvent->shiny, FALSE);
-      LoadFillColorPalette(RGB_WHITE, OBJ_EVENT_PAL_TAG_WHITE, sprite);
-      // Initialize affine animation
-      sprite->affineAnims = sAffineAnims_PokeballFollower;
-      sprite->oam.affineMode = ST_OAM_AFFINE_NORMAL;
-      InitSpriteAffineAnim(sprite);
-      StartSpriteAffineAnim(sprite, sprite->data[6] >> 4);
+        FollowerSetGraphics(objectEvent, OW_SPECIES(objectEvent), OW_FORM(objectEvent), objectEvent->shiny, FALSE);
+        LoadFillColorPalette(RGB_WHITE, OBJ_EVENT_PAL_TAG_WHITE, sprite);
+        // Initialize affine animation
+        sprite->affineAnims = sAffineAnims_PokeballFollower;
+        #if LARGE_OW_SUPPORT
+        if (IS_POW_OF_TWO(-sprite->centerToCornerVecX)) {
+        #endif
+            sprite->affineAnims = sAffineAnims_PokeballFollower;
+            sprite->oam.affineMode = ST_OAM_AFFINE_NORMAL;
+            InitSpriteAffineAnim(sprite);
+            StartSpriteAffineAnim(sprite, sprite->data[6] >> 4);
+        #if LARGE_OW_SUPPORT
+        }
+        #endif
     // Restore original palette & disable affine
     } else if ((duration == 0 && sprite->data[3] == 1) || (duration == 1 && sprite->data[3] == 3)) {
-      sprite->affineAnimEnded = TRUE;
-      FreeSpriteOamMatrix(sprite);
-      sprite->oam.affineMode = ST_OAM_AFFINE_OFF;
-      FollowerSetGraphics(objectEvent, OW_SPECIES(objectEvent), OW_FORM(objectEvent), objectEvent->shiny, TRUE);
+        sprite->affineAnimEnded = TRUE;
+        FreeSpriteOamMatrix(sprite);
+        sprite->oam.affineMode = ST_OAM_AFFINE_OFF;
+        FollowerSetGraphics(objectEvent, OW_SPECIES(objectEvent), OW_FORM(objectEvent), objectEvent->shiny, TRUE);
     }
     return FALSE;
 }
@@ -7340,21 +7347,27 @@ bool8 MovementAction_EnterPokeball_Step1(struct ObjectEvent *objectEvent, struct
         sprite->data[2] = 2;
         return FALSE;
     } else if (sprite->data[3] == 11) { // Set palette to white & start affine
-      LoadFillColorPalette(RGB_WHITE, OBJ_EVENT_PAL_TAG_WHITE, sprite);
-      sprite->affineAnims = sAffineAnims_PokeballFollower;
-      sprite->oam.affineMode = ST_OAM_AFFINE_NORMAL;
-      #if LARGE_OW_SUPPORT
-      sprite->subspriteTableNum = 1;
-      #endif
-      InitSpriteAffineAnim(sprite);
-      StartSpriteAffineAnim(sprite, sprite->data[6]);
+        LoadFillColorPalette(RGB_WHITE, OBJ_EVENT_PAL_TAG_WHITE, sprite);
+        #if LARGE_OW_SUPPORT
+        // Only do affine if sprite width is power of 2
+        // (effect looks weird on sprites composed of subsprites like 48x48, etc)
+        if (IS_POW_OF_TWO(-sprite->centerToCornerVecX)) {
+        #endif
+            sprite->affineAnims = sAffineAnims_PokeballFollower;
+            sprite->oam.affineMode = ST_OAM_AFFINE_NORMAL;
+            InitSpriteAffineAnim(sprite);
+            StartSpriteAffineAnim(sprite, sprite->data[6]);
+        #if LARGE_OW_SUPPORT
+        }
+        #endif
+        sprite->subspriteTableNum = 0;
     } else if (sprite->data[3] == 7) { // Free white palette and change to pokeball, disable affine
-      sprite->affineAnimEnded = TRUE;
-      FreeSpriteOamMatrix(sprite);
-      sprite->oam.affineMode = ST_OAM_AFFINE_OFF;
-      ObjectEventSetGraphicsId(objectEvent, OBJ_EVENT_GFX_ANIMATED_BALL);
-      objectEvent->graphicsId = graphicsId;
-      objectEvent->inanimate = FALSE;
+        sprite->affineAnimEnded = TRUE;
+        FreeSpriteOamMatrix(sprite);
+        sprite->oam.affineMode = ST_OAM_AFFINE_OFF;
+        ObjectEventSetGraphicsId(objectEvent, OBJ_EVENT_GFX_ANIMATED_BALL);
+        objectEvent->graphicsId = graphicsId;
+        objectEvent->inanimate = FALSE;
     }
     return FALSE;
 }
@@ -9412,9 +9425,6 @@ void ObjectEventUpdateElevation(struct ObjectEvent *objEvent, struct Sprite *spr
         #endif
         return;
     }
-    #if LARGE_OW_SUPPORT
-    sprite->subspriteMode = SUBSPRITES_ON;
-    #endif
 
     objEvent->currentElevation = curElevation;
 
@@ -9806,6 +9816,9 @@ static void DoGroundEffects_OnSpawn(struct ObjectEvent *objEvent, struct Sprite 
     if (objEvent->triggerGroundEffectsOnMove)
     {
         flags = 0;
+        #if LARGE_OW_SUPPORT
+        sprite->subspriteMode = SUBSPRITES_ON;
+        #endif
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
         GetAllGroundEffectFlags_OnSpawn(objEvent, &flags);
         SetObjectEventSpriteOamTableForLongGrass(objEvent, sprite);
@@ -9822,6 +9835,9 @@ static void DoGroundEffects_OnBeginStep(struct ObjectEvent *objEvent, struct Spr
     if (objEvent->triggerGroundEffectsOnMove)
     {
         flags = 0;
+        #if LARGE_OW_SUPPORT
+        sprite->subspriteMode = SUBSPRITES_ON;
+        #endif
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
         GetAllGroundEffectFlags_OnBeginStep(objEvent, &flags);
         SetObjectEventSpriteOamTableForLongGrass(objEvent, sprite);
@@ -10723,4 +10739,20 @@ bool8 ScrFunc_getdaycaregfx(struct ScriptContext *ctx) {
     }
     gSpecialVar_Result = i;
     return FALSE;
+}
+
+bool8 MovementAction_EmoteX_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    ObjectEventGetLocalIdAndMap(objectEvent, &gFieldEffectArguments[0], &gFieldEffectArguments[1], &gFieldEffectArguments[2]);
+    FieldEffectStart(FLDEFF_X_ICON);
+    sprite->sActionFuncId = 1;
+    return TRUE;
+}
+
+bool8 MovementAction_EmoteDoubleExclamationMark_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    ObjectEventGetLocalIdAndMap(objectEvent, &gFieldEffectArguments[0], &gFieldEffectArguments[1], &gFieldEffectArguments[2]);
+    FieldEffectStart(FLDEFF_DOUBLE_EXCL_MARK_ICON);
+    sprite->sActionFuncId = 1;
+    return TRUE;
 }

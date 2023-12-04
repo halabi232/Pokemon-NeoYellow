@@ -42,6 +42,7 @@
 #include "tv.h"
 #include "window.h"
 #include "constants/battle_move_effects.h"
+#include "constants/hold_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/party_menu.h"
@@ -437,12 +438,12 @@ static const struct WindowTemplate sSummaryTemplate[] =
         .height = 3,
         .paletteNum = 2,
         .baseBlock = 100,
-    },
-    [PSS_LABEL_PANE_RIGHT_SMALL] = {
-        .bg = 0,
-        .tilemapLeft = 11,
-        .tilemapTop = 5,
-        .width = 19,
+        .tilemapLeft = 1,
+        .tilemapTop = 12,
+        .width = 9,
+        .height = 2,
+        .paletteNum = 6,
+        .baseBlock = 397,
         .height = 15,
         .paletteNum = 2,
         .baseBlock = 200,
@@ -3897,7 +3898,6 @@ static void SwapMovesTypeSprites(u8 moveIndex1, u8 moveIndex2)
 
 static u8 LoadMonGfxAndSprite(struct Pokemon *mon, s16 *state)
 {
-    const struct CompressedSpritePalette *pal;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
 
     switch (*state)

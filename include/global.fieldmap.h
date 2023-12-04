@@ -66,7 +66,7 @@ struct BackupMapLayout
     u16 *map;
 };
 
-struct __attribute__((packed)) ObjectEventTemplate
+struct __attribute__((packed, aligned(4))) ObjectEventTemplate
 {
     /*0x00*/ u8 localId;
     /*0x01*/ u16 graphicsId;
@@ -255,6 +255,7 @@ enum {
     PLAYER_AVATAR_STATE_FIELD_MOVE,
     PLAYER_AVATAR_STATE_FISHING,
     PLAYER_AVATAR_STATE_WATERING,
+    PLAYER_AVATAR_STATE_VSSEEKER,
 };
 
 #define PLAYER_AVATAR_FLAG_ON_FOOT      (1 << 0)
