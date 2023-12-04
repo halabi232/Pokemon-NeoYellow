@@ -4267,6 +4267,14 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 if (evolutions[i].param <= level && (personality % 100) == 0)
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
+            case EVO_LEVEL_FAMILY_OF_FOUR:
+                if (gEvolutionTable[species][i].param <= level && (personality % 100) != 0)
+                    targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                break;
+            case EVO_LEVEL_FAMILY_OF_THREE:
+                if (gEvolutionTable[species][i].param <= level && (personality % 100) == 0)
+                    targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                break;
             case EVO_BEAUTY:
                 if (evolutions[i].param <= beauty)
                     targetSpecies = evolutions[i].targetSpecies;
@@ -4282,6 +4290,14 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
             case EVO_MOVE_THREE_SEGMENT:
                 if (MonKnowsMove(mon, evolutions[i].param) && (personality % 100) == 0)
                     targetSpecies = evolutions[i].targetSpecies;
+                break;
+            case EVO_MOVE_TWO_SEGMENT:
+                if (MonKnowsMove(mon, gEvolutionTable[species][i].param) && (personality % 100) != 0)
+                    targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                break;
+            case EVO_MOVE_THREE_SEGMENT:
+                if (MonKnowsMove(mon, gEvolutionTable[species][i].param) && (personality % 100) == 0)
+                    targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_MOVE_TYPE:
                 if (friendship >= FRIENDSHIP_EVO_THRESHOLD)

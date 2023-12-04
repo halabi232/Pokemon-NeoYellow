@@ -28,7 +28,6 @@ static bool8 ShouldUseItem(u32 battler);
 static bool32 AiExpectsToFaintPlayer(u32 battler);
 static bool32 AI_ShouldHeal(u32 battler, u32 healAmount);
 static bool32 AI_OpponentCanFaintAiWithMod(u32 battler, u32 healAmount);
-static u32 GetSwitchinHazardsDamage(u32 battler, struct BattlePokemon *battleMon);
 
 static void InitializeSwitchinCandidate(struct Pokemon *mon)
 {
@@ -1013,10 +1012,6 @@ bool32 ShouldSwitch(u32 battler)
         return TRUE;
     if (HasBadOdds(battler))
         return TRUE;
-    if (ShouldSwitchIfEncored(battler))
-        return TRUE;
-    if (AreAttackingStatsLowered(battler))
-        return TRUE;
 
     //Removing switch capabilites under specific conditions
     //These Functions prevent the "FindMonWithFlagsAndSuperEffective" from getting out of hand.
@@ -1262,7 +1257,7 @@ static u32 GetSwitchinHazardsDamage(u32 battler, struct BattlePokemon *battleMon
     {
         // Stealth Rock
         if ((hazardFlags & SIDE_STATUS_STEALTH_ROCK) && heldItemEffect != HOLD_EFFECT_HEAVY_DUTY_BOOTS)
-            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, battleMon->maxHP);
+            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, battleMon->hp);
         // Spikes
         if ((hazardFlags & SIDE_STATUS_SPIKES) && IsMonGrounded(heldItemEffect, ability, defType1, defType2))
         {

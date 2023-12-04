@@ -1917,6 +1917,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         ICON(Pichu, 1),
         .evolutions = EVOLUTION({EVO_FRIENDSHIP, 0, SPECIES_PIKACHU}),
     },
+#endif //P_FAMILY_EKANS
 
     [SPECIES_PICHU_SPIKY_EARED] =
     {
@@ -2313,7 +2314,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .footprint = gMonFootprint_Raichu,                  \
         .formSpeciesIdTable = sRaichuFormSpeciesIdTable
 
-    [SPECIES_RAICHU] =
+    [SPECIES_PICHU] =
     {
         RAICHU_MISC_INFO,
         .baseHP        = 60,
@@ -11879,6 +11880,28 @@ const struct SpeciesInfo gSpeciesInfo[] =
         LEARNSETS(Snorlax),                                                     \
         .formSpeciesIdTable = sSnorlaxFormSpeciesIdTable,                       \
         .formChangeTable = sSnorlaxFormChangeTable
+
+#define SNORLAX_MISC_INFO                                                       \
+        .baseHP        = 160,                                                   \
+        .baseAttack    = 110,                                                   \
+        .baseDefense   = 65,                                                    \
+        .baseSpeed     = 30,                                                    \
+        .baseSpAttack  = 65,                                                    \
+        .baseSpDefense = 110,                                                   \
+        .types = {TYPE_NORMAL, TYPE_NORMAL},                                    \
+        .catchRate = 25,                                                        \
+        .expYield = 189,                                                        \
+        .evYield_HP        = 2,                                                 \
+        .itemCommon = ITEM_LEFTOVERS,                                           \
+        .itemRare = ITEM_LEFTOVERS,                                             \
+        .genderRatio = PERCENT_FEMALE(12.5),                                    \
+        .eggCycles = 40,                                                        \
+        .friendship = STANDARD_FRIENDSHIP,                                      \
+        .growthRate = GROWTH_SLOW,                                              \
+        .eggGroups = {EGG_GROUP_MONSTER, EGG_GROUP_MONSTER},                    \
+        .abilities = {ABILITY_IMMUNITY, ABILITY_THICK_FAT, ABILITY_GLUTTONY},   \
+        .bodyColor = BODY_COLOR_BLACK,                                          \
+        .noFlip = FALSE
 
     [SPECIES_SNORLAX] =
     {
@@ -24283,6 +24306,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         PALETTE(CastformNormal),
         ICON(CastformNormal, 0),
     },
+#endif //P_FAMILY_FEEBAS
 
     [SPECIES_CASTFORM_SUNNY] =
     {
@@ -26407,6 +26431,33 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .formSpeciesIdTable = sGroudonFormSpeciesIdTable,               \
         .formChangeTable = sGroudonFormChangeTable
 
+    [SPECIES_KYOGRE_PRIMAL] =
+    {
+        KYOGRE_MISC_INFO,
+        .baseHP        = 100,
+        .baseAttack    = 150,
+        .baseDefense   = 90,
+        .baseSpeed     = 90,
+        .baseSpAttack  = 180,
+        .baseSpDefense = 160,
+        .abilities = {ABILITY_PRIMORDIAL_SEA, ABILITY_PRIMORDIAL_SEA},
+        .flags = SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_PRIMAL_REVERSION,
+    },
+#endif //P_FAMILY_KYOGRE
+
+#if P_FAMILY_GROUDON
+#define GROUDON_MISC_INFO                                               \
+        .catchRate = 3,                                                 \
+        .expYield = 302,                                                \
+        .evYield_Attack    = 3,                                         \
+        .genderRatio = MON_GENDERLESS,                                  \
+        .eggCycles = 120,                                               \
+        .friendship = 0,                                                \
+        .growthRate = GROWTH_SLOW,                                      \
+        .eggGroups = { EGG_GROUP_UNDISCOVERED, EGG_GROUP_UNDISCOVERED}, \
+        .bodyColor = BODY_COLOR_RED,                                    \
+        .noFlip = FALSE
+
     [SPECIES_GROUDON] =
     {
         GROUDON_MISC_INFO,
@@ -27981,6 +28032,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .evolutions = EVOLUTION({EVO_LEVEL_FEMALE, 20, SPECIES_WORMADAM_PLANT_CLOAK},
                                 {EVO_LEVEL_MALE, 20, SPECIES_MOTHIM}),
     },
+#endif //P_FAMILY_SHIELDON
 
     [SPECIES_BURMY_SANDY_CLOAK] =
     {
@@ -36581,6 +36633,30 @@ const struct SpeciesInfo gSpeciesInfo[] =
         ICON(DeerlingWinter, 2),
         .evolutions = EVOLUTION({EVO_LEVEL, 34, SPECIES_SAWSBUCK_WINTER}),
     },
+#endif //P_FAMILY_VANILLITE
+
+#if P_FAMILY_DEERLING
+#define DEERLING_SPECIES_INFO(color)                                                 \
+    {                                                                                \
+        .baseHP        = 60,                                                         \
+        .baseAttack    = 60,                                                         \
+        .baseDefense   = 50,                                                         \
+        .baseSpeed     = 75,                                                         \
+        .baseSpAttack  = 40,                                                         \
+        .baseSpDefense = 50,                                                         \
+        .types = { TYPE_NORMAL, TYPE_GRASS},                                         \
+        .catchRate = 190,                                                            \
+        .expYield = 67,                                                              \
+        .evYield_Speed     = 1,                                                      \
+        .genderRatio = PERCENT_FEMALE(50),                                           \
+        .eggCycles = 20,                                                             \
+        .friendship = STANDARD_FRIENDSHIP,                                           \
+        .growthRate = GROWTH_MEDIUM_FAST,                                            \
+        .eggGroups = { EGG_GROUP_FIELD, EGG_GROUP_FIELD},                            \
+        .abilities = {ABILITY_CHLOROPHYLL, ABILITY_SAP_SIPPER, ABILITY_SERENE_GRACE},\
+        .bodyColor = color,                                                          \
+        .noFlip = FALSE,                                                             \
+    }
 
 #define SAWSBUCK_MISC_INFO                                                              \
         .baseHP        = 80,                                                            \
@@ -41481,6 +41557,30 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .description = COMPOUND_STRING(
             ""),
     },
+#endif //P_FAMILY_LITLEO
+
+#if P_FAMILY_FLABEBE
+#define FLABEBE_SPECIES_INFO                                                \
+    {                                                                       \
+        .baseHP        = 44,                                                \
+        .baseAttack    = 38,                                                \
+        .baseDefense   = 39,                                                \
+        .baseSpeed     = 42,                                                \
+        .baseSpAttack  = 61,                                                \
+        .baseSpDefense = 79,                                                \
+        .types = { TYPE_FAIRY, TYPE_FAIRY},                                 \
+        .catchRate = 225,                                                   \
+        .expYield = 61,                                                     \
+        .evYield_SpDefense = 1,                                             \
+        .genderRatio = MON_FEMALE,                                          \
+        .eggCycles = 20,                                                    \
+        .friendship = STANDARD_FRIENDSHIP,                                  \
+        .growthRate = GROWTH_MEDIUM_FAST,                                   \
+        .eggGroups = { EGG_GROUP_FAIRY, EGG_GROUP_FAIRY},                   \
+        .abilities = {ABILITY_FLOWER_VEIL, ABILITY_NONE, ABILITY_SYMBIOSIS},\
+        .bodyColor = BODY_COLOR_WHITE,                                      \
+        .noFlip = FALSE,                                                    \
+    }
 
 #define FLOETTE_MISC_INFO(form, FORM, iconPal)                              \
         .types = { TYPE_FAIRY, TYPE_FAIRY},                                 \
@@ -45766,6 +45866,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         PALETTE(OricorioBaile),
         ICON(OricorioBaile, 0),
     },
+#endif //P_FAMILY_CRABRAWLER
 
     [SPECIES_ORICORIO_POM_POM] =
     {
@@ -45972,6 +46073,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .evolutions = EVOLUTION({EVO_LEVEL_DAY, 25, SPECIES_LYCANROC_MIDDAY},
                                 {EVO_LEVEL_NIGHT, 25, SPECIES_LYCANROC_MIDNIGHT}),
     },
+#endif //P_FAMILY_CUTIEFLY
 
     [SPECIES_ROCKRUFF_OWN_TEMPO] =
     {
@@ -47847,6 +47949,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         PALETTE(MimikyuDisguised),
         ICON(MimikyuDisguised, 1),
     },
+#endif //P_FAMILY_TOGEDEMARU
 
     [SPECIES_MIMIKYU_BUSTED] =
     {
@@ -52320,6 +52423,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .enemyMonElevation = 9,
         .evolutions = EVOLUTION({EVO_ITEM, ITEM_CRACKED_POT, SPECIES_POLTEAGEIST_PHONY}),
     },
+#endif //P_FAMILY_CLOBBOPUS
 
     [SPECIES_SINISTEA_ANTIQUE] =
     {
@@ -54902,6 +55006,34 @@ const struct SpeciesInfo gSpeciesInfo[] =
         PALETTE(EnamorusIncarnate),
         ICON(EnamorusIncarnate, 1),
         //.footprint = gMonFootprint_EnamorusIncarnate,
+    },
+#endif //P_FAMILY_CALYREX
+
+#if P_FAMILY_ENAMORUS
+#define ENAMORUS_MISC_INFO                                              \
+        .types = { TYPE_FAIRY, TYPE_FLYING},                            \
+        .catchRate = 3,                                                 \
+        .expYield = 116,                                                \
+        .evYield_SpAttack  = 3,                                         \
+        .genderRatio = MON_FEMALE,                                      \
+        .eggCycles = 20,                                                \
+        .friendship = STANDARD_FRIENDSHIP,                              \
+        .growthRate = GROWTH_SLOW,                                      \
+        .eggGroups = { EGG_GROUP_UNDISCOVERED, EGG_GROUP_UNDISCOVERED}, \
+        .bodyColor = BODY_COLOR_PINK,                                   \
+        .noFlip = FALSE,                                                \
+        .flags = SPECIES_FLAG_LEGENDARY
+
+    [SPECIES_ENAMORUS_INCARNATE] =
+    {
+        ENAMORUS_MISC_INFO,
+        .baseHP        = 74,
+        .baseAttack    = 115,
+        .baseDefense   = 70,
+        .baseSpeed     = 106,
+        .baseSpAttack  = 135,
+        .baseSpDefense = 80,
+        .abilities = {ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_CONTRARY},
     },
 
     [SPECIES_ENAMORUS_THERIAN] =
@@ -57589,6 +57721,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         LEARNSETS(Tinkatink),
         .evolutions = EVOLUTION({EVO_LEVEL, 24, SPECIES_TINKATUFF}),
     },
+#endif //P_FAMILY_WO_CHIEN
 
     [SPECIES_TINKATUFF] =
     {
@@ -57638,6 +57771,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         LEARNSETS(Tinkatuff),
         .evolutions = EVOLUTION({EVO_LEVEL, 38, SPECIES_TINKATON}),
     },
+#endif //P_FAMILY_CHIEN_PAO
 
     [SPECIES_TINKATON] =
     {
