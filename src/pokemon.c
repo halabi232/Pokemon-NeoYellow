@@ -5388,43 +5388,6 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
     }
 }
 
-const u32 *GetMonFrontSpritePal(struct Pokemon *mon)
-{
-    u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, 0);
-    u32 otId = GetMonData(mon, MON_DATA_OT_ID, 0);
-    u32 personality = GetMonData(mon, MON_DATA_PERSONALITY, 0);
-    return GetMonSpritePalFromSpeciesAndPersonality(species, otId, personality);
-}
-
-const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 personality)
-{
-    u32 shinyValue;
-
-    if (species > NUM_SPECIES)
-        return gMonPaletteTable[SPECIES_NONE].data;
-
-    shinyValue = GET_SHINY_VALUE(otId, personality);
-    if (shinyValue < SHINY_ODDS)
-    {
-        if (gMonShinyPaletteTableFemale[species].data != NULL && IsPersonalityFemale(species, personality))
-            return gMonShinyPaletteTableFemale[species].data;
-        else if (gMonShinyPaletteTable[species].data != NULL)
-            return gMonShinyPaletteTable[species].data;
-        else
-            return gMonShinyPaletteTable[SPECIES_NONE].data;
-    }
-    else
-    {
-        if (gMonPaletteTableFemale[species].data != NULL && IsPersonalityFemale(species, personality))
-            return gMonPaletteTableFemale[species].data;
-        else if (gMonPaletteTable[species].data != NULL)
-            return gMonPaletteTable[species].data;
-        else
-            return gMonPaletteTable[SPECIES_NONE].data;
-    }
-}
-
-
 bool8 IsMoveHM(u16 move)
 {
     int i = 0;
