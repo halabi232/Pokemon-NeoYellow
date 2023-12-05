@@ -5785,10 +5785,10 @@ static const u8 sLevelCapTable[] =
     [LEVEL_CAP_BADGE_2]     = 40,
     [LEVEL_CAP_BADGE_3]     = 45,
     [LEVEL_CAP_BADGE_4]     = 50,
-    [LEVEL_CAP_BADGE_5]     = 55,
-    [LEVEL_CAP_BADGE_6]     = 60,
-    [LEVEL_CAP_BADGE_7]     = 70,
-    [LEVEL_CAP_BADGE_8]     = 80,
+    [LEVEL_CAP_BADGE_5]     = 60,
+    [LEVEL_CAP_BADGE_6]     = 70,
+    [LEVEL_CAP_BADGE_7]     = 80,
+    [LEVEL_CAP_BADGE_8]     = 85,
 };
 
 u8 GetCurrentPartyLevelCap(void)
