@@ -445,7 +445,7 @@ ALIGNED(4) static const u8 sText_TradingBoardInfo[] = _("This Trading Board is u
                                                         "We hope you will register Pokémon\n"
                                                         "and trade them with many, many\l"
                                                         "other Trainer.\p"
-                                                        "Would you like to register one of\nyour POKéMON?");
+                                                        "Would you like to register one of\nyour Pokémon?");
 ALIGNED(4) static const u8 sText_ThankYouForRegistering[] = _("We have registered your Pokémon for\ntrade on the Trading Board.\pThank you for using this service!\p"); // unused
 ALIGNED(4) static const u8 sText_NobodyHasRegistered[] = _("Nobody has registered any Pokémon\nfor trade on the Trading Board.\p\n"); // unused
 ALIGNED(4) static const u8 sText_ChooseRequestedMonType[] = _("Please choose the type of Pokémon\nthat you would like in the trade.\n");
@@ -465,7 +465,6 @@ ALIGNED(4) static const u8 sText_DontHaveTypeTrainerWants[] = _("You don't have 
 ALIGNED(4) static const u8 sText_DontHaveEggTrainerWants[] = _("You don't have an Egg that\n{STR_VAR_1} wants.\p");
 ALIGNED(4) static const u8 sText_PlayerCantTradeForYourMon[] = _("{STR_VAR_1} can't make a trade for\nyour Pokémon right now.\p");
 ALIGNED(4) static const u8 sText_CantTradeForPartnersMon[] = _("You can't make a trade for\n{STR_VAR_1}'s Pokémon right now.\p");
-
 
 // Unused
 static const u8 *const sCantTradeMonTexts[] = {
