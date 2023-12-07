@@ -11,6 +11,7 @@
 #include "battle_tower.h"
 #include "battle_z_move.h"
 #include "data.h"
+#include "daycare.h"
 #include "dexnav.h"
 #include "event_data.h"
 #include "evolution_scene.h"
@@ -2528,6 +2529,9 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
                     | (substruct3->worldRibbon << 26);
             }
             break;
+        case MON_DATA_NATURE:
+            return boxMon->personality % 25;
+            break;
         default:
             break;
         }
@@ -2669,6 +2673,10 @@ void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
         break;
     case MON_DATA_MAIL:
         SET8(mon->mail);
+        break;
+    case MON_DATA_NATURE: // Calculate stats after settings
+        SetBoxMonData(&mon->box, field, data);
+        CalculateMonStats(mon);
         break;
     case MON_DATA_SPECIES_OR_EGG:
         break;
@@ -2895,6 +2903,81 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             substruct3->spAttackIV = (ivs >> 20) & MAX_IV_MASK;
             substruct3->spDefenseIV = (ivs >> 25) & MAX_IV_MASK;
             break;
+        }
+        case MON_DATA_NATURE:
+        {
+          u32 pid = boxMon->personality;
+          u32 otId = boxMon->otId;
+          s8 diff = (data[0] % 25) - (pid % 25); // difference between new nature and current nature, [-24,24]
+          bool8 preserveShiny = FALSE;
+          bool8 preserveLetter = FALSE;
+          u16 shinyValue = HIHALF(pid) ^ LOHALF(pid);
+          s32 tweak;
+          u32 pidTemp;
+          // See https://bulbapedia.bulbagarden.net/wiki/Personality_value#Nature
+          // Goal here is to preserve as much of the PID as possible
+          // To preserve gender & substruct order, we add/subtract multiples of 5376 that is 0 % 256, 0 % 24, 1 % 25
+          // i.e, to increase the nature by n % 25, we add n*5376 % 19200 (LCM of 24, 25, 256) to the pid
+          // Ability number is determined by parity and so adding multiples of 5376 preserves it
+          // TODO: For genderless pokemon, 576/600 can be used instead of 5376/19200
+          if (diff == 0) // No change
+            break;
+          else if (diff < 0)
+            diff = 25+diff;
+          tweak = (diff*5376) % 19200;
+          pidTemp = pid + tweak;
+          // If the pokemon is shiny or if changing the PID would make it shiny, preserve its shiny value
+          if (IsShinyOtIdPersonality(otId, pid) || IsShinyOtIdPersonality(otId, pidTemp))
+            preserveShiny = TRUE;
+          if (substruct0->species == SPECIES_UNOWN) // Preserve Unown letter
+            preserveLetter = TRUE;
+          if (preserveShiny && preserveLetter) { // honestly though, how many shiny Unown are out there ?
+            while (pidTemp > pid) {
+              if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                  break;
+              pidTemp += 19200;
+            }
+          } else if (preserveShiny) {
+            while (pidTemp > pid) {
+              if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                break;
+              pidTemp += 19200;
+            }
+          } else if (preserveLetter) {
+            while (pidTemp > pid) {
+              if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                break;
+              pidTemp += 19200;
+            }
+          }
+          if (pidTemp < pid) { // overflow; search backwards
+            tweak -= 19200;
+            pidTemp = pid + tweak;
+            if (preserveShiny && preserveLetter) {
+              while (pidTemp < pid) {
+                if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                  if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                    break;
+                pidTemp -= 19200;
+              }
+            } else if (preserveShiny) {
+              while (pidTemp < pid) {
+                if ((HIHALF(pidTemp) ^ LOHALF(pidTemp) ^ shinyValue) < SHINY_ODDS)
+                  break;
+                pidTemp -= 19200;
+              }
+            } else if (preserveLetter) {
+              while (pidTemp < pid) {
+                if (GET_UNOWN_LETTER(pidTemp) == GET_UNOWN_LETTER(pid))
+                  break;
+                pidTemp -= 19200;
+              }
+            }
+          }
+          if (pid % 24 == pidTemp % 24 || pid % 256 == pidTemp % 256)
+            boxMon->personality = pidTemp;
+          break;
         }
         default:
             break;
@@ -5154,6 +5237,59 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
                     moves[numMoves++] = learnset[i].move;
             }
         }
+    }
+
+    return numMoves;
+}
+
+u8 GetEggTutorMoves(struct Pokemon *mon, u16 *eggmoves)
+{   
+    u16 baseSpecies = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u16 eggSpecies = GetEggSpecies(baseSpecies);
+    u16 learnedMoves[MAX_MON_MOVES]; 
+    u16 eggMoveBuffer[EGG_MOVES_ARRAY_COUNT];
+    u8 numEggMoves = GetEggMovesByBaseSpecies(eggSpecies, eggMoveBuffer);
+    u8 numMoves = 0;
+    int i;
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+        learnedMoves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, 0);
+
+    if(numEggMoves != 0)
+    {
+        for (i = 0; i < EGG_MOVES_ARRAY_COUNT; i++)
+            if (learnedMoves[0] != eggMoveBuffer[i]
+                && learnedMoves[1] != eggMoveBuffer[i]
+                && learnedMoves[2] != eggMoveBuffer[i]
+                && learnedMoves[3] != eggMoveBuffer[i])
+                eggmoves[numMoves++] = eggMoveBuffer[i];
+    }
+
+    return numMoves;
+}
+
+u8 GetNumberOfEggMoves(struct Pokemon *mon)
+{   
+    u16 baseSpecies = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u16 eggSpecies = GetEggSpecies(baseSpecies);
+    u16 learnedMoves[MAX_MON_MOVES]; 
+    u16 eggMoveBuffer[EGG_MOVES_ARRAY_COUNT];
+    u16 eggmoves[EGG_MOVES_ARRAY_COUNT];
+    u8 numEggMoves = GetEggMovesByBaseSpecies(eggSpecies, eggMoveBuffer);
+    u8 numMoves = 0;
+    int i;
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+        learnedMoves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, 0);
+
+    if(numEggMoves != 0)
+    {
+        for (i = 0; i < EGG_MOVES_ARRAY_COUNT; i++)
+            if (learnedMoves[0] != eggMoveBuffer[i]
+                && learnedMoves[1] != eggMoveBuffer[i]
+                && learnedMoves[2] != eggMoveBuffer[i]
+                && learnedMoves[3] != eggMoveBuffer[i])
+                eggmoves[numMoves++] = eggMoveBuffer[i];
     }
 
     return numMoves;

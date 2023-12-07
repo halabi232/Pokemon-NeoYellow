@@ -5258,27 +5258,26 @@ static void PrintStatsScreen_DestroyMoveItemIcon(u8 taskId)
 static bool8 CalculateMoves(void)
 {
     u16 species = NationalPokedexNumToSpeciesHGSS(sPokedexListItem->dexNum);
-    const u16 *teachableLearnset = GetSpeciesTeachableLearnset(species);
-
+    
     u16 statsMovesEgg[EGG_MOVES_ARRAY_COUNT] = {0};
     u16 statsMovesLevelUp[MAX_LEVEL_UP_MOVES] = {0};
     u16 move;
-
+    
     u8 numEggMoves = 0;
     u8 numLevelUpMoves = 0;
     u8 numTMHMMoves = 0;
     u8 numTutorMoves = 0;
     u16 movesTotal = 0;
     u8 i,j;
-
+    
     // Mega pokemon don't have distinct learnsets from their base form; so use base species for calculation
     if (species >= SPECIES_VENUSAUR_MEGA && species <= SPECIES_GROUDON_PRIMAL)
         species = GetFormSpeciesId(species, 0);
-
+    
     //Calculate amount of Egg and LevelUp moves
     numEggMoves = GetEggMovesSpecies(species, statsMovesEgg);
     numLevelUpMoves = GetLevelUpMovesBySpecies(species, statsMovesLevelUp);
-
+    
     //Egg moves
     for (i=0; i < numEggMoves; i++)
     {
@@ -5293,23 +5292,42 @@ static bool8 CalculateMoves(void)
         movesTotal++;
     }
 
-    for (i = 0; teachableLearnset[i] != MOVE_UNAVAILABLE; i++)
+    for (i = 0; gSpeciesInfo[species].teachableLearnset[i] != MOVE_UNAVAILABLE; i++)
     {
-        move = teachableLearnset[i];
+        move = gSpeciesInfo[species].teachableLearnset[i];
         for (j = 0; j < NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES; j++)
         {
             if (ItemIdToBattleMoveId(ITEM_TM01 + j) == move)
             {
                 sStatsMovesTMHM_ID[numTMHMMoves] = (ITEM_TM01 + j);
                 numTMHMMoves++;
+
+                sStatsMoves[movesTotal] = move;
+                movesTotal++;
                 break;
             }
         }
+    }
+
+    for (i = 0; gSpeciesInfo[species].teachableLearnset[i] != MOVE_UNAVAILABLE; i++)
+    {
+        move = gSpeciesInfo[species].teachableLearnset[i];
+        for (j = 0; j < NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES; j++)
+        {
+            if (ItemIdToBattleMoveId(ITEM_TM01 + j) == move)
+                break;
+        }
+
         if (j >= NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES)
+        {
             numTutorMoves++;
 
         sStatsMoves[movesTotal] = move;
         movesTotal++;
+
+            sStatsMoves[movesTotal] = move;
+            movesTotal++;
+        }
     }
 
     sPokedexView->numEggMoves = numEggMoves;

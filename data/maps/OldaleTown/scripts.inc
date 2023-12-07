@@ -399,3 +399,95 @@ OldaleTown_Text_TownSign: @ 81E94DA
 	.string "Oldale Town\n"
 	.string "“Where things start off scarce.”$"
 
+OldaleTown_EventScript_EggTutor::
+	lockall
+	faceplayer
+	msgbox OldaleTown_Text_ImTheMoveTutor, MSGBOX_DEFAULT
+	goto OldaleTown_EventScript_AskTeachMove
+	end
+
+OldaleTown_EventScript_AskTeachMove::
+	checkitem ITEM_BIG_MUSHROOM
+	goto_if_eq VAR_RESULT, FALSE, OldaleTown_EventScript_ComeBackWithMushroom
+	msgbox OldaleTown_Text_WantMeToTeachMove, MSGBOX_YESNO
+	switch VAR_RESULT
+	case NO, OldaleTown_EventScript_ComeBackWithMushroom
+	goto OldaleTown_EventScript_ChooseMon
+	end
+
+OldaleTown_EventScript_ChooseMon::
+	msgbox OldaleTown_Text_TutorWhichMon, MSGBOX_DEFAULT
+	special ChooseMonForEggMoveRelearner
+	waitstate
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, OldaleTown_EventScript_ComeBackWithMushroom
+	special IsSelectedMonEgg
+	goto_if_eq VAR_RESULT, TRUE, OldaleTown_EventScript_CantTeachEgg
+	goto_if_eq VAR_0x8005, 0, OldaleTown_EventScript_NoMoveToTeachMon
+	goto OldaleTown_EventScript_ChooseMove
+	end
+
+OldaleTown_EventScript_ChooseMove::
+	msgbox OldaleTown_Text_TeachWhichMove, MSGBOX_DEFAULT
+	special TeachEggMoveRelearnerMove
+	waitstate
+	goto_if_eq VAR_0x8004, 0, OldaleTown_EventScript_ChooseMon
+	msgbox OldaleTown_Text_HandedOverMushroom, MSGBOX_DEFAULT
+	removeitem ITEM_BIG_MUSHROOM
+	goto OldaleTown_EventScript_ComeBackWithMushroom
+	releaseall
+	end
+
+OldaleTown_EventScript_NoMoveToTeachMon::
+	msgbox OldaleTown_Text_DontHaveMoveToTeachPokemon, MSGBOX_DEFAULT
+	goto OldaleTown_EventScript_ChooseMon
+	end
+
+OldaleTown_EventScript_CantTeachEgg::
+	msgbox OldaleTown_Text_CantTeachEgg, MSGBOX_DEFAULT
+	goto OldaleTown_EventScript_ChooseMon
+	end
+
+OldaleTown_EventScript_ComeBackWithMushroom::
+	msgbox OldaleTown_Text_ComeBackWithMushroom, MSGBOX_DEFAULT
+	releaseall
+	end
+
+OldaleTown_Text_ImTheMoveTutor:
+	.string "Hmm… Oui?\p"
+	.string "Ah! Me? Well…\n"
+	.string "I'm a Pokémon Heritage conoisseur!\p"
+	.string "I know all the moves a Pokémon can\n"
+	.string "possibly inherit from their parents!\l"
+	.string "And I can teach them all!\p"
+	.string "Well… for a price…\p"
+	.string "If you have a Big Mushroom,\n"
+	.string "I can teach a move to a Pokémon\l"
+	.string "of yours if you'd like.$"
+
+OldaleTown_Text_TutorWhichMon:
+	.string "Which Pokémon needs tutoring?$"
+
+OldaleTown_Text_WantMeToTeachMove:
+	.string "Uhlala!! That's a fragrant\n"
+	.string "and beautiful Big Mushroom!\p"
+	.string "Are you in need to teach a Pokémon?$"
+
+OldaleTown_Text_TeachWhichMove:
+	.string "Which move should I teach?$"
+
+OldaleTown_Text_DontHaveMoveToTeachPokemon:
+	.string "Excuse moi…\p"
+	.string "This Pokémon canno inherit any moves.$"
+
+OldaleTown_Text_CantTeachEgg:
+	.string "What? It is not possible\n"
+	.string "to teach any move to an Egg.$"
+
+OldaleTown_Text_HandedOverMushroom:
+	.string "{PLAYER} handed over one Big Mushroom\n"
+	.string "in exchange.$"
+
+OldaleTown_Text_ComeBackWithMushroom:
+	.string "If your require my knowledge,\n"
+	.string "please return with a delicious\l"
+	.string "Big Mushroom! I will be waiting.$"
